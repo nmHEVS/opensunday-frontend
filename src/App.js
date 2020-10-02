@@ -57,7 +57,8 @@ function App() {
             Logout
           </a>
         )}
-        <h1>OpenSunday</h1>
+        <h1>Welcome on OpenSunday</h1>
+        <h2>Find how to pass this dull day !</h2>
         <br />
         <BrowserRouter>
           <Switch>
