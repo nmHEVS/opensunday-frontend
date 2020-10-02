@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import "./App.css";
 import { useAuth0 } from "@auth0/auth0-react";
 import request from "./utils/request";
@@ -6,9 +6,13 @@ import endpoints from "./endpoints";
 import Loading from "./components/Loading";
 import { BrowserRouter, Link, Switch, Route } from "react-router-dom";
 import LocationDetails from "./pages/LocationDetails";
+import { ThemeContext, themes } from './ThemeContext';
 
 function App() {
   let [locations, setLocations] = useState([]);
+
+  /* Use Theme Context (with a hook) */
+  let themeContext = useContext(ThemeContext);
 
   let {
     loading,
@@ -57,9 +61,9 @@ function App() {
             Logout
           </a>
         )}
-        <h1>Welcome on OpenSunday</h1>
+        <h1 style={{ color: themes[themeContext.theme].foreground }}>Welcome on OpenSunday</h1>
         <h2>Find how to pass this dull day !</h2>
-        <br />
+        <br/>
         <BrowserRouter>
           <Switch>
             <Route
