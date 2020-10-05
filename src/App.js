@@ -8,7 +8,27 @@ import Loading from "./components/Loading";
 import { BrowserRouter, Link, Switch, Route } from "react-router-dom";
 import LocationDetails from "./pages/LocationDetails";
 import { EstablishmentForm } from './EstablishmentForm';
+//import { Settings} from "./Settings";
 import { ThemeContext, themes } from './ThemeContext';
+
+
+function Settings() {
+  let themeContext = useContext(ThemeContext);
+
+  return (
+      <>
+        <h2 style={{color: themes[themeContext.theme].foreground}}>Settings</h2>
+        <button
+            type="button"
+            title="Switch Theme"
+            onClick={themeContext.toggleTheme}
+        >
+          <span>💡</span>
+        </button>
+      </>
+  );
+}
+
 
 function App() {
   let [locations, setLocations] = useState([]);
@@ -63,7 +83,7 @@ function App() {
   };
 
   return (
-      <div className="App">
+      <div className="App" style={{color: themes[themeContext.theme].background}} >
         <ReactBootStrap.Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
           <ReactBootStrap.Navbar.Brand href="/home">Home</ReactBootStrap.Navbar.Brand>
           <ReactBootStrap.Navbar.Toggle aria-controls="responsive-navbar-nav" />
@@ -75,6 +95,8 @@ function App() {
                 <ReactBootStrap.NavDropdown.Item href="/establishment/new">New</ReactBootStrap.NavDropdown.Item>
               </ReactBootStrap.NavDropdown>
             </ReactBootStrap.Nav>
+            <ReactBootStrap.Nav.Link href="/settings">Settings</ReactBootStrap.Nav.Link>
+
             <ReactBootStrap.Nav>
               {/*Login/Logout switch*/}
               {isAuthenticated ? (
@@ -147,6 +169,12 @@ function App() {
                 /* addBook is now just a function in a variable */
                 // render={() => <EstablishmentForm addEstablishment={addEstablishment()} />}
                 render={() => <EstablishmentForm />}
+            />
+            <Route
+                path="/settings"
+                /* addBook is now just a function in a variable */
+                // render={() => <EstablishmentForm addEstablishment={addEstablishment()} />}
+                render={() => <Settings />}
             />
           </BrowserRouter>
         </header>
