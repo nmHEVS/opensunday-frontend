@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import "./App.css";
 import { useAuth0 } from "@auth0/auth0-react";
 import request from "./utils/request";
@@ -8,10 +8,12 @@ import Loading from "./components/Loading";
 import { BrowserRouter, Link, Switch, Route } from "react-router-dom";
 import LocationDetails from "./pages/LocationDetails";
 import { EstablishmentForm } from './EstablishmentForm';
+import { ThemeContext, themes } from './ThemeContext';
 
 function App() {
   let [locations, setLocations] = useState([]);
   let [establishments, setEstablishments] = useState([]);
+  let themeContext = useContext(ThemeContext);
 
   let {
     loading,
@@ -102,7 +104,7 @@ function App() {
           {/*    Logout*/}
           {/*  </a>*/}
           {/*)}*/}
-          <h1>OpenSunday</h1>
+          <h1 style={{color: themes[themeContext.theme].foreground}}>OpenSunday</h1>
           <br />
           <BrowserRouter>
             <Switch>
