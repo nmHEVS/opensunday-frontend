@@ -5,6 +5,7 @@ import App from './App';
 import * as serviceWorker from './serviceWorker';
 import auth_config from './auth_config';
 import { Auth0Provider } from "@auth0/auth0-react";
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 ReactDOM.render(
   <Auth0Provider
