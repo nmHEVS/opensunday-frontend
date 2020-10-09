@@ -9,6 +9,7 @@ import { BrowserRouter, Link, Switch, Route } from "react-router-dom";
 import LocationDetails from "./pages/LocationDetails";
 import { EstablishmentForm } from './EstablishmentForm';
 import { ThemeContext, themes } from './ThemeContext';
+import Map from './Map';
 
 function App() {
   let [locations, setLocations] = useState([]);
@@ -148,10 +149,10 @@ function App() {
                 // render={() => <EstablishmentForm addEstablishment={addEstablishment()} />}
                 render={() => <EstablishmentForm />}
             />
-          </BrowserRouter>
-        </header>
-      </div>
-  );
+        </BrowserRouter>
+      </header>
+    </div>
+  )
 }
 
 export default App;
