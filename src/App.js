@@ -149,7 +149,10 @@ function App() {
                 // render={() => <EstablishmentForm addEstablishment={addEstablishment()} />}
                 render={() => <EstablishmentForm />}
             />
-        </BrowserRouter>
+
+            <Route exact path="/map" component={Map} />
+
+          </BrowserRouter>
       </header>
     </div>
   )
