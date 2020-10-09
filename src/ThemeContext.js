@@ -15,7 +15,7 @@ export const themes = {
     },
     dark: {
         background: '#282c34',
-        foreground: 'white',
+        foreground: 'green',
         bookBackground: 'transparent',
     },
 };
