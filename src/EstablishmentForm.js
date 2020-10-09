@@ -78,9 +78,19 @@ export function EstablishmentForm () {
         return (
             <>
                 {/* Render a form allowing to add a new book to the list */}
-                <h2>Add a new Establishment</h2>
+                <h2>Add your establishment !</h2>
                 <form onSubmit={handleFormSubmit} className="NewBook-Form">
                     {/* All inputs have been replaced with FormInput components */}
+                    <label>
+                        {/*Establishment type :*/}
+                        <select>
+                            <option value="Restaurant">Restaurant</option>
+                            <option value="Barpub">Bar/pub</option>
+                            <option value="Cinema">Cinema</option>
+                            <option value="Museum">Museum</option>
+                        </select>
+                    </label>
+                    <br/>
                     <FormInput
                         /* Link the created ref to the title input */
                         fieldRef={nameInputRef}
@@ -90,16 +100,6 @@ export function EstablishmentForm () {
                         onChange={handleFormInputChange}
                         placeholder="Name"
                     />
-                    <label>
-                        Establishment type :
-                        <select>
-                            <option value="Restaurant">Restaurant</option>
-                            <option value="Barpub">Bar/pub</option>
-                            <option value="Cinema">Cinema</option>
-                            <option value="Museum">Museum</option>
-                        </select>
-                    </label>
-                    <br/>
                     <FormInput
                         /* Link the created ref to the title input */
                         fieldRef={nameInputRef}
@@ -127,16 +127,8 @@ export function EstablishmentForm () {
                         onChange={handleFormInputChange}
                         placeholder="Phone"
                     />
-                    <FormInput
-                        /* Link the created ref to the title input */
-                        fieldRef={nameInputRef}
-                        type="text"
-                        name="Description"
-                        // value={this.state.newEstablishment.description}
-                        onChange={handleFormInputChange}
-                        placeholder="Description"
-                    />
-                    <button type="submit">Add Establishment</button>
+                    <textarea placeholder="Description"></textarea>
+                    <button type="submit">Add this establishment</button>
                 </form>
             </>
         );
