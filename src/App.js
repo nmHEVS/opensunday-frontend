@@ -144,6 +144,7 @@ function App() {
             <Route exact path="/map" component={Map} />
           </BrowserRouter>
       </header>
+
     </div>
   )
 }

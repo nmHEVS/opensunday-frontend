@@ -71,6 +71,20 @@ input[type=text]:focus {
   margin-left: 5px;
 }
 
+#up {
+  float: left;
+  width: 100%;
+  overflow: hidden;
+  height: 50vh;
+  margin-bottom: 40px;
+}
+
+#down {
+  float: left;
+  width: 100%;
+  overflow: hidden;
+}
+
 .leaflet-container{
   width: 100%;
   height: 100vh;
