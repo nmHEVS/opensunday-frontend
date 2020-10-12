@@ -140,18 +140,8 @@ function App() {
               />
               <Route path="/location/:id" component={LocationDetails} />
             </Switch>
-            {/* Renders a Route that will render a BookForm and pass it the */}
-            {/* "addBook" function as a prop. This will allow the BookForm  */}
-            {/* component to interact with the "books" state variable.  */}
-            <Route
-                path="/establishment/new"
-                /* addBook is now just a function in a variable */
-                // render={() => <EstablishmentForm addEstablishment={addEstablishment()} />}
-                render={() => <EstablishmentForm />}
-            />
-
+            <Route path="/establishment/new" render={() => <EstablishmentForm />}/>
             <Route exact path="/map" component={Map} />
-
           </BrowserRouter>
       </header>
     </div>
