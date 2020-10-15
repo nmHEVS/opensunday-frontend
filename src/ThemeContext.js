@@ -11,11 +11,9 @@ export const themes = {
     light: {
         background: '#fefefe',
         foreground: '#333333',
-        bookBackground: '#efefef',
     },
     dark: {
         background: '#282c34',
-        foreground: 'green',
-        bookBackground: 'transparent',
+        foreground: 'white',
     },
 };

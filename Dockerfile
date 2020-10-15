@@ -24,10 +24,10 @@ RUN yarn run build
 # Deploy on the web server
 FROM nginx:alpine
 
-# Copy build files to HTML directory of nginx
+#Copy build files to HTML directory of nginx
 COPY --from=build /usr/src/app/build /usr/share/nginx/html
 
-# Copy nginx conf for dealing with routes
+#Copy nginx conf for dealing with routes
 COPY ./react.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80

@@ -6,10 +6,16 @@ export function Settings() {
     let themeContext = useContext(ThemeContext);
 
     return (
-        <>
-            {/* Render a form allowing to add a new book to the list */}
-            <h2 style={{color: themes[themeContext.theme].foreground}}>Settings</h2>
-        </>
+            <>
+                <h2 style={{color: themes[themeContext.theme].foreground}}>Settings</h2>
+                <button
+                    type="button"
+                    title="Switch Theme"
+                    onClick={themeContext.toggleTheme}
+                >
+                    <span>💡</span>
+                </button>
+            </>
     );
 }
 

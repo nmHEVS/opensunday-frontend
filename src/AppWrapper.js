@@ -1,13 +1,13 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import App from './App';
 /* Import the ThemeContext from ThemeContext.js */
-import { ThemeContext } from './ThemeContext';
+import {ThemeContext, themes} from './ThemeContext';
 
 /* AppWrapper to keep the Context value */
 class AppWrapper extends React.Component {
     /* Initialize state with a default theme */
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = { theme: 'dark' };
     }
 

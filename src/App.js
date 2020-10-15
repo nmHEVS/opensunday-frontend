@@ -8,32 +8,20 @@ import Loading from "./components/Loading";
 import { BrowserRouter, Link, Switch, Route } from "react-router-dom";
 import LocationDetails from "./pages/LocationDetails";
 import { EstablishmentForm } from './EstablishmentForm';
-//import { Settings} from "./Settings";
+import {EstablishmentsList} from './EstablishmentsList';
+import { Settings} from "./Settings";
 import { ThemeContext, themes } from './ThemeContext';
 
 
-function Settings() {
-  let themeContext = useContext(ThemeContext);
 
-  return (
-      <>
-        <h2 style={{color: themes[themeContext.theme].foreground}}>Settings</h2>
-        <button
-            type="button"
-            title="Switch Theme"
-            onClick={themeContext.toggleTheme}
-        >
-          <span>💡</span>
-        </button>
-      </>
-  );
-}
 
 
 function App() {
   let [locations, setLocations] = useState([]);
   let [establishments, setEstablishments] = useState([]);
   let themeContext = useContext(ThemeContext);
+
+  
 
   let {
     loading,
@@ -43,6 +31,25 @@ function App() {
     isAuthenticated,
   } = useAuth0();
 
+  //Handle Establishments
+  let handleEstablishmentsClick = async (e) => {
+    e.preventDefault();
+    let establishments = await request(
+        `${process.env.REACT_APP_SERVER_URL}${endpoints.establishment}`,
+        getAccessTokenSilently,
+        loginWithRedirect
+    );
+
+    if (establishments && establishments.length > 0) {
+      console.log(establishments);
+      setEstablishments(establishments);
+    }
+  };
+
+
+
+
+  //Handle Locations
   let handleLocationsClick = async (e) => {
     e.preventDefault();
     let locations = await request(
@@ -83,14 +90,14 @@ function App() {
   };
 
   return (
-      <div className="App" style={{color: themes[themeContext.theme].background}} >
+      <div className="App">
         <ReactBootStrap.Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
           <ReactBootStrap.Navbar.Brand href="/home">Home</ReactBootStrap.Navbar.Brand>
           <ReactBootStrap.Navbar.Toggle aria-controls="responsive-navbar-nav" />
           <ReactBootStrap.Navbar.Collapse id="responsive-navbar-nav">
             <ReactBootStrap.Nav className="mr-auto">
               <ReactBootStrap.Nav.Link href="/map">Map</ReactBootStrap.Nav.Link>
-              <ReactBootStrap.NavDropdown title="Establishment" id="collasible-nav-dropdown">
+              <ReactBootStrap.NavDropdown title="EstablishmentDetails" id="collasible-nav-dropdown">
                 <ReactBootStrap.NavDropdown.Item href="/establishment/list">List</ReactBootStrap.NavDropdown.Item>
                 <ReactBootStrap.NavDropdown.Item href="/establishment/new">New</ReactBootStrap.NavDropdown.Item>
               </ReactBootStrap.NavDropdown>
@@ -116,7 +123,7 @@ function App() {
             </ReactBootStrap.Nav>
           </ReactBootStrap.Navbar.Collapse>
         </ReactBootStrap.Navbar>
-        <header className="App-header">
+        <header className="App-header" style={{background: themes[themeContext.theme].background}}>
           {/*{isAuthenticated && (*/}
           {/*  <a*/}
           {/*    className="App-link Logout-link"*/}
@@ -150,7 +157,7 @@ function App() {
                                         className="App-link"
                                         to={`/location/${location.id}`}
                                     >
-                                      {location.name}
+                                      {location.npa} {location.city}
                                     </Link>
                                   </li>
                               ))}
@@ -162,18 +169,38 @@ function App() {
               <Route path="/location/:id" component={LocationDetails} />
             </Switch>
             {/* Renders a Route that will render a BookForm and pass it the */}
-            {/* "addBook" function as a prop. This will allow the BookForm  */}
-            {/* component to interact with the "books" state variable.  */}
             <Route
                 path="/establishment/new"
-                /* addBook is now just a function in a variable */
                 // render={() => <EstablishmentForm addEstablishment={addEstablishment()} />}
                 render={() => <EstablishmentForm />}
             />
             <Route
+                path="/establishment/list"
+
+                render={() =>(
+                    <>
+                      <h2 style={{color: themes[themeContext.theme].foreground}}>List of Establishments</h2>
+                      <button
+                          onClick={handleEstablishmentsClick}
+                      >
+                        Get Establishments
+                      </button>
+                      <ul className="EstablishmentsList">
+                        {establishments.map((establishment) => (
+                            <li key={establishment.id}>
+                              <Link
+                                  className="App-link"
+                                  to={`/establishment/${establishment.id}`}
+                              >
+                                {establishment.type} - {establishment.name}
+                              </Link>
+                            </li>
+                        ))}
+                      </ul>
+                    </>)}
+            />
+            <Route
                 path="/settings"
-                /* addBook is now just a function in a variable */
-                // render={() => <EstablishmentForm addEstablishment={addEstablishment()} />}
                 render={() => <Settings />}
             />
           </BrowserRouter>

@@ -2,12 +2,12 @@ import React from "react";
 import "./Location.css";
 
 export default function Location(props) {
-  const { name, isOpen } = props;
+  const { name, NPA } = props;
 
   return (
     <div className="location">
-      <h2>{name}</h2>
-      <div>Open on Sunday : {isOpen ? <span>✔</span> : <span>❌</span>}</div>
+      <h2>{NPA}</h2>
+      <div>{name}</div>
     </div>
   );
 }
