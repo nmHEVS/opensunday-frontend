@@ -11,6 +11,7 @@ import { EstablishmentForm } from './EstablishmentForm';
 import {EstablishmentsList} from './EstablishmentsList';
 import { Settings} from "./Settings";
 import { ThemeContext, themes } from './ThemeContext';
+import EstablishmentDetails from "./pages/EstablishmentDetails";
 
 
 
@@ -35,9 +36,10 @@ function App() {
   let handleEstablishmentsClick = async (e) => {
     e.preventDefault();
     let establishments = await request(
-        `${process.env.REACT_APP_SERVER_URL}${endpoints.establishment}`,
+        `${process.env.REACT_APP_SERVER_URL}${endpoints.establishments}`,
         getAccessTokenSilently,
         loginWithRedirect
+
     );
 
     if (establishments && establishments.length > 0) {
@@ -174,31 +176,34 @@ function App() {
                 // render={() => <EstablishmentForm addEstablishment={addEstablishment()} />}
                 render={() => <EstablishmentForm />}
             />
-            <Route
-                path="/establishment/list"
+            <Switch>
+              <Route
+                  path="/establishment/list"
 
-                render={() =>(
-                    <>
-                      <h2 style={{color: themes[themeContext.theme].foreground}}>List of Establishments</h2>
-                      <button
-                          onClick={handleEstablishmentsClick}
-                      >
-                        Get Establishments
-                      </button>
-                      <ul className="EstablishmentsList">
-                        {establishments.map((establishment) => (
-                            <li key={establishment.id}>
-                              <Link
-                                  className="App-link"
-                                  to={`/establishment/${establishment.id}`}
-                              >
-                                {establishment.type} - {establishment.name}
-                              </Link>
-                            </li>
-                        ))}
-                      </ul>
-                    </>)}
-            />
+                  render={() =>(
+                      <>
+                        <h2 style={{color: themes[themeContext.theme].foreground}}>List of Establishments</h2>
+                        <button
+                            onClick={handleEstablishmentsClick}
+                        >
+                          Get Establishments
+                        </button>
+                        <ul className="EstablishmentsList">
+                          {establishments.map((establishment) => (
+                              <li key={establishment.id}>
+                                <Link
+                                    className="App-link"
+                                    to={`/establishment/${establishment.id}`}
+                                >
+                                  {establishment.name}
+                                </Link>
+                              </li>
+                          ))}
+                        </ul>
+                      </>)}
+              />
+              <Route path="/establishment/:id" component={EstablishmentDetails} />
+            </Switch>
             <Route
                 path="/settings"
                 render={() => <Settings />}

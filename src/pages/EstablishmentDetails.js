@@ -31,7 +31,7 @@ export default function EstablishmentDetails({ match }) {
     return (
         <div>
             {establishment ? <Establishment {...establishment} /> : <p>Loading details...</p>}
-            <Link className="App-link" to="/">
+            <Link className="App-link" to="/establishment/list">
                 Back
             </Link>
         </div>

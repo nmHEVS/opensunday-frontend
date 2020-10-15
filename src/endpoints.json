@@ -1,3 +1,4 @@
 {
-  "locations": "/api/locations"
+  "locations": "/api/locations",
+  "establishments": "/api/establishment"
 }
