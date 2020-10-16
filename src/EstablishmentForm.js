@@ -66,11 +66,33 @@ const SignupForm = () => {
 
     return (
         <div>
+            <text>Click on the map to get the coordinate of your establishment</text>
             <div id="up">
                 <Map updateCoordinates={updateCoordinates}></Map>
             </div>
             <div>
                 <form onSubmit={formik.handleSubmit}>
+                    <input
+                        id="latitude"
+                        name="latitude"
+                        type="number"
+                        onChange={formik.handleChange}
+                        value={formik.values.latitude}
+                        placeholder="Establishment latitude"
+                        readOnly="readonly"
+                        required
+                    />
+                    <input
+                        id="longitude"
+                        name="longitude"
+                        type="number"
+                        onChange={formik.handleChange}
+                        value={formik.values.longitude}
+                        placeholder="Establishment longitude"
+                        readOnly="readonly"
+                        required
+                    />
+                    <br/>
                     <select
                         id="establishmentType"
                         name="establishmentType"
@@ -120,27 +142,6 @@ const SignupForm = () => {
                         onChange={formik.handleChange}
                         value={formik.values.location}
                         placeholder="Location"
-                        required
-                    />
-                    <br/>
-                    <input
-                        id="latitude"
-                        name="latitude"
-                        type="number"
-                        onChange={formik.handleChange}
-                        value={formik.values.latitude}
-                        placeholder="Establishment latitude"
-                        readOnly="readonly"
-                        required
-                    />
-                    <input
-                        id="longitude"
-                        name="longitude"
-                        type="number"
-                        onChange={formik.handleChange}
-                        value={formik.values.longitude}
-                        placeholder="Establishment longitude"
-                        readOnly="readonly"
                         required
                     />
                     <br/>
