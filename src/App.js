@@ -33,20 +33,19 @@ function App() {
   } = useAuth0();
 
   //Handle Establishments
-  let handleEstablishmentsClick = async (e) => {
+  /*let handleEstablishmentsClick = async (e) => {
     e.preventDefault();
     let establishments = await request(
         `${process.env.REACT_APP_SERVER_URL}${endpoints.establishments}`,
         getAccessTokenSilently,
         loginWithRedirect
-
     );
 
     if (establishments && establishments.length > 0) {
       console.log(establishments);
       setEstablishments(establishments);
     }
-  };
+  };*/
 
 
 
@@ -179,28 +178,8 @@ function App() {
             <Switch>
               <Route
                   path="/establishment/list"
-
-                  render={() =>(
-                      <>
-                        <h2 style={{color: themes[themeContext.theme].foreground}}>List of Establishments</h2>
-                        <button
-                            onClick={handleEstablishmentsClick}
-                        >
-                          Get Establishments
-                        </button>
-                        <ul className="EstablishmentsList">
-                          {establishments.map((establishment) => (
-                              <li key={establishment.id}>
-                                <Link
-                                    className="App-link"
-                                    to={`/establishment/${establishment.id}`}
-                                >
-                                  {establishment.name}
-                                </Link>
-                              </li>
-                          ))}
-                        </ul>
-                      </>)}
+                  render={() =>(<EstablishmentsList />
+                      )}
               />
               <Route path="/establishment/:id" component={EstablishmentDetails} />
             </Switch>
