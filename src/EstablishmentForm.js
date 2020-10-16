@@ -4,6 +4,8 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import Map from "./Map";
 
+
+
 export class EstablishmentForm extends React.Component {
 
      constructor() {
@@ -168,4 +170,6 @@ const SignupForm = () => {
             </div>
         </div>
     );
+
 };
+

@@ -1,3 +1,6 @@
 {
-  "locations": "/api/locations"
+  "locations": "/api/locations",
+  "establishments": "/api/establishment",
+  "establishmentsTypes": "/api/establishmentType",
+  "establishmentsByType": "/api/establishment/Type/"
 }

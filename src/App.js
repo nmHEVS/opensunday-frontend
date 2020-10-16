@@ -8,13 +8,18 @@ import Loading from "./components/Loading";
 import { BrowserRouter, Link, Switch, Route } from "react-router-dom";
 import LocationDetails from "./pages/LocationDetails";
 import { EstablishmentForm } from './EstablishmentForm';
+import {EstablishmentsList} from './EstablishmentsList';
+import { Settings} from "./Settings";
 import { ThemeContext, themes } from './ThemeContext';
+import EstablishmentDetails from "./pages/EstablishmentDetails";
 import Map from './Map';
 
 function App() {
   let [locations, setLocations] = useState([]);
   let [establishments, setEstablishments] = useState([]);
   let themeContext = useContext(ThemeContext);
+
+  
 
   let {
     loading,
@@ -24,6 +29,25 @@ function App() {
     isAuthenticated,
   } = useAuth0();
 
+  //Handle Establishments
+  /*let handleEstablishmentsClick = async (e) => {
+    e.preventDefault();
+    let establishments = await request(
+        `${process.env.REACT_APP_SERVER_URL}${endpoints.establishments}`,
+        getAccessTokenSilently,
+        loginWithRedirect
+    );
+
+    if (establishments && establishments.length > 0) {
+      console.log(establishments);
+      setEstablishments(establishments);
+    }
+  };*/
+
+
+
+
+  //Handle Locations
   let handleLocationsClick = async (e) => {
     e.preventDefault();
     let locations = await request(
@@ -71,11 +95,13 @@ function App() {
           <ReactBootStrap.Navbar.Collapse id="responsive-navbar-nav">
             <ReactBootStrap.Nav className="mr-auto">
               <ReactBootStrap.Nav.Link href="/map">Map</ReactBootStrap.Nav.Link>
-              <ReactBootStrap.NavDropdown title="Establishment" id="collasible-nav-dropdown">
+              <ReactBootStrap.NavDropdown title="EstablishmentDetails" id="collasible-nav-dropdown">
                 <ReactBootStrap.NavDropdown.Item href="/establishment/list">List</ReactBootStrap.NavDropdown.Item>
                 <ReactBootStrap.NavDropdown.Item href="/establishment/new">New</ReactBootStrap.NavDropdown.Item>
               </ReactBootStrap.NavDropdown>
             </ReactBootStrap.Nav>
+            <ReactBootStrap.Nav.Link href="/settings">Settings</ReactBootStrap.Nav.Link>
+
             <ReactBootStrap.Nav>
               {/*Login/Logout switch*/}
               {isAuthenticated ? (
@@ -95,7 +121,7 @@ function App() {
             </ReactBootStrap.Nav>
           </ReactBootStrap.Navbar.Collapse>
         </ReactBootStrap.Navbar>
-        <header className="App-header">
+        <header className="App-header" style={{background: themes[themeContext.theme].background}}>
           {/*{isAuthenticated && (*/}
           {/*  <a*/}
           {/*    className="App-link Logout-link"*/}
@@ -129,7 +155,7 @@ function App() {
                                         className="App-link"
                                         to={`/location/${location.id}`}
                                     >
-                                      {location.name}
+                                      {location.npa} {location.city}
                                     </Link>
                                   </li>
                               ))}
@@ -140,6 +166,19 @@ function App() {
               />
               <Route path="/location/:id" component={LocationDetails} />
             </Switch>
+            <Switch>
+              <Route
+                  path="/establishment/list"
+                  render={() =>(<EstablishmentsList />
+                      )}
+              />
+              <Route path="/establishment/:id" component={EstablishmentDetails} />
+            </Switch>
+            <Route
+                path="/settings"
+                render={() => <Settings />}
+            />
+
             <Route path="/establishment/new" render={() => <EstablishmentForm />}/>
             <Route exact path="/map" component={Map} />
           </BrowserRouter>
