@@ -12,10 +12,7 @@ import {EstablishmentsList} from './EstablishmentsList';
 import { Settings} from "./Settings";
 import { ThemeContext, themes } from './ThemeContext';
 import EstablishmentDetails from "./pages/EstablishmentDetails";
-
-
-
-
+import Map from './Map';
 
 function App() {
   let [locations, setLocations] = useState([]);
@@ -93,7 +90,7 @@ function App() {
   return (
       <div className="App">
         <ReactBootStrap.Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
-          <ReactBootStrap.Navbar.Brand href="/home">Home</ReactBootStrap.Navbar.Brand>
+          <ReactBootStrap.Navbar.Brand href="/">Home</ReactBootStrap.Navbar.Brand>
           <ReactBootStrap.Navbar.Toggle aria-controls="responsive-navbar-nav" />
           <ReactBootStrap.Navbar.Collapse id="responsive-navbar-nav">
             <ReactBootStrap.Nav className="mr-auto">
@@ -169,12 +166,6 @@ function App() {
               />
               <Route path="/location/:id" component={LocationDetails} />
             </Switch>
-            {/* Renders a Route that will render a BookForm and pass it the */}
-            <Route
-                path="/establishment/new"
-                // render={() => <EstablishmentForm addEstablishment={addEstablishment()} />}
-                render={() => <EstablishmentForm />}
-            />
             <Switch>
               <Route
                   path="/establishment/list"
@@ -187,10 +178,14 @@ function App() {
                 path="/settings"
                 render={() => <Settings />}
             />
+
+            <Route path="/establishment/new" render={() => <EstablishmentForm />}/>
+            <Route exact path="/map" component={Map} />
           </BrowserRouter>
-        </header>
-      </div>
-  );
+      </header>
+
+    </div>
+  )
 }
 
 export default App;
