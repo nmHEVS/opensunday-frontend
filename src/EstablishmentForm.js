@@ -4,6 +4,13 @@ import { useFormik } from 'formik';
 import Map from "./Map";
 
 export class EstablishmentForm extends React.Component {
+
+     constructor() {
+         super();
+     }
+
+
+
     render() {
         return (
             <>
@@ -22,8 +29,8 @@ const SignupForm = () => {
             name: '',
             npa: '',
             location: '',
-            latitude: '',
-            longitude: '',
+            latitude: '2',
+            longitude: '40',
             address: '',
             url: '',
         },
@@ -43,10 +50,17 @@ const SignupForm = () => {
         },
     });
 
+    const updateCoordinates = (lat, lng) => {
+        formik.setFieldValue('latitude', lat);
+        formik.setFieldValue('longitude', lng);
+    }
+
+    console.log(formik)
+
     return (
         <div>
             <div id="up">
-                <Map></Map>
+                <Map updateCoordinates={updateCoordinates}></Map>
             </div>
             <div id="down">
                 <form onSubmit={formik.handleSubmit}>
