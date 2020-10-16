@@ -20,6 +20,8 @@ class MapContainer extends Component {
 
         this.getLocation = this.getLocation.bind(this)
         this.getCoordinates = this.getCoordinates.bind(this)
+        this.getCoords= this.getCoords.bind(this)
+
 
     }
 
@@ -47,6 +49,15 @@ class MapContainer extends Component {
 
     }
 
+    getCoords(e){
+
+        const {lat,lng} = e.latlng
+
+        this.props.updateCoordinates(lat,lng)
+
+
+    }
+
 
     render() {
 
@@ -59,7 +70,7 @@ class MapContainer extends Component {
 
         return (
 
-            <Map center={[ lat , long]} zoom={16}>
+            <Map onClick={this.getCoords} center={[ lat , long]} zoom={16}>
 
             <TileLayer
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

@@ -5,6 +5,13 @@ import * as Yup from 'yup';
 import Map from "./Map";
 
 export class EstablishmentForm extends React.Component {
+
+     constructor() {
+         super();
+     }
+
+
+
     render() {
         return (
             <>
@@ -24,8 +31,8 @@ const SignupForm = () => {
             name: '',
             npa: '',
             location: '',
-            latitude: '',
-            longitude: '',
+            latitude: '2',
+            longitude: '40',
             address: '',
             url: '',
         },
@@ -49,10 +56,18 @@ const SignupForm = () => {
             alert(JSON.stringify(values, null, 2));
         },
     });
+
+    const updateCoordinates = (lat, lng) => {
+        formik.setFieldValue('latitude', lat);
+        formik.setFieldValue('longitude', lng);
+    }
+
+    console.log(formik)
+
     return (
         <div>
             <div id="up">
-                <Map></Map>
+                <Map updateCoordinates={updateCoordinates}></Map>
             </div>
             <div>
                 <form onSubmit={formik.handleSubmit}>
