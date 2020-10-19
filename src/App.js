@@ -96,8 +96,8 @@ function App() {
             <ReactBootStrap.Nav className="mr-auto">
               <ReactBootStrap.Nav.Link href="/map">Map</ReactBootStrap.Nav.Link>
               <ReactBootStrap.NavDropdown title="EstablishmentDetails" id="collasible-nav-dropdown">
-                <ReactBootStrap.NavDropdown.Item href="/establishment/list">List</ReactBootStrap.NavDropdown.Item>
-                <ReactBootStrap.NavDropdown.Item href="/establishment/new">New</ReactBootStrap.NavDropdown.Item>
+                <ReactBootStrap.NavDropdown.Item href="/list/establishment">List</ReactBootStrap.NavDropdown.Item>
+                <ReactBootStrap.NavDropdown.Item href="/new/establishment">New</ReactBootStrap.NavDropdown.Item>
               </ReactBootStrap.NavDropdown>
             </ReactBootStrap.Nav>
             <ReactBootStrap.Nav.Link href="/settings">Settings</ReactBootStrap.Nav.Link>
@@ -168,9 +168,8 @@ function App() {
             </Switch>
             <Switch>
               <Route
-                  path="/establishment/list"
-                  render={() =>(<EstablishmentsList />
-                      )}
+                  path="/list/establishment"
+                  render={() =>(<EstablishmentsList />)}
               />
               <Route path="/establishment/:id" component={EstablishmentDetails} />
             </Switch>
@@ -178,8 +177,7 @@ function App() {
                 path="/settings"
                 render={() => <Settings />}
             />
-
-            <Route path="/establishment/new" render={() => <EstablishmentForm />}/>
+            <Route path="/new/establishment" render={() => <EstablishmentForm />}/>
             <Route exact path="/map" component={Map} />
           </BrowserRouter>
       </header>

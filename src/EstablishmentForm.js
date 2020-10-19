@@ -5,14 +5,11 @@ import * as Yup from 'yup';
 import Map from "./Map";
 
 
-
 export class EstablishmentForm extends React.Component {
 
-     constructor() {
-         super();
-     }
-
-
+    constructor() {
+        super();
+    }
 
     render() {
         return (
@@ -72,7 +69,7 @@ const SignupForm = () => {
             <div id="up">
                 <Map updateCoordinates={updateCoordinates}></Map>
             </div>
-            <div>
+            <div id>
                 <form onSubmit={formik.handleSubmit}>
                     <input
                         id="latitude"
