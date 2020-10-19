@@ -67,14 +67,14 @@ input[type=text]:focus {
 
 /*Form - Latitude*/
 #latitude {
-  color: grey;
+  color: lightgrey;
   width: 49%;
   margin-right: 5px;
 }
 
 /*Form - Longitude*/
 #longitude {
-  color: grey;
+  color: lightgrey;
   width: 49%;
   margin-left: 5px;
 }
@@ -85,7 +85,7 @@ input[type=text]:focus {
   width: 100%;
   overflow: hidden;
   height: 67vh;
-  margin-bottom: 10px;
+  /*margin-bottom: 10px;*/
 }
 
 /*Div down - form*/

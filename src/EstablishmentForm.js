@@ -109,6 +109,7 @@ const SignupForm = () => {
                         value={formik.values.latitude}
                         placeholder="Establishment latitude"
                         readOnly="readonly"
+                        disabled="disabled"
                         required
                     />
                     <input
@@ -119,6 +120,7 @@ const SignupForm = () => {
                         value={formik.values.longitude}
                         placeholder="Establishment longitude"
                         readOnly="readonly"
+                        disabled="disabled"
                         required
                     />
                     <br/>
