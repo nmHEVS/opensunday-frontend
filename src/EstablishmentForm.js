@@ -69,7 +69,7 @@ const SignupForm = () => {
             <div id="up">
                 <Map updateCoordinates={updateCoordinates}></Map>
             </div>
-            <div id>
+            <div id="down">
                 <form onSubmit={formik.handleSubmit}>
                     <input
                         id="latitude"
@@ -122,6 +122,9 @@ const SignupForm = () => {
                     {formik.touched.npa && formik.errors.npa ? (
                         <div id="error">{formik.errors.npa}</div>
                     ) : null}
+                    {formik.touched.location && formik.errors.location ? (
+                        <div id="error">{formik.errors.location}</div>
+                    ) : null}
                     <input
                         id="npa"
                         name="npa"
@@ -131,9 +134,6 @@ const SignupForm = () => {
                         placeholder="NPA"
                         required
                     />
-                    {formik.touched.location && formik.errors.location ? (
-                        <div id="error">{formik.errors.location}</div>
-                    ) : null}
                     <input
                         id="location"
                         name="location"
@@ -154,6 +154,9 @@ const SignupForm = () => {
                         required
                     />
                     <br/>
+                    {formik.touched.address && formik.errors.address ? (
+                        <div id="error">{formik.errors.address}</div>
+                    ) : null}
                     <input
                         id="url"
                         name="url"
@@ -162,6 +165,9 @@ const SignupForm = () => {
                         value={formik.values.url}
                         placeholder="Establishment url"
                     />
+                    {formik.touched.url && formik.errors.url ? (
+                        <div id="error">{formik.errors.url}</div>
+                    ) : null}
                     <button type="submit">Submit</button>
                 </form>
             </div>

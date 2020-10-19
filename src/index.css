@@ -67,28 +67,30 @@ input[type=text]:focus {
 
 /*Form - Latitude*/
 #latitude {
+  color: grey;
   width: 49%;
   margin-right: 5px;
 }
 
 /*Form - Longitude*/
 #longitude {
+  color: grey;
   width: 49%;
   margin-left: 5px;
 }
 
 /*Div up - map*/
 #up {
-  float: left;
+  /*float: left;*/
   width: 100%;
   overflow: hidden;
-  height: 50vh;
-  margin-bottom: 40px;
+  height: 67vh;
+  margin-bottom: 10px;
 }
 
 /*Div down - form*/
 #down {
-  float: left;
+  /*float: right;*/
   width: 100%;
   overflow: hidden;
 }
