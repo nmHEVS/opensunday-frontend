@@ -23,16 +23,71 @@ export function EstablishmentsList(){
         isAuthenticated,
     } = useAuth0();
 
-    const types = ["All", "2", "3"];
+    useEffect(() => {
+        async function getEstablishments() {
+            let establishments = await request(
+                `${process.env.REACT_APP_SERVER_URL}${endpoints.establishments}`,
+                getAccessTokenSilently,
+                loginWithRedirect
+            );
 
-    const handleSelect=(e)=>{
-        console.log(e);
-        setEstablishmentTypeSelected(e)
+            console.log("all");
 
-    }
+            if (establishments && establishments.length > 0) {
+                console.log(establishments);
+                setEstablishments(establishments);
+            }
+        }
+
+        getEstablishments();
+
+    }, []);
+
+
+
+        let handleSelect = async (e) => {
+            console.log("e = " + e);
+
+            console.log("Est. before set up " + establishmentTypeSelected);
+            setEstablishmentTypeSelected(e);
+
+            //e.preventDefault();
+            console.log("Est. selected " + establishmentTypeSelected);
+
+            if (establishmentTypeSelected === "All" || null) {
+                let establishments = await request(
+                    `${process.env.REACT_APP_SERVER_URL}${endpoints.establishments}`,
+                    getAccessTokenSilently,
+                    loginWithRedirect
+                );
+
+                console.log("all");
+
+                if (establishments && establishments.length > 0) {
+                    console.log(establishments);
+                    setEstablishments(establishments);
+                }
+            } else {
+                let establishments = await request(
+                    `${process.env.REACT_APP_SERVER_URL}${endpoints.establishmentsByType}${establishmentTypeSelected}`,
+                    getAccessTokenSilently,
+                    loginWithRedirect
+                );
+
+                console.log("2 or 3");
+
+                if (establishments && establishments.length > 0) {
+                    console.log(establishments);
+                    setEstablishments(establishments);
+                }
+            }
+            console.log("Est. selected after all " + establishmentTypeSelected);
+        }
+
+
 
     //Handle Establishments
-    let handleEstablishmentsClick = async (e) => {
+    /*let handleEstablishmentsClick = async (e) => {
         e.preventDefault();
         console.log(establishmentTypeSelected);
 
@@ -63,9 +118,7 @@ export function EstablishmentsList(){
                 setEstablishments(establishments);
             }
         }
-
-
-    };
+    };*/
 
 
 
@@ -83,9 +136,10 @@ export function EstablishmentsList(){
                 </select>
             </label>*/}
 
+
             <DropdownButton
                 alignRight
-                title="Choose type of establishment "
+                title={establishmentTypeSelected}
                 id="dropdown-menu-align-right"
                 onSelect={handleSelect}
             >
@@ -94,13 +148,12 @@ export function EstablishmentsList(){
                 <Dropdown.Item eventKey="3">Cinema</Dropdown.Item>
             </DropdownButton>
 
-            <button
+            {/*<button
                 onClick={handleEstablishmentsClick}
             >
                 Get Establishments
-            </button>
+            </button>*/}
 
-            <h3>List of all {establishmentTypeSelected}</h3>
             <ul className="EstablishmentsList">
                 {establishments.map((establishment) => (
                     <li key={establishment.id}>

@@ -29,23 +29,6 @@ function App() {
     isAuthenticated,
   } = useAuth0();
 
-  //Handle Establishments
-  /*let handleEstablishmentsClick = async (e) => {
-    e.preventDefault();
-    let establishments = await request(
-        `${process.env.REACT_APP_SERVER_URL}${endpoints.establishments}`,
-        getAccessTokenSilently,
-        loginWithRedirect
-    );
-
-    if (establishments && establishments.length > 0) {
-      console.log(establishments);
-      setEstablishments(establishments);
-    }
-  };*/
-
-
-
 
   //Handle Locations
   let handleLocationsClick = async (e) => {
