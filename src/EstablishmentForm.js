@@ -1,8 +1,11 @@
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import "./App.css";
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import Map from "./Map";
+import {useAuth0} from "@auth0/auth0-react";
+import request from "./utils/request";
+import endpoints from "./endpoints.json";
 
 
 export class EstablishmentForm extends React.Component {
@@ -22,6 +25,33 @@ export class EstablishmentForm extends React.Component {
 
 // New establishment form
 const SignupForm = () => {
+    let [establishmentsTypes, setEstablishmentsTypes] = useState([]);
+    let {
+        loading,
+        loginWithRedirect,
+        logout,
+        getAccessTokenSilently,
+        isAuthenticated,
+    } = useAuth0();
+
+    useEffect(() => {
+        async function getEstablishmentsTypes() {
+            let establishmentsTypes = await request(
+                `${process.env.REACT_APP_SERVER_URL}${endpoints.establishmentsTypes}`,
+                getAccessTokenSilently,
+                loginWithRedirect
+            );
+
+            if (establishmentsTypes && establishmentsTypes.length > 0) {
+                console.log(establishmentsTypes);
+                setEstablishmentsTypes(establishmentsTypes);
+            }
+        }
+
+        getEstablishmentsTypes();
+
+    }, []);
+
     // Pass the useFormik() hook initial form values and a submit function that will
     // be called when the form is submitted
     const formik = useFormik({
@@ -100,10 +130,11 @@ const SignupForm = () => {
                         value={formik.values.establishmentType}
                         placeholder="Establishment type"
                     >
-                        <option value="Restaurant">Restaurant</option>
-                        <option value="Museum">Museum</option>
-                        <option value="Bar">Bar</option>
-                        <option value="Theater">Theater</option>
+                        {establishmentsTypes.map((establishmentsType) => (
+                            <option value={establishmentsType.id}>
+                                {establishmentsType.establishmentTypeName}
+                            </option>
+                        ))}
                     </select>
                     <br/>
                     {formik.touched.name && formik.errors.name ? (
