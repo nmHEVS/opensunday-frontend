@@ -13,6 +13,7 @@ import { Settings} from "./Settings";
 import { ThemeContext, themes } from './ThemeContext';
 import EstablishmentDetails from "./pages/EstablishmentDetails";
 import Map from './Map';
+import {Nav} from "react-bootstrap";
 
 function App() {
   let [locations, setLocations] = useState([]);
@@ -73,6 +74,7 @@ function App() {
   return (
       <div className="App">
         <ReactBootStrap.Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
+          {/*Navbar left part*/}
           <ReactBootStrap.Navbar.Brand href="/">Home</ReactBootStrap.Navbar.Brand>
           <ReactBootStrap.Navbar.Toggle aria-controls="responsive-navbar-nav" />
           <ReactBootStrap.Navbar.Collapse id="responsive-navbar-nav">
@@ -83,25 +85,26 @@ function App() {
                 <ReactBootStrap.NavDropdown.Item href="/new/establishment">New</ReactBootStrap.NavDropdown.Item>
               </ReactBootStrap.NavDropdown>
             </ReactBootStrap.Nav>
-            <ReactBootStrap.Nav.Link href="/settings">Settings</ReactBootStrap.Nav.Link>
-
-            <ReactBootStrap.Nav>
-              {/*Login/Logout switch*/}
-              {isAuthenticated ? (
-                  <ReactBootStrap.Nav.Link
-                      className="App-link Logout-link"
-                      href="#"
-                      onClick={handleLogoutClick}
-                  >Log out</ReactBootStrap.Nav.Link>
-              ) : (
-                  <ReactBootStrap.Nav.Link
-                      className="App-link Logout-link"
-                      href="#"
-                      onClick={handleLoginClick}
-                  >Log in</ReactBootStrap.Nav.Link>
-              )}
-              {/*<ReactBootStrap.Nav.Link href="#account">Account</ReactBootStrap.Nav.Link>*/}
-            </ReactBootStrap.Nav>
+            {/*Navbar right part*/}
+            <Nav>
+              <Nav.Item>
+                <ReactBootStrap.Nav.Link href="/settings">Settings</ReactBootStrap.Nav.Link>
+              </Nav.Item>
+              <Nav.Item>
+                {/*Login/Logout switch*/}
+                {isAuthenticated ? (
+                    <Nav.Link
+                        href="#"
+                        onClick={handleLogoutClick}
+                    >Log out</Nav.Link>
+                ) : (
+                    <Nav.Link
+                        href="#"
+                        onClick={handleLoginClick}
+                    >Log in</Nav.Link>
+                )}
+              </Nav.Item>
+            </Nav>
           </ReactBootStrap.Navbar.Collapse>
         </ReactBootStrap.Navbar>
         <header className="App-header" style={{background: themes[themeContext.theme].background}}>

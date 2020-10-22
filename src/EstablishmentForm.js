@@ -24,7 +24,7 @@ export class EstablishmentForm extends React.Component {
 }
 
 // New establishment form
-const SignupForm = () => {
+function SignupForm() {
     let [establishmentsTypes, setEstablishmentsTypes] = useState([]);
     let {
         loading,
@@ -47,23 +47,22 @@ const SignupForm = () => {
                 setEstablishmentsTypes(establishmentsTypes);
             }
         }
-
         getEstablishmentsTypes();
-
     }, []);
 
     // Pass the useFormik() hook initial form values and a submit function that will
     // be called when the form is submitted
     const formik = useFormik({
         initialValues: {
-            establishmentType: '',
             name: '',
-            npa: '',
-            location: '',
-            latitude: '2',
-            longitude: '40',
+            latitude: '',
+            longitude: '',
             address: '',
             url: '',
+            establishmentTypeId: '',
+            locationId: '1',
+            // npa: '',
+            // location: '',
         },
         validationSchema: Yup.object({
             name: Yup.string()
@@ -81,17 +80,31 @@ const SignupForm = () => {
             url: Yup.string()
                 .min(3, 'Must be 2 characters or more')
         }),
-        onSubmit: values => {
+        onSubmit: async values => {
+            //Parse String to Int for the fk
+            values.establishmentTypeId = Number(values.establishmentTypeId);
+            values.locationId = Number(values.locationId);
+
             alert(JSON.stringify(values, null, 2));
-        },
+
+            try {
+                await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.establishments}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(values),
+                });
+            } catch (e){
+                console.log(e);
+            }
+        }
     });
 
     const updateCoordinates = (lat, lng) => {
         formik.setFieldValue('latitude', lat);
         formik.setFieldValue('longitude', lng);
     }
-
-    console.log(formik)
 
     return (
         <div>
@@ -125,13 +138,15 @@ const SignupForm = () => {
                     />
                     <br/>
                     <select
-                        id="establishmentType"
-                        name="establishmentType"
+                        id="establishmentTypeId"
+                        name="establishmentTypeId"
                         type="text"
                         onChange={formik.handleChange}
-                        value={formik.values.establishmentType}
+                        value={formik.values.establishmentTypeId}
                         placeholder="Establishment type"
+                        required
                     >
+                        <option>Choose a type</option>
                         {establishmentsTypes.map((establishmentsType) => (
                             <option value={establishmentsType.id}>
                                 {establishmentsType.establishmentTypeName}
@@ -162,7 +177,7 @@ const SignupForm = () => {
                         id="npa"
                         name="npa"
                         type="text"
-                        onChange={formik.handleChange}
+                        // onChange={formik.handleChange}
                         value={formik.values.npa}
                         placeholder="NPA"
                         required
@@ -171,7 +186,7 @@ const SignupForm = () => {
                         id="location"
                         name="location"
                         type="text"
-                        onChange={formik.handleChange}
+                        // onChange={formik.handleChange}
                         value={formik.values.location}
                         placeholder="Location"
                         required
