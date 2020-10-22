@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import "./App.css";
-import { useFormik } from 'formik';
+import {useFormik} from 'formik';
 import * as Yup from 'yup';
 import Map from "./Map";
 import {useAuth0} from "@auth0/auth0-react";
@@ -47,6 +47,7 @@ function SignupForm() {
                 setEstablishmentsTypes(establishmentsTypes);
             }
         }
+
         getEstablishmentsTypes();
     }, []);
 
@@ -85,19 +86,16 @@ function SignupForm() {
             values.establishmentTypeId = Number(values.establishmentTypeId);
             values.locationId = Number(values.locationId);
 
-            alert(JSON.stringify(values, null, 2));
+            // alert(JSON.stringify(values, null, 2));
 
-            try {
-                await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.establishments}`, {
+            await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.establishments}`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
+                        'Authorization': 'Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlFlekliQXpkUlhKbDFFMFBpNjF2NCJ9.eyJpc3MiOiJodHRwczovL29wZW5zdW5kYXkuZXUuYXV0aDAuY29tLyIsInN1YiI6ImF1dGgwfDVmNzZlYzc1YTZhZjY0MDA3MWQ4OTgxYSIsImF1ZCI6Imh0dHBzOi8vb3BlbnN1bmRheS5laGVhbHRoLmhldnMuY2giLCJpYXQiOjE2MDIxNDg4NzgsImV4cCI6MTYwNDU2ODA3OCwiYXpwIjoiNWYwSFkyYm1ZaVdwZTlFQWVXWDdtV1lHS2NqUXZ5NWwifQ.F3nIuFnWBfJXqH8C4cOuLSOg_OhUUDrWaEW4ClZv1moE1RlwwHWwQ_n9M2YkJEa4PXd-7czUSj28lypb6JyXeeVavFdJ0DptLEcq3Qim2nBUMA8QhZAW49UfpIAZwlVkR6RKs9sd8LRUqva2m8DjQft4Bzslev69yGqBrPysgxUtyhKI4VQLSTGArvq3zREhS_ktGLZMvfB6OLKX_RXQPCRbcc18aHQRluj5Z_0CkSLQyimZs_FxlBIAdklnPn29qDEgde-c0pXH5FbvF9JMSU6fZ8eNoW8lsF6hVuyltNwkbapiDS6w-2UEbHZCSMikAzsrqjn6QaO-Jg_BTo0ffg'
                     },
                     body: JSON.stringify(values),
                 });
-            } catch (e){
-                console.log(e);
-            }
         }
     });
 
