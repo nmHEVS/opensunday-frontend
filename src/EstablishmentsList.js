@@ -120,7 +120,6 @@ export function EstablishmentsList(){
 
                     <option value={establishmentsType.id} key={establishmentsType.id}>
                         {establishmentsType.establishmentTypeName}
-                        {console.log(establishmentsType.id)}
                     </option>
                 ))}
             </select>

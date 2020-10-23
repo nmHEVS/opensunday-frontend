@@ -13,6 +13,8 @@ export default function EstablishmentDetails({ match }) {
 
     let { loginWithRedirect, getAccessTokenSilently } = useAuth0();
 
+
+
     // Get POI details
     useEffect(() => {
         async function getEstablishment() {
@@ -23,6 +25,7 @@ export default function EstablishmentDetails({ match }) {
             );
 
             setEstablishment(establishment);
+            console.log(establishment)
         }
 
         getEstablishment();

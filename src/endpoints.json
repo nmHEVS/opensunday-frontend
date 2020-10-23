@@ -2,5 +2,6 @@
   "locations": "/api/locations",
   "establishments": "/api/establishment",
   "establishmentsTypes": "/api/establishmentType",
+  "establishmentType": "/api/establishmentType/",
   "establishmentsByType": "/api/establishment/Type/"
 }

@@ -1,17 +1,50 @@
-import React from "react";
+import React, {useEffect} from "react";
+import request from "../utils/request";
+import endpoints from "../endpoints.json";
+import {useAuth0} from "@auth0/auth0-react";
 
 
 export default function Establishment(props) {
-    const { id, name, latitude, longitude, address, url, estType, locId } = props;
+
+    const { id, name, latitude, longitude, address, url, establishmentTypeId, locationId} = props;
+    let {
+        loading,
+        loginWithRedirect,
+        logout,
+        getAccessTokenSilently,
+        isAuthenticated,
+    } = useAuth0();
+    let estTypeName;
+
+
+    useEffect(() => {
+        async function getEstablishmentTypes() {
+            console.log("type id : "+establishmentTypeId)
+            let establishmentType = await request(
+                `${process.env.REACT_APP_SERVER_URL}${endpoints.establishmentType}${establishmentTypeId}`,
+                getAccessTokenSilently,
+                loginWithRedirect
+            );
+            estTypeName = establishmentType.establishmentTypeName;
+            console.log("estTypeName : "+estTypeName);
+        }
+        getEstablishmentTypes();
+
+    }, []);
+
+
 
     return (
         <div className="establishment">
-            <h2>{name}</h2>
-            <div>id : {id}</div>
-            <div>{address}</div>
-            <div>{latitude}</div>
-            <div>{longitude}</div>
-            <a href={url}>{url}</a>
+            <div>Id : {id}</div>
+            <h2>Name : {name}</h2>
+            <div>Latitude : {latitude}</div>
+            <div>Longitude : {longitude}</div>
+            <div>Address : {address}</div>
+            <a href={url}>url : {url}</a>
+            <div>Est type id : {establishmentTypeId}</div>
+            <div>Loc id : {locationId}</div>
+            <div>Est Type name : {estTypeName}</div>
         </div>
     );
 }
