@@ -1,5 +1,5 @@
 {
-  "locations": "/api/locations",
+  "locations": "/api/location",
   "establishments": "/api/establishment",
   "establishmentsTypes": "/api/establishmentType",
   "establishmentType": "/api/establishmentType/",

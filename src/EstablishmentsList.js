@@ -6,9 +6,7 @@ import request from "./utils/request";
 import endpoints from "./endpoints.json";
 import {useAuth0} from "@auth0/auth0-react";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import DropdownButton from 'react-bootstrap/DropdownButton';
-import Dropdown from 'react-bootstrap/Dropdown';
-import * as formik from "formik";
+
 
 
 export function EstablishmentsList(){
@@ -93,7 +91,7 @@ export function EstablishmentsList(){
     }
 
     //Display a message if there is no est. in a type
-    function EmptyTypeTag(){return <h3>There is no {establishmentTypeSelected} yet</h3>}
+    function EmptyTypeTag(){return <h3>There is no establishment of this type yet</h3>}
     function EmptyType(){
         if(establishments.length == 0){
             return <EmptyTypeTag/>

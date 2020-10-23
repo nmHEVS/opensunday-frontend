@@ -2,6 +2,7 @@ import React, {useEffect} from "react";
 import request from "../utils/request";
 import endpoints from "../endpoints.json";
 import {useAuth0} from "@auth0/auth0-react";
+import {Map, Marker, TileLayer} from "react-leaflet";
 
 
 export default function Establishment(props) {
@@ -45,6 +46,17 @@ export default function Establishment(props) {
             <div>Est type id : {establishmentTypeId}</div>
             <div>Loc id : {locationId}</div>
             <div>Est Type name : {estTypeName}</div>
+            <Map center={[ latitude , longitude]} zoom={16}>
+
+                <TileLayer
+                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                    attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'/>
+
+                    <Marker
+                        position={[latitude, longitude]}
+                    >
+                    </Marker>
+            </Map>
         </div>
     );
 }
