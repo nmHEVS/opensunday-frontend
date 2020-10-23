@@ -24,8 +24,10 @@ export function EstablishmentsList(){
         isAuthenticated,
     } = useAuth0();
 
-    //Use effect to display the complete list of establishment as we open the page
+    //Use effect to display get data we need as we open the page
     useEffect(() => {
+
+        //get all establishment to display a complete list
         async function getEstablishments() {
             let establishments = await request(
                 `${process.env.REACT_APP_SERVER_URL}${endpoints.establishments}`,
@@ -39,6 +41,7 @@ export function EstablishmentsList(){
             }
         }
 
+        //get all types of establishment to put in the select
         async function getEstablishmentsTypes() {
             let establishmentsTypes = await request(
                 `${process.env.REACT_APP_SERVER_URL}${endpoints.establishmentsTypes}`,
@@ -55,20 +58,13 @@ export function EstablishmentsList(){
         getEstablishmentsTypes();
     }, []);
 
-
+    //get the list of establishments of the type selected
     let handleSelect = async (e) => {
-        console.log("e = " + e);
-
-        //console.log("Est. before set up " + establishmentTypeSelected);
-
-        console.log('selected type id', e.target.value)
+        console.log('selected type id : ', e.target.value)
         let establishmentTypeId = e.target.value;
         setEstablishmentTypeSelected(establishmentTypeId);
 
-        //e.preventDefault();
-        console.log("Est. selected " + establishmentTypeSelected);
-
-        if (establishmentTypeId === "All" || null) {
+        if (establishmentTypeId == 0 || null) {
             let establishments = await request(
                 `${process.env.REACT_APP_SERVER_URL}${endpoints.establishments}`,
                 getAccessTokenSilently,
@@ -82,7 +78,6 @@ export function EstablishmentsList(){
                 setEstablishments(establishments);
             }
         } else {
-            console.log("type : " +establishmentTypeSelected);
 
             let establishments = await request(
                 `${process.env.REACT_APP_SERVER_URL}${endpoints.establishmentsByType}${establishmentTypeId}`,
@@ -91,16 +86,21 @@ export function EstablishmentsList(){
             );
 
             console.log("type specified");
+            console.log(establishments);
+            setEstablishments(establishments);
 
-            if (establishments && establishments.length > 0) {
-                console.log(establishments);
-                setEstablishments(establishments);
-            }
         }
-        console.log("Est. type selected after all : " + establishmentTypeSelected);
     }
 
-
+    //Display a message if there is no est. in a type
+    function EmptyTypeTag(){return <h3>There is no {establishmentTypeSelected} yet</h3>}
+    function EmptyType(){
+        if(establishments.length == 0){
+            return <EmptyTypeTag/>
+        }else{
+            return null;
+        }
+    }
 
     return(
         <>
@@ -115,10 +115,10 @@ export function EstablishmentsList(){
                 value={establishmentTypeSelected}
                 placeholder="Establishment type"
             >
-                <option value={"All"}>All</option>
+                <option value={0} >All</option>
                 {establishmentsTypes.map((establishmentsType) => (
 
-                    <option value={establishmentsType.id}>
+                    <option value={establishmentsType.id} key={establishmentsType.id}>
                         {establishmentsType.establishmentTypeName}
                         {console.log(establishmentsType.id)}
                     </option>
@@ -137,6 +137,7 @@ export function EstablishmentsList(){
                     </li>
                 ))}
             </ul>
+            <EmptyType/>
         </>
     );
 
