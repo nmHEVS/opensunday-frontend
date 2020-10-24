@@ -104,7 +104,7 @@ export function EstablishmentsList(){
         <>
             <h2 style={{color: themes[themeContext.theme].foreground}}>List of Establishments</h2>
 
-            {/*Sellect the type of establishment you want to display*/}
+            {/*Select the type of establishment you want to display*/}
             <select
                 id="establishmentType"
                 name="establishmentType"
