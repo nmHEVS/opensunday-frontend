@@ -30,7 +30,6 @@ function App() {
     isAuthenticated,
   } = useAuth0();
 
-
   //Handle Locations
   let handleLocationsClick = async (e) => {
     e.preventDefault();
