@@ -23,13 +23,20 @@ textarea {
 
 /*Form - Button*/
 button {
-  background-color: #4CAF50;
   width: 100%;
-  color: white;
   padding: 16px 32px;
   text-decoration: none;
   margin: 4px 2px;
   cursor: pointer;
+}
+#buttonDisable{
+  border: 1px solid #999999;
+  background-color: #cccccc;
+  color: #666666;
+}
+#buttonEnable{
+  background-color: #4CAF50;
+  color: white;
 }
 
 /*Form - errors display*/
@@ -59,8 +66,8 @@ input[type=text]:focus {
   margin-right: 5px;
 }
 
-/*Form - Location*/
-#location {
+/*Form - City*/
+#city {
   width: 68%;
   margin-left: 5px;
 }
