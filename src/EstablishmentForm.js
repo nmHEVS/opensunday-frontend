@@ -116,44 +116,44 @@ function SignupForm() {
                 //Put the locationId for the post
                 values.locationId = locationIdSaved;
                 //Post the establishment
-                postEstablishment(values);
+                let newEstablishment = await postEstablishment(values);
+                console.log('new establishment', newEstablishment)
             //If the location doesn't exist post the new location
             } else{
-                await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.locations}`, {
+                let response = await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.locations}`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': 'Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlFlekliQXpkUlhKbDFFMFBpNjF2NCJ9.eyJpc3MiOiJodHRwczovL29wZW5zdW5kYXkuZXUuYXV0aDAuY29tLyIsInN1YiI6ImF1dGgwfDVmNzZlYzc1YTZhZjY0MDA3MWQ4OTgxYSIsImF1ZCI6Imh0dHBzOi8vb3BlbnN1bmRheS5laGVhbHRoLmhldnMuY2giLCJpYXQiOjE2MDIxNDg4NzgsImV4cCI6MTYwNDU2ODA3OCwiYXpwIjoiNWYwSFkyYm1ZaVdwZTlFQWVXWDdtV1lHS2NqUXZ5NWwifQ.F3nIuFnWBfJXqH8C4cOuLSOg_OhUUDrWaEW4ClZv1moE1RlwwHWwQ_n9M2YkJEa4PXd-7czUSj28lypb6JyXeeVavFdJ0DptLEcq3Qim2nBUMA8QhZAW49UfpIAZwlVkR6RKs9sd8LRUqva2m8DjQft4Bzslev69yGqBrPysgxUtyhKI4VQLSTGArvq3zREhS_ktGLZMvfB6OLKX_RXQPCRbcc18aHQRluj5Z_0CkSLQyimZs_FxlBIAdklnPn29qDEgde-c0pXH5FbvF9JMSU6fZ8eNoW8lsF6hVuyltNwkbapiDS6w-2UEbHZCSMikAzsrqjn6QaO-Jg_BTo0ffg'
+                        'Authorization': `${endpoints.bearerToken}`
                     },
                     body: JSON.stringify(postLocation),
                 });
-                await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.establishments}`, {
-                    mode: 'no-cors',
-                    method: 'POST',
-                    credentials: 'include',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': 'Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlFlekliQXpkUlhKbDFFMFBpNjF2NCJ9.eyJpc3MiOiJodHRwczovL29wZW5zdW5kYXkuZXUuYXV0aDAuY29tLyIsInN1YiI6ImF1dGgwfDVmNzZlYzc1YTZhZjY0MDA3MWQ4OTgxYSIsImF1ZCI6Imh0dHBzOi8vb3BlbnN1bmRheS5laGVhbHRoLmhldnMuY2giLCJpYXQiOjE2MDIxNDg4NzgsImV4cCI6MTYwNDU2ODA3OCwiYXpwIjoiNWYwSFkyYm1ZaVdwZTlFQWVXWDdtV1lHS2NqUXZ5NWwifQ.F3nIuFnWBfJXqH8C4cOuLSOg_OhUUDrWaEW4ClZv1moE1RlwwHWwQ_n9M2YkJEa4PXd-7czUSj28lypb6JyXeeVavFdJ0DptLEcq3Qim2nBUMA8QhZAW49UfpIAZwlVkR6RKs9sd8LRUqva2m8DjQft4Bzslev69yGqBrPysgxUtyhKI4VQLSTGArvq3zREhS_ktGLZMvfB6OLKX_RXQPCRbcc18aHQRluj5Z_0CkSLQyimZs_FxlBIAdklnPn29qDEgde-c0pXH5FbvF9JMSU6fZ8eNoW8lsF6hVuyltNwkbapiDS6w-2UEbHZCSMikAzsrqjn6QaO-Jg_BTo0ffg'
-                    },
-                    body: JSON.stringify(values),
-                });
+
+                let location = await response.json();
+
+                values.locationId = location.id;
+                console.log(values);
+                await postEstablishment(values);
             }
+            //Reset the form
             formik.handleReset();
         }
     });
 
     //Function to post an establishment according to the values in parameter
     async function postEstablishment(values) {
-        await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.establishments}`, {
-            mode: 'no-cors',
+        let response = await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.establishments}`, {
             method: 'POST',
-            credentials: 'include',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlFlekliQXpkUlhKbDFFMFBpNjF2NCJ9.eyJpc3MiOiJodHRwczovL29wZW5zdW5kYXkuZXUuYXV0aDAuY29tLyIsInN1YiI6ImF1dGgwfDVmNzZlYzc1YTZhZjY0MDA3MWQ4OTgxYSIsImF1ZCI6Imh0dHBzOi8vb3BlbnN1bmRheS5laGVhbHRoLmhldnMuY2giLCJpYXQiOjE2MDIxNDg4NzgsImV4cCI6MTYwNDU2ODA3OCwiYXpwIjoiNWYwSFkyYm1ZaVdwZTlFQWVXWDdtV1lHS2NqUXZ5NWwifQ.F3nIuFnWBfJXqH8C4cOuLSOg_OhUUDrWaEW4ClZv1moE1RlwwHWwQ_n9M2YkJEa4PXd-7czUSj28lypb6JyXeeVavFdJ0DptLEcq3Qim2nBUMA8QhZAW49UfpIAZwlVkR6RKs9sd8LRUqva2m8DjQft4Bzslev69yGqBrPysgxUtyhKI4VQLSTGArvq3zREhS_ktGLZMvfB6OLKX_RXQPCRbcc18aHQRluj5Z_0CkSLQyimZs_FxlBIAdklnPn29qDEgde-c0pXH5FbvF9JMSU6fZ8eNoW8lsF6hVuyltNwkbapiDS6w-2UEbHZCSMikAzsrqjn6QaO-Jg_BTo0ffg'
+                'Authorization': `${endpoints.bearerToken}`
             },
             body: JSON.stringify(values),
         });
+
+        let data = await response.json();
+
+        return data;
     }
 
     //API to get the postcode and the locality according to the lat and long (GEOCODING)
@@ -172,15 +172,15 @@ function SignupForm() {
         await getLocationByLatLong();
     }
 
-    const updateCoordinates = (lat, lng) => {
+    const updateCoordinates = async (lat, lng) => {
         formik.setFieldValue('latitude', lat);
         formik.setFieldValue('longitude', lng);
-        getLocationWithAPI(lat, lng);
+        await getLocationWithAPI(lat, lng);
     }
 
     return (
         <div>
-            <text>Click on the map to get the coordinate of your establishment</text>
+            <p>Click on the map to get the coordinate of your establishment</p>
             <div id="up">
                 <Map updateCoordinates={updateCoordinates}></Map>
             </div>
