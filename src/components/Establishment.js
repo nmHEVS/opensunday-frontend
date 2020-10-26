@@ -3,8 +3,8 @@ import request from "../utils/request";
 import endpoints from "../endpoints.json";
 import {useAuth0} from "@auth0/auth0-react";
 import {Map, Marker, TileLayer} from "react-leaflet";
-import { CopyToClipboard } from 'react-copy-to-clipboard';
 import {EmailShareButton, EmailIcon, TwitterShareButton, TwitterIcon, FacebookShareButton, FacebookIcon} from "react-share";
+import {CopyToClipboard} from "react-copy-to-clipboard";
 
 
 
