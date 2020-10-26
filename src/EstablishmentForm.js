@@ -86,7 +86,6 @@ function SignupForm() {
             //Parse String to Int for the fk
             values.establishmentTypeId = Number(values.establishmentTypeId);
             values.locationId = Number(values.locationId);
-            // alert(JSON.stringify(values, null, 2));
 
             //Extract the npa and city value for the location table
             let postLocation = {
@@ -100,14 +99,12 @@ function SignupForm() {
                 getAccessTokenSilently,
                 loginWithRedirect
             );
-            // alert(JSON.stringify(locations[1], null, 2));
 
-            //Test if the location already exists and saved the id if yes (for the if after the for)
+            //Check/test if the location already exists and saved the id if yes (for the if after the for)
             for(let i=0; i<locations.length; i++){
                 if(locations[i].npa === postLocation.npa && locations[i].city === postLocation.city){
                     locationExists = true;
                     locationIdSaved = locations[i].id;
-                    // console.log(locationExists);
                 }
             }
 
@@ -117,7 +114,6 @@ function SignupForm() {
                 values.locationId = locationIdSaved;
                 //Post the establishment
                 let newEstablishment = await postEstablishment(values);
-                console.log('new establishment', newEstablishment)
             //If the location doesn't exist post the new location
             } else{
                 let response = await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.locations}`, {
@@ -128,11 +124,8 @@ function SignupForm() {
                     },
                     body: JSON.stringify(postLocation),
                 });
-
                 let location = await response.json();
-
                 values.locationId = location.id;
-                console.log(values);
                 await postEstablishment(values);
             }
             //Reset the form
@@ -150,9 +143,7 @@ function SignupForm() {
             },
             body: JSON.stringify(values),
         });
-
         let data = await response.json();
-
         return data;
     }
 
