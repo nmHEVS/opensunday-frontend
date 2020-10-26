@@ -76,12 +76,10 @@ export default function Establishment(props) {
             <div>Est type id : {establishmentTypeId}</div>
             <div>Loc id : {locationId}</div>
             <div>Est Type name : {estTypeName}</div>
-            <Map center={[ latitude , longitude]} zoom={16}>
-
+            <Map id="establishmentListMap" center={[ latitude , longitude]} zoom={16}>
                 <TileLayer
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'/>
-
                     <Marker
                         position={[latitude, longitude]}
                     >
