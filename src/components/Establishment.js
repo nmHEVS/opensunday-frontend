@@ -36,11 +36,21 @@ export default function Establishment(props) {
 
     }, []);
 
-
+    let editMode = false;
+    function switchToEdit() {
+        editMode = !editMode;
+        console.log(editMode);
+    }
 
     return (
         <div className="establishment">
-
+            <button
+                type="button"
+                title="Switch Theme"
+                onClick={switchToEdit}
+            >
+                Edit
+            </button>
             <div>Id : {id}</div>
             <h2>Name : {name}</h2>
             <CopyToClipboard text={pageUrl}>
