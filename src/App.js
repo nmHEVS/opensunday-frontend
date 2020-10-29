@@ -130,7 +130,7 @@ function App() {
                         render={() => <Settings/>}
                     />
                     <Route path="/new/establishment" render={() => <EstablishmentForm/>}/>
-                    <Route exact path="/map" component={Map}/>
+                    <Route exact path="/" component={Map}/>
                 </header>
             </BrowserRouter>
         </div>
