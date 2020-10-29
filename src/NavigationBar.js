@@ -20,7 +20,7 @@ const NavigationBar = (props) => {
     return (
         <div id="navigationBar">
             <Navbar color="dark" dark expand="md">
-                <NavbarBrand  tag={Link} to="/map">Map</NavbarBrand>
+                <NavbarBrand  tag={Link} to="/">Map</NavbarBrand>
                 <NavbarToggler onClick={toggle}/>
                 <Collapse isOpen={isOpen} navbar>
                     <Nav className="mr-auto" navbar>
