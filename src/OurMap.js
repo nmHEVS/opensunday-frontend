@@ -1,6 +1,5 @@
 
 
-
 import React, {Component, useEffect, useState} from 'react';
 import {Map, TileLayer, Marker, Popup} from 'react-leaflet';
 import {geolocated} from "react-geolocated";
@@ -11,11 +10,6 @@ import L from 'leaflet';
 import leafPosition from './assets/navigation .png'
 import leafRestaurant from './assets/dish.png'
 import {Link} from "react-router-dom";
-import React, {Component} from 'react';
-import {Map, TileLayer, Marker, Popup} from 'react-leaflet';
-import {geolocated} from "react-geolocated";
-
-
 
 
 
@@ -34,6 +28,10 @@ class MapContainer extends Component {
         this.getLocation = this.getLocation.bind(this)
         this.getCoordinates = this.getCoordinates.bind(this)
         this.getCoords= this.getCoords.bind(this)
+
+
+
+    }
 
 
 
@@ -65,16 +63,11 @@ class MapContainer extends Component {
 
         const {lat,lng} = e.latlng
 
-
         try{
             this.props.updateCoordinates(lat,lng)
         }catch (error){
 
         }
-
-        this.props.updateCoordinates(lat,lng)
-
-
     }
 
 
@@ -85,7 +78,6 @@ class MapContainer extends Component {
         const long = this.props.coords? this.props.coords.longitude: longitude;
         const lat = this.props.coords? this.props.coords.latitude: latitude;
 
-
         const PositionIcon = L.icon({
             iconUrl: leafPosition,
             iconSize: [30, 34],
@@ -94,29 +86,21 @@ class MapContainer extends Component {
 
         });
 
-
-
         return (
 
             <Map onClick={this.getCoords} center={[ lat , long]} zoom={16}>
 
-
-
-                {console.log("lat : "+lat)}
-                {console.log("long : "+long)}
-
-            <TileLayer
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'/>
+                <TileLayer
+                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                    attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'/>
 
                 {
                     !this.props.coords ?
                         <div className="loading">Loading</div>
                         :
-
                         <Marker icon={PositionIcon}
-                            position={[lat, long]}
-                            >
+                                position={[lat, long]}
+                        >
                             <Popup>
                                 <h4>You are here!</h4>
                             </Popup>
@@ -127,19 +111,8 @@ class MapContainer extends Component {
 
                 <Points/>
 
-                        <Marker 
-                            position={[lat, long]}
-                            >
-                            <Popup>
-                                You are here!
-                            </Popup>
-                        </Marker>
-                }
 
-
-
-
-        </Map>
+            </Map>
 
         )
 
@@ -151,8 +124,7 @@ export default geolocated({
         enableHighAccuracy: false
     },
     userDecisionTimeout: 1000
-    })(MapContainer);
-
+})(MapContainer);
 
 
 
@@ -277,6 +249,5 @@ export function Points() {
     )
 
 }
-
 
 

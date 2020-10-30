@@ -3,7 +3,6 @@ import "./App.css";
 import {useAuth0} from "@auth0/auth0-react";
 import request from "./utils/request";
 import endpoints from "./endpoints";
-import * as ReactBootStrap from "react-bootstrap";
 import Loading from "./components/Loading";
 import {BrowserRouter, Link, Switch, Route} from "react-router-dom";
 import LocationDetails from "./pages/LocationDetails";
@@ -12,10 +11,10 @@ import {EstablishmentsList} from './EstablishmentsList';
 import {Settings} from "./Settings";
 import {ThemeContext, themes} from './ThemeContext';
 import EstablishmentDetails from "./pages/EstablishmentDetails";
-import Map from './OurMap';
-import {Nav} from "react-bootstrap";
+// import {Nav} from "react-bootstrap";
 import Navbar, {Nav} from "react-bootstrap";
 import NavigationBar from "./NavigationBar";
+import OurMap from "./OurMap";
 
 
 function App() {
@@ -103,7 +102,7 @@ function App() {
                         render={() => <Settings/>}
                     />
                     <Route path="/new/establishment" render={() => <EstablishmentForm/>}/>
-                    <Route exact path="/" component={Map}/>
+                    <Route exact path="/" component={OurMap}/>
                 </header>
             </BrowserRouter>
         </div>
