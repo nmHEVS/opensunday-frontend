@@ -3,8 +3,8 @@ import request from "../utils/request";
 import endpoints from "../endpoints.json";
 import {useAuth0} from "@auth0/auth0-react";
 import {Map, Marker, TileLayer} from "react-leaflet";
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 import {EmailShareButton, EmailIcon, TwitterShareButton, TwitterIcon, FacebookShareButton, FacebookIcon} from "react-share";
-import {CopyToClipboard} from "react-copy-to-clipboard";
 
 
 
@@ -19,7 +19,7 @@ export default function Establishment(props) {
         isAuthenticated,
     } = useAuth0();
     let estTypeName;
-
+    const [editMode, setEditMode] = useState([]);
 
     useEffect(() => {
         async function getEstablishmentTypes() {
@@ -33,23 +33,33 @@ export default function Establishment(props) {
             console.log("estTypeName : "+estTypeName);
         }
         getEstablishmentTypes();
+        setEditMode(false);
 
     }, []);
 
-    let editMode = false;
     function switchToEdit() {
-        editMode = !editMode;
+        setEditMode(!editMode);
         console.log(editMode);
     }
 
     return (
         <div className="establishment">
+            {
+                editMode === true ?
+                    <EditOn {...props}/>
+                    // <EditOff {...props}/>
+                    :
+                    <EditOff {...props}/>
+                // <EditOn {...props}/>
+            }
             <button
                 type="button"
                 title="Switch Theme"
                 onClick={switchToEdit}
             >
-                Edit
+                {
+                    editMode===true ? "Cancel" : "Switch to edit mode"
+                }
             </button>
             <div>Id : {id}</div>
             <h2>Name : {name}</h2>
