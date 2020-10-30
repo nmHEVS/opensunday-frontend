@@ -12,7 +12,7 @@ import {EstablishmentsList} from './EstablishmentsList';
 import { Settings} from "./Settings";
 import { ThemeContext, themes } from './ThemeContext';
 import EstablishmentDetails from "./pages/EstablishmentDetails";
-import Map from './Map';
+import Map from './OurMap';
 import {Nav} from "react-bootstrap";
 
 function App() {
