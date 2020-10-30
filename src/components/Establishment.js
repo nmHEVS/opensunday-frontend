@@ -3,8 +3,8 @@ import request from "../utils/request";
 import endpoints from "../endpoints.json";
 import {useAuth0} from "@auth0/auth0-react";
 import {Map, Marker, TileLayer} from "react-leaflet";
-import { CopyToClipboard } from 'react-copy-to-clipboard';
 import {EmailShareButton, EmailIcon, TwitterShareButton, TwitterIcon, FacebookShareButton, FacebookIcon} from "react-share";
+import {CopyToClipboard} from "react-copy-to-clipboard";
 
 
 
@@ -18,10 +18,32 @@ export default function Establishment(props) {
         getAccessTokenSilently,
         isAuthenticated,
     } = useAuth0();
-    let estTypeName;
+
+    let [estTypeName, setEstTypeName] = useState();
+    let [dist, setDist] = useState();
+
     const [editMode, setEditMode] = useState([]);
 
     useEffect(() => {
+
+        const currentLat = 46.282725;
+        const currentLong = 7.538253;
+
+        function getDistanceFromLatLonInKm() {
+            var R = 6371; // Radius of the earth in km
+            var dLat = deg2rad(latitude-currentLat);  // deg2rad below
+            var dLon = deg2rad(longitude-currentLong);
+            var a =
+                Math.sin(dLat/2) * Math.sin(dLat/2) +
+                Math.cos(deg2rad(currentLat)) * Math.cos(deg2rad(latitude)) *
+                Math.sin(dLon/2) * Math.sin(dLon/2)
+            ;
+            var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            var d = R * c; // Distance in km
+            d = (Math.round(d*1000))/1000;
+            setDist(d);
+        }
+
         async function getEstablishmentTypes() {
             console.log("type id : "+establishmentTypeId)
             let establishmentType = await request(
@@ -29,17 +51,20 @@ export default function Establishment(props) {
                 getAccessTokenSilently,
                 loginWithRedirect
             );
-            estTypeName = establishmentType.establishmentTypeName;
-            console.log("estTypeName : "+estTypeName);
+            setEstTypeName(establishmentType.establishmentTypeName);
         }
         getEstablishmentTypes();
         setEditMode(false);
-
+        getDistanceFromLatLonInKm();
     }, []);
 
     function switchToEdit() {
         setEditMode(!editMode);
         console.log(editMode);
+    }
+
+    function deg2rad(deg) {
+        return deg * (Math.PI/180)
     }
 
     return (
@@ -69,7 +94,7 @@ export default function Establishment(props) {
             <div>
                 <EmailShareButton
                     subject={name}
-                    body={"Hi,\nI just discovered this amazing establishment : " + name + ", on the app OpenSunday \nIt's open on Sunday !\n"}
+                    body={"Hi,\nI just discovered this amazing establishment : " + name + ", on the app OpenSunday \nIt's open on Sunday !\n\n" }
                     url={pageUrl}
                     className={"shareButton"}>
                     <EmailIcon size={32} round />
@@ -92,7 +117,8 @@ export default function Establishment(props) {
             <div>Latitude : {latitude}</div>
             <div>Longitude : {longitude}</div>
             <div>Address : {address}</div>
-            <a href={url}>url : {url}</a>
+            <div>Distance from me : {dist} Km</div>
+            <a href={url}>{url}</a>
             <div>Est type id : {establishmentTypeId}</div>
             <div>Loc id : {locationId}</div>
             <div>Est Type name : {estTypeName}</div>

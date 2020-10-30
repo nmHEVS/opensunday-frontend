@@ -100,6 +100,8 @@ export function EstablishmentsList(){
         }
     }
 
+
+
     return(
         <>
             <h2 style={{color: themes[themeContext.theme].foreground}}>List of Establishments</h2>
@@ -123,7 +125,9 @@ export function EstablishmentsList(){
             </select>
 
             <ul className="EstablishmentsList">
-                {establishments.map((establishment) => (
+                {establishments
+                    .sort((a, b) => a.name > b.name ? 1:-1)
+                    .map((establishment) => (
                     <li key={establishment.id}>
                         <Link
                             className="App-link"
