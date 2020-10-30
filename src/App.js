@@ -12,7 +12,7 @@ import {EstablishmentsList} from './EstablishmentsList';
 import {Settings} from "./Settings";
 import {ThemeContext, themes} from './ThemeContext';
 import EstablishmentDetails from "./pages/EstablishmentDetails";
-import Map from './Map';
+import Map from './OurMap';
 import Navbar, {Nav} from "react-bootstrap";
 import NavigationBar from "./NavigationBar";
 
@@ -87,35 +87,6 @@ function App() {
                     <h1 style={{color: themes[themeContext.theme].foreground}}>OpenSunday</h1>
                     <br/>
                     <Switch>
-                        <Route
-                            path="/"
-                            exact
-                            render={() => (
-                                <>
-                                    <a
-                                        className="App-link"
-                                        href="#"
-                                        onClick={handleLocationsClick}
-                                    >
-                                        Get Locations
-                                    </a>
-                                    {locations && locations.length > 0 && (
-                                        <ul className="Locations-List">
-                                            {locations.map((location) => (
-                                                <li key={location.id}>
-                                                    <Link
-                                                        className="App-link"
-                                                        to={`/location/${location.id}`}
-                                                    >
-                                                        {location.npa} {location.city}
-                                                    </Link>
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    )}
-                                </>
-                            )}
-                        />
                         <Route path="/location/:id" component={LocationDetails}/>
                     </Switch>
                     <Switch>

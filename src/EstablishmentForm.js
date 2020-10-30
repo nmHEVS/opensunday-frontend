@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import "./App.css";
 import {useFormik} from 'formik';
 import * as Yup from 'yup';
-import Map from "./Map";
+import Map from "./OurMap";
 import {useAuth0} from "@auth0/auth0-react";
 import request from "./utils/request";
 import endpoints from "./endpoints.json";
@@ -114,7 +114,7 @@ function SignupForm() {
                 values.locationId = locationIdSaved;
                 //Post the establishment
                 let newEstablishment = await postEstablishment(values);
-            //If the location doesn't exist post the new location
+                //If the location doesn't exist post the new location
             } else{
                 let response = await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.locations}`, {
                     method: 'POST',
@@ -279,6 +279,7 @@ function SignupForm() {
                         value={formik.values.url}
                         placeholder="www.establishment.ch"
                     />
+                    <button id="buttonCancel" onClick={formik.handleReset}>Reset</button>
                     {/*Button managing (submit button disable if fields are empty)*/}
                     {
                         formik.values.latitude==''

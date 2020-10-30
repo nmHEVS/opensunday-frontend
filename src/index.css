@@ -12,6 +12,10 @@ code {
     monospace;
 }
 
+#fullWidth{
+  width: 50%;
+}
+
 /*Form - Description text area*/
 textarea {
   width: 100%;
@@ -33,10 +37,17 @@ button {
   border: 1px solid #999999;
   background-color: #cccccc;
   color: #666666;
+  width: 50%;
 }
 #buttonEnable{
   background-color: #4CAF50;
   color: white;
+  width: 50%;
+}
+#buttonCancel {
+  background-color: grey;
+  color: black;
+  width: 50%;
 }
 
 /*Form - errors display*/
