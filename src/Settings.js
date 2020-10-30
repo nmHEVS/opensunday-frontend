@@ -8,13 +8,13 @@ export function Settings() {
     return (
             <>
                 <h2 style={{color: themes[themeContext.theme].foreground}}>Settings</h2>
-                <button
+                <switch
                     type="button"
                     title="Switch Theme"
                     onClick={themeContext.toggleTheme}
                 >
                     <span>💡</span>
-                </button>
+                </switch>
             </>
     );
 }
