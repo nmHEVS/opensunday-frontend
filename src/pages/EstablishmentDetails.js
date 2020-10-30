@@ -25,14 +25,14 @@ export default function EstablishmentDetails({ match }) {
             );
 
             setEstablishment(establishment);
-            console.log(establishment)
+            // console.log(establishment)
         }
 
         getEstablishment();
     }, [establishmentID, getAccessTokenSilently, loginWithRedirect]);
 
     return (
-        <div>
+        <div id="fullWidth">
             {establishment ? <Establishment {...establishment} /> : <p>Loading details...</p>}
             <Link className="App-link" to="/list/establishment">
                 Back
@@ -40,7 +40,3 @@ export default function EstablishmentDetails({ match }) {
         </div>
     );
 }
-
-
-
-
