@@ -1,3 +1,16 @@
+
+
+
+import React, {Component, useEffect, useState} from 'react';
+import {Map, TileLayer, Marker, Popup} from 'react-leaflet';
+import {geolocated} from "react-geolocated";
+import {useAuth0} from "@auth0/auth0-react";
+import request from "./utils/request";
+import endpoints from "./endpoints.json";
+import L from 'leaflet';
+import leafPosition from './assets/navigation .png'
+import leafRestaurant from './assets/dish.png'
+import {Link} from "react-router-dom";
 import React, {Component} from 'react';
 import {Map, TileLayer, Marker, Popup} from 'react-leaflet';
 import {geolocated} from "react-geolocated";
@@ -23,7 +36,6 @@ class MapContainer extends Component {
         this.getCoords= this.getCoords.bind(this)
 
 
-    }
 
     getLocation(){
         if(navigator.geolocation){
@@ -53,6 +65,13 @@ class MapContainer extends Component {
 
         const {lat,lng} = e.latlng
 
+
+        try{
+            this.props.updateCoordinates(lat,lng)
+        }catch (error){
+
+        }
+
         this.props.updateCoordinates(lat,lng)
 
 
@@ -67,12 +86,25 @@ class MapContainer extends Component {
         const lat = this.props.coords? this.props.coords.latitude: latitude;
 
 
+        const PositionIcon = L.icon({
+            iconUrl: leafPosition,
+            iconSize: [30, 34],
+            iconAnchor: [12, 35],
+            popupAnchor: [-3, -50]
+
+        });
+
+
 
         return (
 
             <Map onClick={this.getCoords} center={[ lat , long]} zoom={16}>
+
+
+
                 {console.log("lat : "+lat)}
                 {console.log("long : "+long)}
+
             <TileLayer
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'/>
@@ -81,6 +113,20 @@ class MapContainer extends Component {
                     !this.props.coords ?
                         <div className="loading">Loading</div>
                         :
+
+                        <Marker icon={PositionIcon}
+                            position={[lat, long]}
+                            >
+                            <Popup>
+                                <h4>You are here!</h4>
+                            </Popup>
+                        </Marker>
+
+
+                }
+
+                <Points/>
+
                         <Marker 
                             position={[lat, long]}
                             >
@@ -89,6 +135,7 @@ class MapContainer extends Component {
                             </Popup>
                         </Marker>
                 }
+
 
 
 
@@ -105,4 +152,131 @@ export default geolocated({
     },
     userDecisionTimeout: 1000
     })(MapContainer);
+
+
+
+
+export function Points() {
+
+    let [establishments, setEstablishments] = useState([]);
+    let [establishmentsTypes, setEstablishmentsTypes] = useState([]);
+    let establishmentIcon = leafPosition;
+    let {
+        loading,
+        loginWithRedirect,
+        logout,
+        getAccessTokenSilently,
+        isAuthenticated,
+    } = useAuth0();
+
+
+    useEffect(() => {
+
+        //get all establishment to display a complete list
+        async function getEstablishments() {
+            let establishments = await request(
+                `${process.env.REACT_APP_SERVER_URL}${endpoints.establishments}`,
+                getAccessTokenSilently,
+                loginWithRedirect
+            );
+
+            if (establishments && establishments.length > 0) {
+                console.log(establishments);
+                setEstablishments(establishments);
+            }
+        }
+
+        async function getEstablishmentsTypes() {
+            let establishmentsTypes = await request(
+                `${process.env.REACT_APP_SERVER_URL}${endpoints.establishmentType}`,
+                getAccessTokenSilently,
+                loginWithRedirect
+            );
+
+            if (establishmentsTypes && establishmentsTypes.length > 0) {
+                console.log(establishmentsTypes);
+                setEstablishmentsTypes(establishmentsTypes);
+            }
+        }
+
+        getEstablishments();
+        getEstablishmentsTypes();
+    }, []);
+
+
+
+    establishmentIcon = L.icon({
+        iconUrl: leafRestaurant,
+        iconSize: [30, 34],
+        iconAnchor: [12, 35],
+        popupAnchor: [-3, -50]
+
+    });
+
+
+    return (
+        <>
+
+
+            {
+                establishments.map(establishment => {
+
+                    const point = [establishment.latitude, establishment.longitude];
+
+                    return (
+                        <Marker position={point} key={establishment.idEstablishment}>
+                            <Popup>
+
+
+                                <h3>{establishment.name}</h3><br/>
+                                <br/>
+                                <span>
+
+                 {/*                   {
+                                        establishments.map((establishment)=>{
+                                            establishmentsTypes.map((establishmentsType)=>{
+                                                if (establishment.id == establishmentsType.establishmentTypeId) {
+
+                                                   {establishmentsType.establishmentTypeName}
+
+
+
+                                                }
+
+                                            })
+
+
+                                        })
+                                    }*/}
+
+                                </span>
+                                <br/>
+                                <span>{establishment.address}</span>
+                                <br/>
+                                <span>Dimanche: 08:00-22:00</span>
+                                <br/>
+                                <span>
+                                     <Link
+                                         className="App-link"
+                                         to={`/establishment/${establishment.id}`}
+                                     >
+                                        More details
+                                    </Link>
+
+                                 </span>
+
+
+                            </Popup>
+                        </Marker>
+
+                    )
+                })
+            }
+
+        </>
+    )
+
+}
+
+
 

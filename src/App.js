@@ -13,8 +13,10 @@ import {Settings} from "./Settings";
 import {ThemeContext, themes} from './ThemeContext';
 import EstablishmentDetails from "./pages/EstablishmentDetails";
 import Map from './OurMap';
+import {Nav} from "react-bootstrap";
 import Navbar, {Nav} from "react-bootstrap";
 import NavigationBar from "./NavigationBar";
+
 
 function App() {
     let [locations, setLocations] = useState([]);
