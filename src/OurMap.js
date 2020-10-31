@@ -196,7 +196,7 @@ export function Points() {
                     const point = [establishment.latitude, establishment.longitude];
 
                     return (
-                        <Marker position={point} key={establishment.idEstablishment}>
+                        <Marker position={point} key={establishment.id}>
                             <Popup>
 
 

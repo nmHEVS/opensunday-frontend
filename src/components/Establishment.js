@@ -3,27 +3,37 @@ import request from "../utils/request";
 import endpoints from "../endpoints.json";
 import {useAuth0} from "@auth0/auth0-react";
 import {Map, Marker, TileLayer} from "react-leaflet";
-import {EmailShareButton, EmailIcon, TwitterShareButton, TwitterIcon, FacebookShareButton, FacebookIcon} from "react-share";
+import {
+    EmailShareButton,
+    EmailIcon,
+    TwitterShareButton,
+    TwitterIcon,
+    FacebookShareButton,
+    FacebookIcon
+} from "react-share";
 import {CopyToClipboard} from "react-copy-to-clipboard";
 import {useFormik} from "formik";
 import * as Yup from "yup";
 import OurMap from "../OurMap";
-
-
+import {BsFiles} from "react-icons/all";
+import {Link} from 'react-router-dom';
+import {useHistory} from "react-router-dom";
+import DeleteIcon from '@material-ui/icons/Delete';
+import Button from '@material-ui/core/Button';
+import SaveIcon from '@material-ui/icons/Save';
+import EditIcon from '@material-ui/icons/Edit';
 
 export default function Establishment(props) {
-    const { id, name, latitude, longitude, address, url, establishmentTypeId, locationId} = props;
-    const pageUrl = window.location.href
+    const {id, name, latitude, longitude, address, url, establishmentTypeId, locationId} = props;
 
-    const [editMode, setEditMode] = useState([]);
-
-    useEffect(() => {
-        setEditMode(false);
-    }, []);
+    const [editMode, setEditMode] = useState(false);
 
     function switchToEdit() {
         setEditMode(!editMode);
-        console.log(editMode);
+    }
+
+    function deleteEstablishment() {
+
     }
 
     return (
@@ -36,15 +46,31 @@ export default function Establishment(props) {
                     <EditOff {...props}/>
                 // <EditOn {...props}/>
             }
-            <button
-                type="button"
-                title="Switch Theme"
-                onClick={switchToEdit}
-            >
-                {
-                    editMode===true ? "Cancel" : "Switch to edit mode"
-                }
-            </button>
+            {
+                editMode === true ?
+                    <text/>
+                    :
+                    <div>
+                        <Button
+                            id="buttonEdit"
+                            variant="contained"
+                            color="secondary"
+                            startIcon={<EditIcon />}
+                            onClick={switchToEdit}
+                        >
+                            Edit
+                        </Button>
+                        <Button
+                            id="buttonDelete"
+                            variant="contained"
+                            color="secondary"
+                            startIcon={<DeleteIcon />}
+                        >
+                            Delete
+                        </Button>
+                    </div>
+            }
+
         </div>
     );
 }
@@ -53,6 +79,7 @@ function EditOff(props) {
     const pageUrl = window.location.href;
     let [dist, setDist] = useState();
     let [estTypeName, setEstTypeName] = useState();
+    let [establishmentLocation, setEstablishmentLocation] = useState();
     let {
         loading,
         loginWithRedirect,
@@ -62,29 +89,30 @@ function EditOff(props) {
     } = useAuth0();
 
     function deg2rad(deg) {
-        return deg * (Math.PI/180)
+        return deg * (Math.PI / 180)
     }
 
+    let locationTemp;
     useEffect(() => {
         const currentLat = 46.282725;
         const currentLong = 7.538253;
 
         function getDistanceFromLatLonInKm() {
-            var R = 6371; // Radius of the earth in km
-            var dLat = deg2rad(props.latitude-currentLat);  // deg2rad below
-            var dLon = deg2rad(props.longitude-currentLong);
-            var a =
-                Math.sin(dLat/2) * Math.sin(dLat/2) +
+            let R = 6371; // Radius of the earth in km
+            let dLat = deg2rad(props.latitude - currentLat);  // deg2rad below
+            let dLon = deg2rad(props.longitude - currentLong);
+            let a =
+                Math.sin(dLat / 2) * Math.sin(dLat / 2) +
                 Math.cos(deg2rad(currentLat)) * Math.cos(deg2rad(props.latitude)) *
-                Math.sin(dLon/2) * Math.sin(dLon/2)
+                Math.sin(dLon / 2) * Math.sin(dLon / 2)
             ;
-            var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-            var d = R * c; // Distance in km
-            d = (Math.round(d*1000))/1000;
+            let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            let d = R * c; // Distance in km
+            d = (Math.round(d * 1000)) / 1000;
             setDist(d);
         }
+
         async function getEstablishmentTypes() {
-            console.log("type id : "+props.establishmentTypeId)
             let establishmentType = await request(
                 `${process.env.REACT_APP_SERVER_URL}${endpoints.establishmentType}${props.establishmentTypeId}`,
                 getAccessTokenSilently,
@@ -92,46 +120,64 @@ function EditOff(props) {
             );
             setEstTypeName(establishmentType.establishmentTypeName);
         }
+
+        async function getLocationById() {
+            //Get location of the establishment (get request on db)
+            let locations = await request(
+                `${process.env.REACT_APP_SERVER_URL}${endpoints.locations}/${props.locationId}`,
+                getAccessTokenSilently,
+                loginWithRedirect
+            );
+            // console.log("get result " + locations.npa);
+            // locationTest = locations;
+            setEstablishmentLocation(locations.npa);
+            locationTemp = locations;
+
+            // console.log(locationTest);
+            console.log("after set " + locationTemp.npa);
+        }
+
+        getLocationById();
         getEstablishmentTypes();
         getDistanceFromLatLonInKm();
     }, []);
 
     return (
         <div>
-            <div>Id : {props.id}</div>
-            <h2>Name : {props.name}</h2>
-            <CopyToClipboard text={pageUrl}>
-                <button>Copy URL to the clipboard</button>
-            </CopyToClipboard>
+            <h1>{estTypeName}</h1>
+            <hr></hr>
+            <h2>{props.name}</h2>
+            {/*<div>{locationTemp.npa}</div>*/}
+            {/*<div>{establishmentLocation.city}</div>*/}
+            <div>{props.address}</div>
+            <div>Distance from me : {dist} Km</div>
             <div>
                 <EmailShareButton
                     subject={props.name}
-                    body={"Hi,\nI just discovered this amazing establishment : " + props.name + ", on the app OpenSunday \nIt's open on Sunday !\n\n" }
+                    body={"Hi,\nI just discovered this amazing establishment : " + props.name + ", on the app OpenSunday \nIt's open on Sunday !\n\n"}
                     url={pageUrl}
-                    className={"shareButton"}>
-                    <EmailIcon size={32} round/>
+                    id="shareButton">
+                    <EmailIcon size={50} round/>
                 </EmailShareButton>
                 <FacebookShareButton
                     url={pageUrl}
                     quote={props.name}
-                    className="Demo__some-network__share-button"
+                    id="shareButton"
                 >
-                    <FacebookIcon size={32} round/>
+                    <FacebookIcon size={50} round/>
                 </FacebookShareButton>
                 <TwitterShareButton
                     url={pageUrl}
                     title={props.name}
-                    className="shareButton"
+                    id="shareButton"
                 >
-                    <TwitterIcon size={32} round/>
+                    <TwitterIcon size={50} round/>
                 </TwitterShareButton>
+                <CopyToClipboard text={pageUrl}>
+                    <BsFiles id="copyLinkButton" size={40}/>
+                </CopyToClipboard>
             </div>
-            <div>Latitude : {props.latitude}</div>
-            <div>Longitude : {props.longitude}</div>
-            <div>Address : {props.address}</div>
-            <div>Distance from me : {dist} Km</div>
-            <a href={props.url}>url : {props.url}</a>
-            <div>Est Type name : {estTypeName}</div>
+            <a href={props.url}>{props.url}</a>
             <Map id="up" center={[props.latitude, props.longitude]} zoom={16}>
                 <TileLayer
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -149,6 +195,9 @@ function EditOn(props) {
     const pageUrl = window.location.href;
     let [establishmentsTypes, setEstablishmentsTypes] = useState([]);
     let [estTypeName, setEstTypeName] = useState();
+    let locationExists = false;
+    let locationIdSaved;
+    const history = useHistory();
     let {
         loading,
         loginWithRedirect,
@@ -161,6 +210,7 @@ function EditOn(props) {
     // be called when the form is submitted
     const formik = useFormik({
         initialValues: {
+            id: props.id,
             name: props.name,
             latitude: props.latitude,
             longitude: props.longitude,
@@ -189,7 +239,64 @@ function EditOn(props) {
         }),
 
         onSubmit: async values => {
+            //Parse String to Int for the fk
+            values.establishmentTypeId = Number(values.establishmentTypeId);
+            values.locationId = Number(values.locationId);
 
+            //Test if the type is not changed on submit to avoid undefined type !
+            if (values.establishmentTypeId == '') {
+                values.establishmentTypeId = props.establishmentTypeId;
+            }
+
+            //Extract the npa and city value for the location table
+            let postLocation = {
+                npa: values.npa,
+                city: values.city,
+            }
+
+            //Get all the locations of the db
+            let locations = await request(
+                `${process.env.REACT_APP_SERVER_URL}${endpoints.locations}`,
+                getAccessTokenSilently,
+                loginWithRedirect
+            );
+
+            //Check/test if the location already exists and saved the id if yes (for the if after the for)
+            for (let i = 0; i < locations.length; i++) {
+                if (locations[i].npa === postLocation.npa && locations[i].city === postLocation.city) {
+                    locationExists = true;
+                    locationIdSaved = locations[i].id;
+                }
+            }
+
+            //According to the test, make the post of the location or not
+            if (locationExists) {
+                //Put the locationId for the post
+                values.locationId = locationIdSaved;
+                //Post the establishment
+                try {
+                    let newEstablishment = await putEstablishment(values);
+                } catch (e) {
+                }
+                //If the location doesn't exist post the new location
+            } else {
+                let response = await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.locations}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `${endpoints.bearerToken}`
+                    },
+                    body: JSON.stringify(postLocation),
+                });
+                let location = await response.json();
+                values.locationId = location.id;
+                try {
+                    let newEstablishment = await putEstablishment(values);
+                } catch (e) {
+                }
+            }
+
+            alert("Modifications has been saved !");
         }
     });
 
@@ -210,9 +317,22 @@ function EditOn(props) {
                 getAccessTokenSilently,
                 loginWithRedirect
             );
+
             setEstTypeName(establishmentType.establishmentTypeName);
         }
 
+        async function getLocationById() {
+            //Get location of the establishment (get request on db)
+            let locations = await request(
+                `${process.env.REACT_APP_SERVER_URL}${endpoints.locations}/${props.locationId}`,
+                getAccessTokenSilently,
+                loginWithRedirect
+            );
+            formik.setFieldValue('npa', locations.npa);
+            formik.setFieldValue('city', locations.city);
+        }
+
+        getLocationById()
         getEstablishmentsTypes();
     }, []);
 
@@ -229,6 +349,7 @@ function EditOn(props) {
             formik.setFieldValue('npa', getLocation.postcode);
             formik.setFieldValue('city', getLocation.locality);
         }
+
         await getLocationByLatLong();
     }
 
@@ -237,10 +358,6 @@ function EditOn(props) {
         formik.setFieldValue('longitude', lng);
         await getLocationWithAPI(lat, lng);
     }
-
-    console.log(props.longitude);
-    console.log(props.latitude);
-
     return (
         <div>
             <form onSubmit={formik.handleSubmit}>
@@ -252,13 +369,16 @@ function EditOn(props) {
                     value={formik.values.establishmentTypeId}
                     placeholder="Establishment type"
                     required
+                    defaultValue={props.establishmentTypeId}
                 >
-                    <option value="">{estTypeName}</option>
-                    {establishmentsTypes.map((establishmentsType) => (
-                        <option value={establishmentsType.id}>
-                            {establishmentsType.establishmentTypeName}
-                        </option>
-                    ))}
+                    <option value={props.establishmentTypeId}>{estTypeName}</option>
+                    {establishmentsTypes.map((establishmentsType) => {
+                        //Test to not display 2 times the type of the establishment the user is editing
+                        if (props.establishmentTypeId != establishmentsType.id)
+                            return <option key={establishmentsType.id} value={establishmentsType.id}>
+                                {establishmentsType.establishmentTypeName}
+                            </option>
+                    })}
                 </select>
                 <input
                     id="name"
@@ -337,8 +457,34 @@ function EditOn(props) {
                 <div id="up">
                     <OurMap updateCoordinates={updateCoordinates}></OurMap>
                 </div>
-                <button type="submit">Save</button>
+                <Button
+                    type="submit"
+                    id="buttonSave"
+                    variant="contained"
+                    color="secondary"
+                    startIcon={<SaveIcon />}
+                >
+                    Save
+                </Button>
+                {/*<button type="submit" to="/list/establishment">Save</button>*/}
+                {/*<button type="submit" onClick={history.goBack()}>Save</button>*/}
+                {/*<button type="submit" onClick=onClick={() =>  {window.location.href='/list/establishment'}}>Save</button>*/}
             </form>
         </div>
     )
+}
+
+//Function to post an establishment according to the values in parameter
+async function putEstablishment(values) {
+    let response = await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.establishments}/${values.id}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `${endpoints.bearerToken}`
+        },
+        body: JSON.stringify(values),
+    });
+
+    let data = await response.json();
+    return data;
 }

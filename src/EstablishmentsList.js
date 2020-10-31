@@ -117,7 +117,6 @@ export function EstablishmentsList(){
             >
                 <option value={0} >All</option>
                 {establishmentsTypes.map((establishmentsType) => (
-
                     <option value={establishmentsType.id} key={establishmentsType.id}>
                         {establishmentsType.establishmentTypeName}
                     </option>
