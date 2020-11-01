@@ -32,8 +32,15 @@ export default function Establishment(props) {
         setEditMode(!editMode);
     }
 
-    function deleteEstablishment() {
-
+    async function deleteEstablishment() {
+        let response = await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.establishments}/${props.id}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `${endpoints.bearerToken}`
+            },
+        });
+        let location = await response.json();
     }
 
     return (
