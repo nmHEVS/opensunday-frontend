@@ -1,5 +1,3 @@
-
-
 import React, {Component, useEffect, useState} from 'react';
 import {Map, TileLayer, Marker, Popup} from 'react-leaflet';
 import {geolocated} from "react-geolocated";
@@ -12,7 +10,6 @@ import leafRestaurant from './assets/dish.png'
 import {Link} from "react-router-dom";
 
 
-
 class MapContainer extends Component {
 
     constructor() {
@@ -20,25 +17,23 @@ class MapContainer extends Component {
 
         this.state = {
             latitude: 46.2324104309082,
-            longitude:  7.358489990234375,
+            longitude: 7.358489990234375,
 
 
         };
 
         this.getLocation = this.getLocation.bind(this)
         this.getCoordinates = this.getCoordinates.bind(this)
-        this.getCoords= this.getCoords.bind(this)
-
+        this.getCoords = this.getCoords.bind(this)
 
 
     }
 
 
-
-    getLocation(){
-        if(navigator.geolocation){
+    getLocation() {
+        if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(this.getCoordinates);
-        }else {
+        } else {
             alert("Geolaction is not supported by this browser");
         }
 
@@ -53,19 +48,19 @@ class MapContainer extends Component {
                     longitude: position.coords.longitude
                 })
             }, (error) => {
-                this.setState({ latitude: 'err-latitude', longitude: 'err-longitude' })
+                this.setState({latitude: 'err-latitude', longitude: 'err-longitude'})
             })
         }
 
     }
 
-    getCoords(e){
+    getCoords(e) {
 
-        const {lat,lng} = e.latlng
+        const {lat, lng} = e.latlng
 
-        try{
-            this.props.updateCoordinates(lat,lng)
-        }catch (error){
+        try {
+            this.props.updateCoordinates(lat, lng)
+        } catch (error) {
 
         }
     }
@@ -73,10 +68,10 @@ class MapContainer extends Component {
 
     render() {
 
-        const {latitude ,longitude} = this.state
+        const {latitude, longitude} = this.state
 
-        const long = this.props.coords? this.props.coords.longitude: longitude;
-        const lat = this.props.coords? this.props.coords.latitude: latitude;
+        const long = this.props.coords ? this.props.coords.longitude : longitude;
+        const lat = this.props.coords ? this.props.coords.latitude : latitude;
 
         const PositionIcon = L.icon({
             iconUrl: leafPosition,
@@ -88,7 +83,7 @@ class MapContainer extends Component {
 
         return (
 
-            <Map onClick={this.getCoords} center={[ lat , long]} zoom={16}>
+            <Map onClick={this.getCoords} center={[lat, long]} zoom={16}>
 
                 <TileLayer
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -120,18 +115,16 @@ class MapContainer extends Component {
 }
 
 export default geolocated({
-    positionOptions:{
+    positionOptions: {
         enableHighAccuracy: false
     },
     userDecisionTimeout: 1000
 })(MapContainer);
 
 
-
 export function Points() {
 
     let [establishments, setEstablishments] = useState([]);
-    let [establishmentsTypes, setEstablishmentsTypes] = useState([]);
     let establishmentIcon = leafPosition;
     let {
         loading,
@@ -153,28 +146,13 @@ export function Points() {
             );
 
             if (establishments && establishments.length > 0) {
-                console.log(establishments);
+                // console.log(establishments);
                 setEstablishments(establishments);
             }
         }
 
-        async function getEstablishmentsTypes() {
-            let establishmentsTypes = await request(
-                `${process.env.REACT_APP_SERVER_URL}${endpoints.establishmentType}`,
-                getAccessTokenSilently,
-                loginWithRedirect
-            );
-
-            if (establishmentsTypes && establishmentsTypes.length > 0) {
-                console.log(establishmentsTypes);
-                setEstablishmentsTypes(establishmentsTypes);
-            }
-        }
-
         getEstablishments();
-        getEstablishmentsTypes();
     }, []);
-
 
 
     establishmentIcon = L.icon({
@@ -188,66 +166,32 @@ export function Points() {
 
     return (
         <>
-
-
             {
                 establishments.map(establishment => {
-
                     const point = [establishment.latitude, establishment.longitude];
-
                     return (
                         <Marker position={point} key={establishment.id}>
                             <Popup>
-
-
-                                <h3>{establishment.name}</h3><br/>
-                                <br/>
-                                <span>
-
-                 {/*                   {
-                                        establishments.map((establishment)=>{
-                                            establishmentsTypes.map((establishmentsType)=>{
-                                                if (establishment.id == establishmentsType.establishmentTypeId) {
-
-                                                   {establishmentsType.establishmentTypeName}
-
-
-
-                                                }
-
-                                            })
-
-
-                                        })
-                                    }*/}
-
-                                </span>
-                                <br/>
-                                <span>{establishment.address}</span>
-                                <br/>
-                                <span>Dimanche: 08:00-22:00</span>
-                                <br/>
-                                <span>
+                                <h3>{establishment.establishmentType.establishmentTypeName}</h3>
+                                <h5>{establishment.name}</h5>
+                                <div>{establishment.location.npa} {establishment.location.city}</div>
+                                <div>{establishment.address}</div>
+                                <div>Dimanche: 08:00-22:00</div>
+                                <div>
                                      <Link
                                          className="App-link"
                                          to={`/establishment/${establishment.id}`}
                                      >
                                         More details
                                     </Link>
-
-                                 </span>
-
-
+                                 </div>
                             </Popup>
                         </Marker>
-
                     )
                 })
             }
-
         </>
     )
-
 }
 
 
