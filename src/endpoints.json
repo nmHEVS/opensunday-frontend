@@ -1,6 +1,7 @@
 {
   "locations": "/api/location",
   "establishments": "/api/establishment",
+  "averageRate": "/api/Review/Average/",
   "establishmentsTypes": "/api/establishmentType",
   "establishmentType": "/api/establishmentType/",
   "establishmentsByType": "/api/establishment/Type/",

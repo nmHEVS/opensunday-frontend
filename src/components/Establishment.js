@@ -17,14 +17,15 @@ import * as Yup from "yup";
 import OurMap from "../OurMap";
 import {BsFiles} from "react-icons/all";
 import {Link} from 'react-router-dom';
-import {useHistory} from "react-router-dom";
 import DeleteIcon from '@material-ui/icons/Delete';
 import Button from '@material-ui/core/Button';
 import SaveIcon from '@material-ui/icons/Save';
 import EditIcon from '@material-ui/icons/Edit';
+import Rating from "@material-ui/lab/Rating";
+import StarBorderIcon from '@material-ui/icons/StarBorder';
 
 export default function Establishment(props) {
-    const {id, name, latitude, longitude, address, url, establishmentTypeId, locationId} = props;
+    const {id, name, latitude, longitude, address, url, establishmentType, establishmentTypeId, location, locationId} = props;
 
     const [editMode, setEditMode] = useState(false);
 
@@ -85,8 +86,7 @@ export default function Establishment(props) {
 function EditOff(props) {
     const pageUrl = window.location.href;
     let [dist, setDist] = useState();
-    let [estTypeName, setEstTypeName] = useState();
-    let [establishmentLocation, setEstablishmentLocation] = useState();
+    let [averageRate, setAverageRate] = useState(0);
     let {
         loading,
         loginWithRedirect,
@@ -99,7 +99,6 @@ function EditOff(props) {
         return deg * (Math.PI / 180)
     }
 
-    let locationTemp;
     useEffect(() => {
         const currentLat = 46.282725;
         const currentLong = 7.538253;
@@ -119,44 +118,39 @@ function EditOff(props) {
             setDist(d);
         }
 
-        async function getEstablishmentTypes() {
-            let establishmentType = await request(
-                `${process.env.REACT_APP_SERVER_URL}${endpoints.establishmentType}${props.establishmentTypeId}`,
+        async function getAverageRate() {
+            let rate = await request(
+                `${process.env.REACT_APP_SERVER_URL}${endpoints.averageRate}${props.id}`,
                 getAccessTokenSilently,
                 loginWithRedirect
             );
-            setEstTypeName(establishmentType.establishmentTypeName);
+            console.log(rate);
+            setAverageRate(rate);
         }
 
-        async function getLocationById() {
-            //Get location of the establishment (get request on db)
-            let locations = await request(
-                `${process.env.REACT_APP_SERVER_URL}${endpoints.locations}/${props.locationId}`,
-                getAccessTokenSilently,
-                loginWithRedirect
-            );
-            // console.log("get result " + locations.npa);
-            // locationTest = locations;
-            setEstablishmentLocation(locations.npa);
-            locationTemp = locations;
-
-            // console.log(locationTest);
-            console.log("after set " + locationTemp.npa);
-        }
-
-        getLocationById();
-        getEstablishmentTypes();
+        getAverageRate();
         getDistanceFromLatLonInKm();
     }, []);
 
+
     return (
         <div>
-            <h1>{estTypeName}</h1>
+            <h1>{props.establishmentType.establishmentTypeName}</h1>
             <hr></hr>
             <h2>{props.name}</h2>
-            {/*<div>{locationTemp.npa}</div>*/}
-            {/*<div>{establishmentLocation.city}</div>*/}
+            {/*<div>Rate : {averageRate}</div>*/}
+            {
+                averageRate === -1 ?
+                    <div>No rate available</div>
+                    :
+                    <Rating
+                        name="simple-controlled"
+                        value={averageRate} precision={0.5}
+                        emptyIcon={<StarBorderIcon fontSize="inherit"/>}
+                        readOnly/>
+            }
             <div>{props.address}</div>
+            <div>{props.location.npa} {props.location.city}</div>
             <div>Distance from me : {dist} Km</div>
             <div>
                 <EmailShareButton
@@ -201,10 +195,8 @@ function EditOff(props) {
 function EditOn(props) {
     const pageUrl = window.location.href;
     let [establishmentsTypes, setEstablishmentsTypes] = useState([]);
-    let [estTypeName, setEstTypeName] = useState();
     let locationExists = false;
     let locationIdSaved;
-    const history = useHistory();
     let {
         loading,
         loginWithRedirect,
@@ -223,10 +215,10 @@ function EditOn(props) {
             longitude: props.longitude,
             address: props.address,
             url: props.url,
-            establishmentTypeId: '',
-            locationId: '',
-            npa: '',
-            city: '',
+            establishmentTypeId: props.establishmentType.id,
+            locationId: props.location.id,
+            npa: props.location.npa,
+            city: props.location.city,
         },
         validationSchema: Yup.object({
             name: Yup.string()
@@ -318,28 +310,8 @@ function EditOn(props) {
             if (establishmentsTypes && establishmentsTypes.length > 0) {
                 setEstablishmentsTypes(establishmentsTypes);
             }
-
-            let establishmentType = await request(
-                `${process.env.REACT_APP_SERVER_URL}${endpoints.establishmentType}${props.establishmentTypeId}`,
-                getAccessTokenSilently,
-                loginWithRedirect
-            );
-
-            setEstTypeName(establishmentType.establishmentTypeName);
         }
 
-        async function getLocationById() {
-            //Get location of the establishment (get request on db)
-            let locations = await request(
-                `${process.env.REACT_APP_SERVER_URL}${endpoints.locations}/${props.locationId}`,
-                getAccessTokenSilently,
-                loginWithRedirect
-            );
-            formik.setFieldValue('npa', locations.npa);
-            formik.setFieldValue('city', locations.city);
-        }
-
-        getLocationById()
         getEstablishmentsTypes();
     }, []);
 
@@ -378,7 +350,7 @@ function EditOn(props) {
                     required
                     defaultValue={props.establishmentTypeId}
                 >
-                    <option value={props.establishmentTypeId}>{estTypeName}</option>
+                    <option value={props.establishmentTypeId}>{props.establishmentType.establishmentTypeName}</option>
                     {establishmentsTypes.map((establishmentsType) => {
                         //Test to not display 2 times the type of the establishment the user is editing
                         if (props.establishmentTypeId != establishmentsType.id)
