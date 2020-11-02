@@ -148,6 +148,7 @@ function SignupForm() {
             body: JSON.stringify(values),
         });
         let data = await response.json();
+        console.log(values);
         return data;
     }
 

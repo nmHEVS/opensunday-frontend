@@ -10,3 +10,4 @@
 [1026/192145.399:ERROR:directory_reader_win.cc(43)] FindFirstFile: Le chemin d’accès spécifié est introuvable. (0x3)
 [1029/092047.339:ERROR:directory_reader_win.cc(43)] FindFirstFile: Le chemin d’accès spécifié est introuvable. (0x3)
 
+[1101/144342.276:ERROR:directory_reader_win.cc(43)] FindFirstFile: Le chemin d�acc�s sp�cifi� est introuvable. (0x3)
