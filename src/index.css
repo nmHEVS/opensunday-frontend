@@ -158,6 +158,11 @@ input[type=text]:focus {
   width: 20%;
 }
 
+/*Establishment - Total review display*/
+#totalReview{
+  font-size: 25px;
+}
+
 /*Facebook, Twitter, Mail button*/
 #shareButton{
   margin-right: 20px;

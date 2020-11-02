@@ -36,12 +36,8 @@ export default function Establishment(props) {
     async function deleteEstablishment() {
         let response = await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.establishments}/${props.id}`, {
             method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `${endpoints.bearerToken}`
-            },
         });
-        let location = await response.json();
+        console.log(response);
     }
 
     return (
@@ -63,7 +59,7 @@ export default function Establishment(props) {
                             id="buttonEdit"
                             variant="contained"
                             color="secondary"
-                            startIcon={<EditIcon />}
+                            startIcon={<EditIcon/>}
                             onClick={switchToEdit}
                         >
                             Edit
@@ -72,7 +68,8 @@ export default function Establishment(props) {
                             id="buttonDelete"
                             variant="contained"
                             color="secondary"
-                            startIcon={<DeleteIcon />}
+                            startIcon={<DeleteIcon/>}
+                            onClick={deleteEstablishment}
                         >
                             Delete
                         </Button>
@@ -87,6 +84,7 @@ function EditOff(props) {
     const pageUrl = window.location.href;
     let [dist, setDist] = useState();
     let [averageRate, setAverageRate] = useState(0);
+    let [totalReview, setTotalReview] = useState(0);
     let {
         loading,
         loginWithRedirect,
@@ -119,15 +117,26 @@ function EditOff(props) {
         }
 
         async function getAverageRate() {
+            //The request return -1 if there is no rate for the establishment
             let rate = await request(
                 `${process.env.REACT_APP_SERVER_URL}${endpoints.averageRate}${props.id}`,
                 getAccessTokenSilently,
                 loginWithRedirect
             );
-            console.log(rate);
             setAverageRate(rate);
         }
 
+        async function getTotalReviews() {
+            //The request return -1 if there is no rate for the establishment
+            let totalReview = await request(
+                `${process.env.REACT_APP_SERVER_URL}${endpoints.totalReview}${props.id}`,
+                getAccessTokenSilently,
+                loginWithRedirect
+            );
+            setTotalReview(totalReview);
+        }
+
+        getTotalReviews();
         getAverageRate();
         getDistanceFromLatLonInKm();
     }, []);
@@ -138,17 +147,14 @@ function EditOff(props) {
             <h1>{props.establishmentType.establishmentTypeName}</h1>
             <hr></hr>
             <h2>{props.name}</h2>
-            {/*<div>Rate : {averageRate}</div>*/}
-            {
-                averageRate === -1 ?
-                    <div>No rate available</div>
-                    :
-                    <Rating
-                        name="simple-controlled"
-                        value={averageRate} precision={0.5}
-                        emptyIcon={<StarBorderIcon fontSize="inherit"/>}
-                        readOnly/>
-            }
+            <div>
+                <Rating
+                    name="simple-controlled"
+                    value={averageRate} precision={0.5}
+                    emptyIcon={<StarBorderIcon fontSize="inherit"/>}
+                    readOnly/>
+                <span id="totalReview">({totalReview})</span>
+            </div>
             <div>{props.address}</div>
             <div>{props.location.npa} {props.location.city}</div>
             <div>Distance from me : {dist} Km</div>
@@ -441,7 +447,7 @@ function EditOn(props) {
                     id="buttonSave"
                     variant="contained"
                     color="secondary"
-                    startIcon={<SaveIcon />}
+                    startIcon={<SaveIcon/>}
                 >
                     Save
                 </Button>
