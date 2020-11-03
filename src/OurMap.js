@@ -1,6 +1,6 @@
 
 
-import React, {Component, useEffect, useState} from 'react';
+import React, {Component, useContext, useEffect, useState} from 'react';
 import {Map, TileLayer, Marker, Popup} from 'react-leaflet';
 import {geolocated} from "react-geolocated";
 import {useAuth0} from "@auth0/auth0-react";
@@ -13,6 +13,7 @@ import {Link} from "react-router-dom";
 
 
 
+
 class MapContainer extends Component {
 
     constructor() {
@@ -21,7 +22,6 @@ class MapContainer extends Component {
         this.state = {
             latitude: 46.2324104309082,
             longitude:  7.358489990234375,
-
 
         };
 
@@ -128,10 +128,12 @@ export default geolocated({
 
 
 
-export function Points() {
+export function Points(props) {
 
+    const { id, name, latitude, longitude, address, url, establishmentTypeId, locationId} = props;
     let [establishments, setEstablishments] = useState([]);
     let [establishmentsTypes, setEstablishmentsTypes] = useState([]);
+    let [estTypeName, setEstTypeName] = useState();
     let establishmentIcon = leafPosition;
     let {
         loading,
@@ -158,21 +160,21 @@ export function Points() {
             }
         }
 
-        async function getEstablishmentsTypes() {
-            let establishmentsTypes = await request(
-                `${process.env.REACT_APP_SERVER_URL}${endpoints.establishmentType}`,
+        async function getEstablishmentTypes() {
+
+            //console.log("type id : "+props.establishmentTypeId)
+            let establishmentType = await request(
+                `${process.env.REACT_APP_SERVER_URL}${endpoints.establishmentType}${1}`,
                 getAccessTokenSilently,
                 loginWithRedirect
             );
+            setEstTypeName(establishmentType);
+            console.log(establishmentType)
 
-            if (establishmentsTypes && establishmentsTypes.length > 0) {
-                console.log(establishmentsTypes);
-                setEstablishmentsTypes(establishmentsTypes);
-            }
+           // setEstTypeName(establishmentType);
         }
-
         getEstablishments();
-        getEstablishmentsTypes();
+        getEstablishmentTypes();
     }, []);
 
 
@@ -184,6 +186,7 @@ export function Points() {
         popupAnchor: [-3, -50]
 
     });
+
 
 
     return (
@@ -203,24 +206,7 @@ export function Points() {
                                 <h3>{establishment.name}</h3><br/>
                                 <br/>
                                 <span>
-
-                 {/*                   {
-                                        establishments.map((establishment)=>{
-                                            establishmentsTypes.map((establishmentsType)=>{
-                                                if (establishment.id == establishmentsType.establishmentTypeId) {
-
-                                                   {establishmentsType.establishmentTypeName}
-
-
-
-                                                }
-
-                                            })
-
-
-                                        })
-                                    }*/}
-
+                                    {establishment.establishmentTypeId}
                                 </span>
                                 <br/>
                                 <span>{establishment.address}</span>
