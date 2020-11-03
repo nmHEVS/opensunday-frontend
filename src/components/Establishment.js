@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import request from "../utils/request";
 import endpoints from "../endpoints.json";
 import {useAuth0} from "@auth0/auth0-react";
@@ -25,6 +25,7 @@ import Rating from "@material-ui/lab/Rating";
 import StarBorderIcon from '@material-ui/icons/StarBorder';
 import swal from 'sweetalert';
 import {DropdownItem} from "reactstrap";
+import {ThemeContext, themes} from "../ThemeContext";
 
 export default function Establishment(props) {
     const {id, name, latitude, longitude, address, url, establishmentType, establishmentTypeId, location, locationId} = props;
@@ -159,8 +160,9 @@ function EditOff(props) {
         window.location.href = "/";
     }
 
+    let themeContext = useContext(ThemeContext);
     return (
-        <div>
+        <div style={{color: themes[themeContext.theme].foreground}}>
             <h1>{props.establishmentType.establishmentTypeName}</h1>
             <hr></hr>
             <h2>{props.name}</h2>

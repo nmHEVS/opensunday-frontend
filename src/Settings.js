@@ -1,6 +1,7 @@
 import React, { useState, useContext } from "react";
 import "./App.css";
 import { ThemeContext, themes } from './ThemeContext';
+import Profile from "./components/Profile";
 
 export function Settings() {
     let themeContext = useContext(ThemeContext);
@@ -15,6 +16,7 @@ export function Settings() {
                 >
                     <span>💡</span>
                 </switch>
+                <Profile></Profile>
             </>
     );
 }

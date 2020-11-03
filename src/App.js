@@ -213,7 +213,6 @@ function App() {
                     />
                     <Route path="/new/establishment" render={() => <EstablishmentForm/>}/>
                     <Route exact path="/" component={OurMap}/>
-                    <Route exact path="/profile" component={Profile}/>
                 </header>
             </BrowserRouter>
         </div>
