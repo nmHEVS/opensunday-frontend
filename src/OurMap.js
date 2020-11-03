@@ -193,5 +193,3 @@ export function Points() {
         </>
     )
 }
-
-
