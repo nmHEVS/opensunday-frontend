@@ -45,7 +45,7 @@ export default function Establishment(props) {
         });
         // swal("Delete done.", "The establishment has been deleted.", "success");
         let temp = await response.json();
-        await alert("Establishment has been deleted !");
+        // alert("Establishment has been deleted !");
     }
 
     return (
@@ -153,6 +153,11 @@ function EditOff(props) {
         getDistanceFromLatLonInKm();
     }, []);
 
+    try{
+        let test = props.establishmentType.establishmentTypeName;
+    }catch (e){
+        window.location.href = "/";
+    }
 
     return (
         <div>

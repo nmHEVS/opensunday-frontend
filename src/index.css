@@ -51,8 +51,10 @@ button {
   background-color: #4CAF50;
   color: white;
   margin-left: 10px;
+  font-size: 20px;
   padding: 10px 60px;
   border-radius: 20px;
+  cursor: pointer;
 }
 #buttonReset {
   background-color: blue;

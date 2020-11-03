@@ -7,8 +7,6 @@ import endpoints from "./endpoints.json";
 import {useAuth0} from "@auth0/auth0-react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-
-
 export function EstablishmentsList(){
     let themeContext = useContext(ThemeContext);
     let [establishments, setEstablishments] = useState([]);
@@ -24,7 +22,6 @@ export function EstablishmentsList(){
 
     //Use effect to display get data we need as we open the page
     useEffect(() => {
-
         //get all establishment to display a complete list
         async function getEstablishments() {
             let establishments = await request(
@@ -35,7 +32,7 @@ export function EstablishmentsList(){
 
             if (establishments && establishments.length > 0) {
                 console.log(establishments);
-                setEstablishments(establishments);
+                await setEstablishments(establishments);
             }
         }
 
@@ -133,6 +130,7 @@ export function EstablishmentsList(){
                         >
                             {establishment.name}
                         </Link>
+                        {/*{console.log(establishment)}*/}
                     </li>
                 ))}
             </ul>
