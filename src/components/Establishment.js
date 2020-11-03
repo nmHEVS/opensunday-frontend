@@ -23,6 +23,7 @@ import SaveIcon from '@material-ui/icons/Save';
 import EditIcon from '@material-ui/icons/Edit';
 import Rating from "@material-ui/lab/Rating";
 import StarBorderIcon from '@material-ui/icons/StarBorder';
+import swal from 'sweetalert';
 
 export default function Establishment(props) {
     const {id, name, latitude, longitude, address, url, establishmentType, establishmentTypeId, location, locationId} = props;
@@ -36,8 +37,14 @@ export default function Establishment(props) {
     async function deleteEstablishment() {
         let response = await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.establishments}/${props.id}`, {
             method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `${endpoints.bearerToken}`
+            },
         });
-        console.log(response);
+        let temp = await response.json();
+        swal("Delete done.", "The establishment has been deleted.", "success");
+        // alert("Establishment has been deleted !");
     }
 
     return (
@@ -64,18 +71,19 @@ export default function Establishment(props) {
                         >
                             Edit
                         </Button>
-                        <Button
-                            id="buttonDelete"
-                            variant="contained"
-                            color="secondary"
-                            startIcon={<DeleteIcon/>}
-                            onClick={deleteEstablishment}
-                        >
-                            Delete
-                        </Button>
+                        <Link className="App-link" to="/list/establishment" style={{ textDecoration: 'none' }}>
+                            <Button
+                                id="buttonDelete"
+                                variant="contained"
+                                color="secondary"
+                                startIcon={<DeleteIcon/>}
+                                onClick={deleteEstablishment}
+                            >
+                                Delete
+                            </Button>
+                        </Link>
                     </div>
             }
-
         </div>
     );
 }
@@ -300,8 +308,8 @@ function EditOn(props) {
                 } catch (e) {
                 }
             }
-
-            alert("Modifications has been saved !");
+            await swal("Edit done.", "Modifications has been saved !", "success");
+            // alert("Establishment has been deleted !");
         }
     });
 
