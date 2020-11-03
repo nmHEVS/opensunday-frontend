@@ -42,8 +42,8 @@ export default function Establishment(props) {
                 'Authorization': `${endpoints.bearerToken}`
             },
         });
-        let temp = await response.json();
         swal("Delete done.", "The establishment has been deleted.", "success");
+        let temp = await response.json();
         // alert("Establishment has been deleted !");
     }
 
@@ -79,7 +79,7 @@ export default function Establishment(props) {
                                 startIcon={<DeleteIcon/>}
                                 onClick={deleteEstablishment}
                             >
-                                Delete
+                                    Delete
                             </Button>
                         </Link>
                     </div>
