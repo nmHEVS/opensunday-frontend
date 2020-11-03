@@ -10,6 +10,7 @@ import BackupIcon from '@material-ui/icons/Backup';
 import SaveIcon from "@material-ui/icons/Save";
 import Button from "@material-ui/core/Button";
 import RotateLeftIcon from '@material-ui/icons/RotateLeft';
+import swal from 'sweetalert';
 
 export class EstablishmentForm extends React.Component {
 
@@ -132,6 +133,7 @@ function SignupForm() {
                 values.locationId = location.id;
                 await postEstablishment(values);
             }
+            swal("Submit done.", "The establishment has been submitted.", "success");
             //Reset the form
             formik.handleReset();
         }
