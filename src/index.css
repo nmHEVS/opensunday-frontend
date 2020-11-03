@@ -23,7 +23,7 @@ code {
 
 /*Form - Description text area*/
 textarea {
-  width: 100%;
+  width: 50%;
   padding: 12px;
   border: 1px solid #ccc;
   border-radius: 4px;
@@ -32,27 +32,63 @@ textarea {
 
 /*Form - Button*/
 button {
-  width: 100%;
+  width: 49%;
   padding: 16px 32px;
   text-decoration: none;
   margin: 4px 2px;
   cursor: pointer;
 }
 #buttonDisable{
-  border: 1px solid #999999;
-  background-color: #cccccc;
-  color: #666666;
-  width: 50%;
+  margin-left: 10px;
+  background-color: grey;
+  color: darkgrey;
+  font-size: 20px;
+  padding: 10px 60px;
+  border-radius: 20px;
+  cursor: pointer;
 }
 #buttonEnable{
   background-color: #4CAF50;
   color: white;
-  width: 50%;
+  margin-left: 10px;
+  padding: 10px 60px;
+  border-radius: 20px;
 }
-#buttonCancel {
+#buttonReset {
+  background-color: blue;
+  color: white;
+  font-size: 20px;
+  padding: 10px 60px;
+  border-radius: 20px;
+  cursor: pointer;
+}
+#buttonDelete {
+  background-color: red;
+  color: white;
+  font-size: 20px;
+  padding: 10px 60px;
+  border-radius: 20px;
+  cursor: pointer;
+  margin-left: 10px;
+}
+#buttonSave {
+  width: 100%;
+  background-color: blue;
+  color: white;
+  font-size: 20px;
+  padding: 10px 60px;
+  border-radius: 20px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+#buttonEdit {
   background-color: grey;
-  color: black;
-  width: 50%;
+  color: white;
+  font-size: 20px;
+  padding: 10px 60px;
+  border-radius: 20px;
+  margin: 10px 0px;
+  cursor: pointer;
 }
 
 /*Form - errors display*/
@@ -120,6 +156,23 @@ input[type=text]:focus {
 
 #establishmentType{
   width: 20%;
+}
+
+/*Establishment - Total review display*/
+#totalReview{
+  font-size: 25px;
+}
+
+/*Facebook, Twitter, Mail button*/
+#shareButton{
+  margin-right: 20px;
+  margin-left: 20px;
+  width: 5%;
+}
+
+/*Copy link of the establishment*/
+#copyLinkButton{
+  width: 10%;
 }
 
 /*Map*/

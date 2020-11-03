@@ -6,6 +6,11 @@ import Map from "./OurMap";
 import {useAuth0} from "@auth0/auth0-react";
 import request from "./utils/request";
 import endpoints from "./endpoints.json";
+import BackupIcon from '@material-ui/icons/Backup';
+import SaveIcon from "@material-ui/icons/Save";
+import Button from "@material-ui/core/Button";
+import RotateLeftIcon from '@material-ui/icons/RotateLeft';
+import swal from 'sweetalert';
 
 export class EstablishmentForm extends React.Component {
 
@@ -128,6 +133,7 @@ function SignupForm() {
                 values.locationId = location.id;
                 await postEstablishment(values);
             }
+            swal("Submit done.", "The establishment has been submitted.", "success");
             //Reset the form
             formik.handleReset();
         }
@@ -144,6 +150,7 @@ function SignupForm() {
             body: JSON.stringify(values),
         });
         let data = await response.json();
+        console.log(values);
         return data;
     }
 
@@ -279,7 +286,16 @@ function SignupForm() {
                         value={formik.values.url}
                         placeholder="www.establishment.ch"
                     />
-                    <button id="buttonCancel" onClick={formik.handleReset}>Reset</button>
+                    <Button
+                        type="submit"
+                        id="buttonReset"
+                        variant="contained"
+                        color="secondary"
+                        startIcon={<RotateLeftIcon />}
+                        onClick={formik.handleReset}
+                    >
+                        Reset
+                    </Button>
                     {/*Button managing (submit button disable if fields are empty)*/}
                     {
                         formik.values.latitude==''
@@ -289,8 +305,27 @@ function SignupForm() {
                         || formik.values.city==''
                         || formik.values.address==''
                         || formik.values.url=='' ?
-                            <button id="buttonDisable" type="submit" disabled={true}>Submit</button>
-                            : <button id="buttonEnable" type="submit">Submit</button>
+                            <Button
+                                id="buttonDisable"
+                                type="submit"
+                                disabled={true}
+                                variant="contained"
+                                color="secondary"
+                                startIcon={<BackupIcon />}
+                            >
+                                Submit
+                            </Button>
+                            :
+                            <Button
+                                id="buttonEnable"
+                                type="submit"
+                                disabled={false}
+                                variant="contained"
+                                color="secondary"
+                                startIcon={<BackupIcon />}
+                            >
+                                Submit
+                            </Button>
                     }
                 </form>
             </div>

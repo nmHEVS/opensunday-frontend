@@ -105,19 +105,17 @@ export function EstablishmentsList(){
     return(
         <>
             <h2 style={{color: themes[themeContext.theme].foreground}}>List of Establishments</h2>
-
             {/*Select the type of establishment you want to display*/}
             <select
                 id="establishmentType"
                 name="establishmentType"
                 type="text"
                 onChange={handleSelect}
-                value={establishmentTypeSelected}
+                // value={establishmentTypeSelected}
                 placeholder="Establishment type"
             >
                 <option value={0} >All</option>
                 {establishmentsTypes.map((establishmentsType) => (
-
                     <option value={establishmentsType.id} key={establishmentsType.id}>
                         {establishmentsType.establishmentTypeName}
                     </option>
