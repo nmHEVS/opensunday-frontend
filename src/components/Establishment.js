@@ -98,6 +98,8 @@ function EditOff(props) {
     let [dist, setDist] = useState();
     let [averageRate, setAverageRate] = useState(0);
     let [totalReview, setTotalReview] = useState(0);
+    let [isRating, setIsRating] = useState(false);
+
     let {
         loading,
         loginWithRedirect,
@@ -161,19 +163,87 @@ function EditOff(props) {
     }
 
     let themeContext = useContext(ThemeContext);
+
+    let handleToRate = () =>{
+        setIsRating(!isRating);
+        console.log(isRating);
+    }
+
+    let handleHasRated = async () =>{
+        let postReview = {
+            rate: 10,
+            userId: 109,
+            establishmentId: 3
+        }
+
+        let response = await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.reviews}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `${endpoints.bearerToken}`
+            },
+            body: JSON.stringify(postReview),
+        });
+        let data = await response.json();
+
+        let rate = await request(
+            `${process.env.REACT_APP_SERVER_URL}${endpoints.averageRate}${props.id}`,
+            getAccessTokenSilently,
+            loginWithRedirect
+        );
+        setAverageRate(rate);
+
+        let totalReview = await request(
+            `${process.env.REACT_APP_SERVER_URL}${endpoints.totalReview}${props.id}`,
+            getAccessTokenSilently,
+            loginWithRedirect
+        );
+        setTotalReview(totalReview);
+
+
+        setIsRating(!isRating);
+        console.log(isRating);
+        console.log(rate);
+    }
+
+    function RatingStars(){
+        return (
+            <div>
+                {isRating ? (
+                    <div>
+                        <span>You can rate here</span>
+                        <button onClick={handleHasRated}>Rate</button>
+                    </div>
+
+                ):(
+                    <div>
+                        <Rating
+                            name="simple-controlled"
+                            value={averageRate} precision={0.5}
+                            emptyIcon={<StarBorderIcon fontSize="inherit"/>}
+                            readOnly/>
+                        <span id="totalReview">({totalReview})</span>
+                        <button onClick={handleToRate}>Rate</button>
+                    </div>
+                )}
+            </div>
+        );
+    }
+
     return (
         <div style={{color: themes[themeContext.theme].foreground}}>
             <h1>{props.establishmentType.establishmentTypeName}</h1>
             <hr></hr>
             <h2>{props.name}</h2>
-            <div>
-                <Rating
-                    name="simple-controlled"
-                    value={averageRate} precision={0.5}
-                    emptyIcon={<StarBorderIcon fontSize="inherit"/>}
-                    readOnly/>
-                <span id="totalReview">({totalReview})</span>
-            </div>
+            <RatingStars/>
+            {/*<div>*/}
+            {/*    <Rating*/}
+            {/*        name="simple-controlled"*/}
+            {/*        value={averageRate} precision={0.5}*/}
+            {/*        emptyIcon={<StarBorderIcon fontSize="inherit"/>}*/}
+            {/*        readOnly/>*/}
+            {/*    <span id="totalReview">({totalReview})</span>*/}
+            {/*</div>*/}
             <div>{props.address}</div>
             <div>{props.location.npa} {props.location.city}</div>
             <div>Distance from me : {dist} Km</div>
