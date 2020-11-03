@@ -24,6 +24,7 @@ import EditIcon from '@material-ui/icons/Edit';
 import Rating from "@material-ui/lab/Rating";
 import StarBorderIcon from '@material-ui/icons/StarBorder';
 import swal from 'sweetalert';
+import {DropdownItem} from "reactstrap";
 
 export default function Establishment(props) {
     const {id, name, latitude, longitude, address, url, establishmentType, establishmentTypeId, location, locationId} = props;
@@ -42,9 +43,9 @@ export default function Establishment(props) {
                 'Authorization': `${endpoints.bearerToken}`
             },
         });
-        swal("Delete done.", "The establishment has been deleted.", "success");
+        // swal("Delete done.", "The establishment has been deleted.", "success");
         let temp = await response.json();
-        // alert("Establishment has been deleted !");
+        await alert("Establishment has been deleted !");
     }
 
     return (
@@ -71,15 +72,18 @@ export default function Establishment(props) {
                         >
                             Edit
                         </Button>
-                        <Link className="App-link" to="/list/establishment" style={{ textDecoration: 'none' }}>
+                        <Link className="App-link" to="/list/establishment" style={{textDecoration: 'none'}}>
                             <Button
                                 id="buttonDelete"
                                 variant="contained"
                                 color="secondary"
                                 startIcon={<DeleteIcon/>}
                                 onClick={deleteEstablishment}
+                                tag={Link} to="/list/establishment"
                             >
-                                    Delete
+                                {/*<Link className="App-link" to="/list/establishment" style={{textDecoration: 'none'}}>*/}
+                                Delete
+                                {/*</Link>*/}
                             </Button>
                         </Link>
                     </div>
