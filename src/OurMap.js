@@ -1,7 +1,4 @@
-
-
-
-import React, {Component, useContext, useEffect, useState} from 'react';
+import React, {Component, useEffect, useState} from 'react';
 import {Map, TileLayer, Marker, Popup} from 'react-leaflet';
 import {geolocated} from "react-geolocated";
 import {useAuth0} from "@auth0/auth0-react";
@@ -21,6 +18,7 @@ class MapContainer extends Component {
         this.state = {
             latitude: 46.2324104309082,
             longitude: 7.358489990234375,
+
 
         };
 
@@ -126,13 +124,7 @@ export default geolocated({
 
 export function Points() {
 
-
-    const { id, name, latitude, longitude, address, url, establishmentTypeId, locationId} = props;
     let [establishments, setEstablishments] = useState([]);
-
-    let [establishmentsTypes, setEstablishmentsTypes] = useState([]);
-    let [estTypeName, setEstTypeName] = useState();
-
     let establishmentIcon = leafPosition;
     let {
         loading,
@@ -159,10 +151,7 @@ export function Points() {
             }
         }
 
-   
-    
         getEstablishments();
-
     }, []);
 
 
@@ -175,7 +164,6 @@ export function Points() {
     });
 
 
-
     return (
         <>
             {
@@ -184,31 +172,19 @@ export function Points() {
                     return (
                         <Marker position={point} key={establishment.id}>
                             <Popup>
-                                <h3>{establishment.name}</h3><br/>
-                                <br/>
-                                <span>
-                                    {establishment.establishmentTypeId}
-                                </span>
-                                <br/>
-                                <span>{establishment.address}</span>
-                                <br/>
-                                <span>Dimanche: 08:00-22:00</span>
-                                <br/>
-                                <span>
                                 <h3>{establishment.establishmentType.establishmentTypeName}</h3>
                                 <h5>{establishment.name}</h5>
                                 <div>{establishment.location.npa} {establishment.location.city}</div>
                                 <div>{establishment.address}</div>
                                 <div>Dimanche: 08:00-22:00</div>
                                 <div>
-
-                                     <Link
-                                         className="App-link"
-                                         to={`/establishment/${establishment.id}`}
-                                     >
+                                    <Link
+                                        className="App-link"
+                                        to={`/establishment/${establishment.id}`}
+                                    >
                                         More details
                                     </Link>
-                                 </div>
+                                </div>
                             </Popup>
                         </Marker>
                     )
@@ -217,5 +193,3 @@ export function Points() {
         </>
     )
 }
-
-
