@@ -63,6 +63,7 @@ class MapContainer extends Component {
         } catch (error) {
 
         }
+
     }
 
 
@@ -125,7 +126,7 @@ export default geolocated({
 export function Points() {
 
     let [establishments, setEstablishments] = useState([]);
-    let establishmentIcon = leafPosition;
+    let restaurantIcon = leafPosition;
     let {
         loading,
         loginWithRedirect,
@@ -155,12 +156,11 @@ export function Points() {
     }, []);
 
 
-    establishmentIcon = L.icon({
+    restaurantIcon = L.icon({
         iconUrl: leafRestaurant,
         iconSize: [30, 34],
         iconAnchor: [12, 35],
         popupAnchor: [-3, -50]
-
     });
 
 
@@ -170,7 +170,9 @@ export function Points() {
                 establishments.map(establishment => {
                     const point = [establishment.latitude, establishment.longitude];
                     return (
-                        <Marker position={point} key={establishment.id}>
+                        <Marker position={point} key={establishment.id}
+                                icon={restaurantIcon}
+                        >
                             <Popup>
                                 <h3>{establishment.establishmentType.establishmentTypeName}</h3>
                                 <h5>{establishment.name}</h5>

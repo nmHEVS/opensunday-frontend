@@ -21,10 +21,12 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import Button from '@material-ui/core/Button';
 import SaveIcon from '@material-ui/icons/Save';
 import EditIcon from '@material-ui/icons/Edit';
+import RateReviewIcon from '@material-ui/icons/RateReview';
 import Rating from "@material-ui/lab/Rating";
 import StarBorderIcon from '@material-ui/icons/StarBorder';
 import swal from 'sweetalert';
 import {ThemeContext, themes} from "../ThemeContext";
+import Error404 from "../pages/Error404";
 
 export default function Establishment(props) {
     const {id, name, latitude, longitude, address, url, establishmentType, establishmentTypeId, location, locationId} = props;
@@ -45,19 +47,34 @@ export default function Establishment(props) {
 
     async function deleteEstablishment() {
         let token = await getAccessTokenSilently();
-        await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.establishments}/${props.id}`, {
-            method: 'DELETE',
-            headers: {
-                Accept: "application/json",
-                Authorization: `Bearer ${token}`,
-                'Content-Type': 'application/json',
-            },
+        await swal({
+            title: "Are you sure?",
+            text: "Once deleted, you will not be able to recover this establishment !",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        }).then((willDelete) => {
+            if (willDelete) {
+                fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.establishments}/${props.id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        Accept: "application/json",
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                    },
+                });
+                swal("Delete done.", "The establishment has been deleted.", "success");
+                history.push("/list/establishment");
+            } else {
+                swal("The deletion has been cancelled.");
+            }
         });
-        await swal("Delete done.", "The establishment has been deleted.", "success");
-        history.push("/list/establishment");
+
+        // await swal("Delete done.", "The establishment has been deleted.", "success");
+        // history.push("/list/establishment");
     }
 
-    console.log(user.name);
+    // console.log(user.name);
 
     return (
         <div className="establishment">
@@ -83,7 +100,6 @@ export default function Establishment(props) {
                         >
                             Edit
                         </Button>
-                        {/*<Link className="App-link" to="/list/establishment" style={{textDecoration: 'none'}}>*/}
                         <Button
                             id="buttonDelete"
                             variant="contained"
@@ -92,11 +108,8 @@ export default function Establishment(props) {
                             onClick={deleteEstablishment}
                             tag={Link} to="/list/establishment"
                         >
-                            {/*<Link className="App-link" to="/list/establishment" style={{textDecoration: 'none'}}>*/}
                             Delete
-                            {/*</Link>*/}
                         </Button>
-                        {/*</Link>*/}
                     </div>
             }
         </div>
@@ -149,7 +162,6 @@ function EditOff(props) {
                 `${process.env.REACT_APP_SERVER_URL}${endpoints.averageRate}${props.id}`,
                 getAccessTokenSilently,
                 loginWithRedirect
-
             );
             setAverageRate(rate);
         }
@@ -176,12 +188,12 @@ function EditOff(props) {
 
     let themeContext = useContext(ThemeContext);
 
-    let handleToRate = () =>{
+    let handleToRate = () => {
         setIsRating(!isRating);
         console.log(isRating);
     }
 
-    let handleHasRated = async (e) =>{
+    let handleHasRated = async (e) => {
 
         //1. get id from current est.
         //2. get id of current user
@@ -199,7 +211,7 @@ function EditOff(props) {
         console.log("postReview" + postReview.rate)
 
         let token = await getAccessTokenSilently();
-        if(newRateHere>=0) {
+        if (newRateHere >= 0) {
             let response = await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.reviews}`, {
                 method: 'POST',
                 headers: {
@@ -237,7 +249,7 @@ function EditOff(props) {
     //     console.log("newRate : "+newRate);
     // }
 
-    function RatingStars(){
+    function RatingStars() {
         return (
             <div>
                 {isRating ? (
@@ -247,11 +259,11 @@ function EditOff(props) {
                             name="simple-controlled"
                             onClick={handleHasRated}
                             emptyIcon={<StarBorderIcon fontSize="inherit"/>}
-                            />
+                        />
                         {/*<button onClick={handleHasRated}>Rate</button>*/}
                     </div>
 
-                ):(
+                ) : (
                     <div>
                         <Rating
                             name="simple-controlled"
@@ -259,68 +271,89 @@ function EditOff(props) {
                             emptyIcon={<StarBorderIcon fontSize="inherit"/>}
                             readOnly/>
                         <span id="totalReview">({totalReview})</span>
-                        <button onClick={handleToRate}>Rate</button>
+                        <Button
+                            id="rateButton"
+                            onClick={handleToRate}
+                            variant="contained"
+                            color="secondary"
+                            startIcon={<RateReviewIcon/>}
+                        >
+                            Rate
+                        </Button>
                     </div>
                 )}
             </div>
         );
     }
 
-    return (
-        <div style={{color: themes[themeContext.theme].foreground}}>
-            <h1>{props.establishmentType.establishmentTypeName}</h1>
-            <hr></hr>
-            <h2>{props.name}</h2>
-            <RatingStars/>
-            {/*<div>*/}
-            {/*    <Rating*/}
-            {/*        name="simple-controlled"*/}
-            {/*        value={averageRate} precision={0.5}*/}
-            {/*        emptyIcon={<StarBorderIcon fontSize="inherit"/>}*/}
-            {/*        readOnly/>*/}
-            {/*    <span id="totalReview">({totalReview})</span>*/}
-            {/*</div>*/}
-            <div>{props.address}</div>
-            <div>{props.location.npa} {props.location.city}</div>
-            <div>Distance from me : {dist} Km</div>
-            <div>
-                <EmailShareButton
-                    subject={props.name}
-                    body={"Hi,\nI just discovered this amazing establishment : " + props.name + ", on the app OpenSunday \nIt's open on Sunday !\n\n"}
-                    url={pageUrl}
-                    id="shareButton">
-                    <EmailIcon size={50} round/>
-                </EmailShareButton>
-                <FacebookShareButton
-                    url={pageUrl}
-                    quote={props.name}
-                    id="shareButton"
-                >
-                    <FacebookIcon size={50} round/>
-                </FacebookShareButton>
-                <TwitterShareButton
-                    url={pageUrl}
-                    title={props.name}
-                    id="shareButton"
-                >
-                    <TwitterIcon size={50} round/>
-                </TwitterShareButton>
-                <CopyToClipboard text={pageUrl}>
-                    <BsFiles id="copyLinkButton" size={40}/>
-                </CopyToClipboard>
+    //Function to copy url in clipboard
+    function copyCodeToClipboard() {
+        swal("Link copied !", "Url copied to the clipboard.", "success");
+        document.execCommand("copy");
+    }
+
+    try {
+        return (
+            <div style={{color: themes[themeContext.theme].foreground}}>
+                <h1>{props.establishmentType.establishmentTypeName}</h1>
+                <hr></hr>
+                <h2>{props.name}</h2>
+                <RatingStars/>
+                {/*<div>*/}
+                {/*    <Rating*/}
+                {/*        name="simple-controlled"*/}
+                {/*        value={averageRate} precision={0.5}*/}
+                {/*        emptyIcon={<StarBorderIcon fontSize="inherit"/>}*/}
+                {/*        readOnly/>*/}
+                {/*    <span id="totalReview">({totalReview})</span>*/}
+                {/*</div>*/}
+                <div>{props.address}</div>
+                <div>{props.location.npa} {props.location.city}</div>
+                <div>Distance from me : {dist} Km</div>
+                <div>
+                    <EmailShareButton
+                        subject={props.name}
+                        body={"Hi,\nI just discovered this amazing establishment : " + props.name + ", on the app OpenSunday \nIt's open on Sunday !\n\n"}
+                        url={pageUrl}
+                        id="shareButton">
+                        <EmailIcon size={50} round/>
+                    </EmailShareButton>
+                    <FacebookShareButton
+                        url={pageUrl}
+                        quote={props.name}
+                        id="shareButton"
+                    >
+                        <FacebookIcon size={50} round/>
+                    </FacebookShareButton>
+                    <TwitterShareButton
+                        url={pageUrl}
+                        title={props.name}
+                        id="shareButton"
+                    >
+                        <TwitterIcon size={50} round/>
+                    </TwitterShareButton>
+                    <BsFiles id="copyLinkButton" size={40} onClick={copyCodeToClipboard}/>
+                </div>
+                <a href={props.url}>{props.url}</a>
+                <Map id="up" center={[props.latitude, props.longitude]} zoom={16}>
+                    <TileLayer
+                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                        attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'/>
+                    <Marker
+                        position={[props.latitude, props.longitude]}
+                    >
+                    </Marker>
+                </Map>
             </div>
-            <a href={props.url}>{props.url}</a>
-            <Map id="up" center={[props.latitude, props.longitude]} zoom={16}>
-                <TileLayer
-                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                    attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'/>
-                <Marker
-                    position={[props.latitude, props.longitude]}
-                >
-                </Marker>
-            </Map>
-        </div>
-    )
+        )
+    } catch (e) {
+        return (
+            // history.push("/error404")
+            window.location.href = "/error404"
+        )
+    }
+
+
 }
 
 function EditOn(props) {

@@ -2,7 +2,6 @@ import React, {useEffect, useState} from "react";
 import "./App.css";
 import {useFormik} from 'formik';
 import * as Yup from 'yup';
-import Map from "./OurMap";
 import {useAuth0} from "@auth0/auth0-react";
 import request from "./utils/request";
 import endpoints from "./endpoints.json";
@@ -11,6 +10,7 @@ import SaveIcon from "@material-ui/icons/Save";
 import Button from "@material-ui/core/Button";
 import RotateLeftIcon from '@material-ui/icons/RotateLeft';
 import swal from 'sweetalert';
+import OurMap from "./OurMap";
 
 export class EstablishmentForm extends React.Component {
 
@@ -182,7 +182,7 @@ function SignupForm() {
         <div>
             <p>Click on the map to get the coordinate of your establishment</p>
             <div id="up">
-                <Map updateCoordinates={updateCoordinates}></Map>
+                <OurMap updateCoordinates={updateCoordinates}></OurMap>
             </div>
             <div id="down">
                 <form onSubmit={formik.handleSubmit}>
