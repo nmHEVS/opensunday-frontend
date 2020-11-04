@@ -106,6 +106,7 @@ function EditOff(props) {
     let [averageRate, setAverageRate] = useState(0);
     let [totalReview, setTotalReview] = useState(0);
     let [isRating, setIsRating] = useState(false);
+    let history = useHistory();
 
     let {
         loading,
@@ -144,6 +145,7 @@ function EditOff(props) {
                 `${process.env.REACT_APP_SERVER_URL}${endpoints.averageRate}${props.id}`,
                 getAccessTokenSilently,
                 loginWithRedirect
+
             );
             setAverageRate(rate);
         }
@@ -166,7 +168,6 @@ function EditOff(props) {
     try {
         let test = props.establishmentType.establishmentTypeName;
     } catch (e) {
-        window.location.href = "/";
     }
 
     let themeContext = useContext(ThemeContext);

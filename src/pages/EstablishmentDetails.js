@@ -4,15 +4,16 @@ import Establishment from "../components/Establishment";
 import {useAuth0} from "@auth0/auth0-react";
 import request from "../utils/request";
 import endpoints from "../endpoints.json";
-import {Link} from "react-router-dom";
+import {Link, useHistory} from "react-router-dom";
 
-export default function EstablishmentDetails({ match }) {
+export default function EstablishmentDetails({match}) {
     let establishmentID = +match.params.id;
 
     let [establishment, setEstablishment] = useState(null);
 
-    let { loginWithRedirect, getAccessTokenSilently } = useAuth0();
+    let {loginWithRedirect, getAccessTokenSilently} = useAuth0();
 
+    let history = useHistory();
 
 
     // Get POI details
@@ -25,6 +26,8 @@ export default function EstablishmentDetails({ match }) {
             );
 
             setEstablishment(establishment);
+
+            // setEstablishment(establishment);
             // console.log(establishment)
         }
 
