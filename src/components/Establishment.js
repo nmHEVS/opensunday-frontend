@@ -16,7 +16,7 @@ import {useFormik} from "formik";
 import * as Yup from "yup";
 import OurMap from "../OurMap";
 import {BsFiles} from "react-icons/all";
-import {Link} from 'react-router-dom';
+import {Link, useHistory} from 'react-router-dom';
 import DeleteIcon from '@material-ui/icons/Delete';
 import Button from '@material-ui/core/Button';
 import SaveIcon from '@material-ui/icons/Save';
@@ -24,29 +24,36 @@ import EditIcon from '@material-ui/icons/Edit';
 import Rating from "@material-ui/lab/Rating";
 import StarBorderIcon from '@material-ui/icons/StarBorder';
 import swal from 'sweetalert';
-import {DropdownItem} from "reactstrap";
 import {ThemeContext, themes} from "../ThemeContext";
 
 export default function Establishment(props) {
     const {id, name, latitude, longitude, address, url, establishmentType, establishmentTypeId, location, locationId} = props;
-
     const [editMode, setEditMode] = useState(false);
+    let history = useHistory();
+    let {
+        loading,
+        loginWithRedirect,
+        logout,
+        getAccessTokenSilently,
+        isAuthenticated,
+    } = useAuth0();
 
     function switchToEdit() {
         setEditMode(!editMode);
     }
 
     async function deleteEstablishment() {
-        let response = await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.establishments}/${props.id}`, {
+        let token = await getAccessTokenSilently();
+        await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.establishments}/${props.id}`, {
             method: 'DELETE',
             headers: {
+                Accept: "application/json",
+                Authorization: `Bearer ${token}`,
                 'Content-Type': 'application/json',
-                'Authorization': `${endpoints.bearerToken}`
             },
         });
-        // swal("Delete done.", "The establishment has been deleted.", "success");
-        let temp = await response.json();
-        // alert("Establishment has been deleted !");
+        await swal("Delete done.", "The establishment has been deleted.", "success");
+        history.push("/list/establishment");
     }
 
     return (
@@ -73,20 +80,20 @@ export default function Establishment(props) {
                         >
                             Edit
                         </Button>
-                        <Link className="App-link" to="/list/establishment" style={{textDecoration: 'none'}}>
-                            <Button
-                                id="buttonDelete"
-                                variant="contained"
-                                color="secondary"
-                                startIcon={<DeleteIcon/>}
-                                onClick={deleteEstablishment}
-                                tag={Link} to="/list/establishment"
-                            >
-                                {/*<Link className="App-link" to="/list/establishment" style={{textDecoration: 'none'}}>*/}
-                                Delete
-                                {/*</Link>*/}
-                            </Button>
-                        </Link>
+                        {/*<Link className="App-link" to="/list/establishment" style={{textDecoration: 'none'}}>*/}
+                        <Button
+                            id="buttonDelete"
+                            variant="contained"
+                            color="secondary"
+                            startIcon={<DeleteIcon/>}
+                            onClick={deleteEstablishment}
+                            tag={Link} to="/list/establishment"
+                        >
+                            {/*<Link className="App-link" to="/list/establishment" style={{textDecoration: 'none'}}>*/}
+                            Delete
+                            {/*</Link>*/}
+                        </Button>
+                        {/*</Link>*/}
                     </div>
             }
         </div>
@@ -154,9 +161,9 @@ function EditOff(props) {
         getDistanceFromLatLonInKm();
     }, []);
 
-    try{
+    try {
         let test = props.establishmentType.establishmentTypeName;
-    }catch (e){
+    } catch (e) {
         window.location.href = "/";
     }
 
@@ -222,6 +229,7 @@ function EditOn(props) {
     let [establishmentsTypes, setEstablishmentsTypes] = useState([]);
     let locationExists = false;
     let locationIdSaved;
+    let history = useHistory();
     let {
         loading,
         loginWithRedirect,
@@ -293,13 +301,14 @@ function EditOn(props) {
                 }
             }
 
+            let token = await getAccessTokenSilently();
             //According to the test, make the post of the location or not
             if (locationExists) {
                 //Put the locationId for the post
                 values.locationId = locationIdSaved;
                 //Post the establishment
                 try {
-                    let newEstablishment = await putEstablishment(values);
+                    let newEstablishment = await putEstablishment(values, token);
                 } catch (e) {
                 }
                 //If the location doesn't exist post the new location
@@ -307,20 +316,22 @@ function EditOn(props) {
                 let response = await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.locations}`, {
                     method: 'POST',
                     headers: {
+                        Accept: "application/json",
+                        Authorization: `Bearer ${token}`,
                         'Content-Type': 'application/json',
-                        'Authorization': `${endpoints.bearerToken}`
                     },
                     body: JSON.stringify(postLocation),
                 });
                 let location = await response.json();
                 values.locationId = location.id;
                 try {
-                    let newEstablishment = await putEstablishment(values);
+                    let newEstablishment = await putEstablishment(values, token);
                 } catch (e) {
                 }
             }
             await swal("Edit done.", "Modifications has been saved !", "success");
-            // alert("Establishment has been deleted !");
+
+            history.push("/list/establishment/");
         }
     });
 
@@ -479,12 +490,13 @@ function EditOn(props) {
 }
 
 //Function to post an establishment according to the values in parameter
-async function putEstablishment(values) {
+async function putEstablishment(values, token) {
     let response = await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.establishments}/${values.id}`, {
         method: 'PUT',
         headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json',
-            'Authorization': `${endpoints.bearerToken}`
         },
         body: JSON.stringify(values),
     });

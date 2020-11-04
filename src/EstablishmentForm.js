@@ -125,7 +125,7 @@ function SignupForm() {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': `${endpoints.bearerToken}`
+                        'Authorization': `Bearer ${getAccessTokenSilently}`
                     },
                     body: JSON.stringify(postLocation),
                 });
@@ -141,11 +141,13 @@ function SignupForm() {
 
     //Function to post an establishment according to the values in parameter
     async function postEstablishment(values) {
+        let token = await getAccessTokenSilently();
         let response = await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.establishments}`, {
             method: 'POST',
             headers: {
+                Accept: "application/json",
+                Authorization: `Bearer ${token}`,
                 'Content-Type': 'application/json',
-                'Authorization': `${endpoints.bearerToken}`
             },
             body: JSON.stringify(values),
         });

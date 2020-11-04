@@ -45,7 +45,6 @@ export function EstablishmentsList(){
             );
 
             if (establishmentsTypes && establishmentsTypes.length > 0) {
-                console.log(establishmentsTypes);
                 setEstablishmentsTypes(establishmentsTypes);
             }
         }
