@@ -31,6 +31,7 @@ export default function Establishment(props) {
     const [editMode, setEditMode] = useState(false);
     let history = useHistory();
     let {
+        user,
         loading,
         loginWithRedirect,
         logout,
@@ -55,6 +56,8 @@ export default function Establishment(props) {
         await swal("Delete done.", "The establishment has been deleted.", "success");
         history.push("/list/establishment");
     }
+
+    console.log(user.name);
 
     return (
         <div className="establishment">
@@ -195,13 +198,13 @@ function EditOff(props) {
         }
         console.log("postReview" + postReview.rate)
 
-
+        let token = await getAccessTokenSilently();
         if(newRateHere>=0) {
             let response = await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.reviews}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `${endpoints.bearerToken}`
+                    'Authorization': `Bearer ${token}`
                 },
                 body: JSON.stringify(postReview),
             });

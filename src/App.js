@@ -99,19 +99,19 @@ function App() {
 
         async function postUsers(values) {
 
-            let response = await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.users}`,
-                {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `${endpoints.bearerToken}`
-                    },
-                    body: JSON.stringify(values),
-                });
+            // let response = await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.users}`,
+            //     {
+            //         method: 'POST',
+            //         headers: {
+            //             'Content-Type': 'application/json',
+            //             'Authorization': `${endpoints.bearerToken}`
+            //         },
+            //         body: JSON.stringify(values),
+            //     });
 
 
-            let data = await response.json();
-            return data;
+            // let data = await response.json();
+            // return data;
 
 
         }
