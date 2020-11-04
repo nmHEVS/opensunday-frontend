@@ -107,7 +107,6 @@ export function EstablishmentsList(){
                 name="establishmentType"
                 type="text"
                 onChange={handleSelect}
-                // value={establishmentTypeSelected}
                 placeholder="Establishment type"
             >
                 <option value={0} >All</option>
