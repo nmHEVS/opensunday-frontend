@@ -106,6 +106,8 @@ function EditOff(props) {
     let [averageRate, setAverageRate] = useState(0);
     let [totalReview, setTotalReview] = useState(0);
     let [isRating, setIsRating] = useState(false);
+    let [newRate, setNewRate] = useState(0);
+
 
     let {
         loading,
@@ -176,22 +178,35 @@ function EditOff(props) {
         console.log(isRating);
     }
 
-    let handleHasRated = async () =>{
-        let postReview = {
-            rate: 10,
-            userId: 109,
-            establishmentId: 3
-        }
+    let handleHasRated = async (e) =>{
 
-        let response = await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.reviews}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `${endpoints.bearerToken}`
-            },
-            body: JSON.stringify(postReview),
-        });
-        let data = await response.json();
+        //1. get id from current est.
+        //2. get id of current user
+        //3. get rate from start, e.target.value
+
+
+        let newRateHere = Number(e.target.value);
+        let idEstReview = props.id;
+        console.log(newRateHere)
+        let postReview = {
+            rate: newRateHere,
+            userId: 109,
+            establishmentId: idEstReview
+        }
+        console.log("postReview" + postReview.rate)
+
+
+        if(newRateHere>=0) {
+            let response = await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.reviews}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `${endpoints.bearerToken}`
+                },
+                body: JSON.stringify(postReview),
+            });
+            let data = await response.json();
+        }
 
         let rate = await request(
             `${process.env.REACT_APP_SERVER_URL}${endpoints.averageRate}${props.id}`,
@@ -213,13 +228,24 @@ function EditOff(props) {
         console.log(rate);
     }
 
+    // let uploadNewRateValue = (e) => {
+    //     console.log(e.target.value);
+    //     setNewRate(Number(e.target.value));
+    //     console.log("newRate : "+newRate);
+    // }
+
     function RatingStars(){
         return (
             <div>
                 {isRating ? (
                     <div>
                         <span>You can rate here</span>
-                        <button onClick={handleHasRated}>Rate</button>
+                        <Rating
+                            name="simple-controlled"
+                            onClick={handleHasRated}
+                            emptyIcon={<StarBorderIcon fontSize="inherit"/>}
+                            />
+                        {/*<button onClick={handleHasRated}>Rate</button>*/}
                     </div>
 
                 ):(

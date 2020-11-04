@@ -137,7 +137,7 @@ function App() {
 
             try {
                 let user = await postUsers(postUser);
-                console.log('posted user name', user.name)
+                //console.log('posted user name', user.name)
             }catch(err){
                 console.error('error posting user', err)
             }
@@ -151,9 +151,9 @@ function App() {
 
             for(let i=0; i<users.length;i++) {
                 if(users[i].username == user.name){
-                    console.log(users[i].username)
+                    //console.log(users[i].username)
 
-                    console.log("User exists already")
+                    //console.log("User exists already")
                 }else{
 
 
