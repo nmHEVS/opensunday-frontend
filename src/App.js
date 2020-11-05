@@ -79,93 +79,101 @@ function App() {
 
 
 
-    // useEffect(()=>{
-    //
-    //
-    //     async function getUser() {
-    //         let users = await request(
-    //             `${process.env.REACT_APP_SERVER_URL}${endpoints.users}`,
-    //             getAccessTokenSilently,
-    //             loginWithRedirect
-    //         );
-    //
-    //         if (users && users.length > 0) {
-    //             console.log(users);
-    //             setUsers(users);
-    //         }
-    //
-    //
-    //     }
-    //
-    //     async function postUsers(values) {
-    //
-    //         // let response = await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.users}`,
-    //         //     {
-    //         //         method: 'POST',
-    //         //         headers: {
-    //         //             'Content-Type': 'application/json',
-    //         //             'Authorization': `${endpoints.bearerToken}`
-    //         //         },
-    //         //         body: JSON.stringify(values),
-    //         //     });
-    //
-    //
-    //         // let data = await response.json();
-    //         // return data;
-    //
-    //
-    //     }
-    //
-    //     async function postUser(){
-    //         const str = user.name;
-    //         const vr = str.substring(0, 5);
-    //         const ps = '12233';
-    //         const usType = 1;
-    //         console.log(user.name)
-    //
-    //         let postUser = {
-    //             name: vr,
-    //             surname: user.nickname,
-    //             username: user.name,
-    //             password: ps,
-    //             userTypeId: usType,
-    //
-    //         };
-    //
-    //         try {
-    //             let user = await postUsers(postUser);
-    //             //console.log('posted user name', user.name)
-    //         }catch(err){
-    //             console.error('error posting user', err)
-    //         }
-    //
-    //
-    //     }
-    //
-    //       getUser();
-    //
-    //     if(isAuthenticated) {
-    //
-    //         for(let i=0; i<users.length;i++) {
-    //             if(users[i].username == user.name){
-    //                 //console.log(users[i].username)
-    //
-    //                 //console.log("User exists already")
-    //             }else{
-    //
-    //
-    //             postUser();
-    //
-    //
-    //             }
-    //         }
-    //
-    //
-    //
-    //     }
-    //
-    //
-    // },[isAuthenticated]);
+    useEffect(()=>{
+
+  if(isAuthenticated) {
+      async function getUser() {
+          let users = await request(
+              `${process.env.REACT_APP_SERVER_URL}${endpoints.users}`,
+              getAccessTokenSilently,
+              loginWithRedirect
+          );
+
+          if (users && users.length > 0) {
+              console.log(users);
+              await setUsers(users);
+          }
+
+          await postUser(users);
+
+          //console.log(users.length)
+      }
+
+      getUser();
+
+
+  }
+
+    },[isAuthenticated]);
+
+    async function postUser(users){
+
+        if(isAuthenticated) {
+
+            const ps = '12233';
+            const usType = 1;
+
+
+            let postUser = {
+                name: user.nickname,
+                surname: user.nickname,
+                username: user.name,
+                password: ps,
+                userTypeId: usType,
+
+            };
+
+            try {
+
+                console.log(users.length)
+                for (let i = 0; i < users.length; i++) {
+                    console.log("yoimmmmfn")
+                    if (users[i].username === user.name) {
+                        console.log(users[i].username)
+                        console.log("sssssssssssssssssssssssssssss")
+                        console.log(users[i].username)
+
+                        console.log("User exists already")
+                        userExists = true;
+                    }
+                }
+
+                if (!userExists) {
+
+                    let user = await postUsers(postUser);
+                    console.log('posted user name', user.name)
+
+                }
+
+
+            } catch (err) {
+                console.error('error posting user', err)
+            }
+
+        }
+    }
+
+
+    async function postUsers(values) {
+
+        let response = await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.users}`,
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `${endpoints.bearerToken}`
+                },
+                body: JSON.stringify(values),
+            });
+
+
+        let data = await response.json();
+        return data;
+
+
+    }
+
+
 
 
 

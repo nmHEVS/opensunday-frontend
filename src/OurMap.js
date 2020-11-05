@@ -155,22 +155,6 @@ export function Points() {
         getEstablishments();
     }, []);
 
-
-    restaurantIcon = L.icon({
-        iconUrl: leafRestaurant,
-        iconSize: [30, 34],
-        iconAnchor: [12, 35],
-        popupAnchor: [-3, -50]
-    });
-
-    const PositionIcon = L.icon({
-        iconUrl: leafPosition,
-        iconSize: [30, 34],
-        iconAnchor: [12, 35],
-        popupAnchor: [-3, -50]
-
-    });
-
     function createIcon(url) {
         return new L.Icon({
             iconUrl: url,
@@ -212,8 +196,8 @@ export function Points() {
                             <Popup>
                                 <h3>{establishment.establishmentType.establishmentTypeName}</h3>
                                 <h5>{establishment.name}</h5>
-                                <div>{establishment.location.npa} {establishment.location.city}</div>
                                 <div>{establishment.address}</div>
+                                <div>{establishment.location.npa} {establishment.location.city}</div>
                                 <div>Dimanche: 08:00-22:00</div>
                                 <div>
                                     <Link
