@@ -110,67 +110,49 @@ function App() {
 
         if(isAuthenticated) {
 
-            const ps = '12233';
             const usType = 1;
 
-
             let postUser = {
-                name: user.nickname,
-                surname: user.nickname,
-                username: user.name,
-                password: ps,
+                pseudo: user.nickname,
+                email: user.name,
                 userTypeId: usType,
-
             };
 
             try {
-
                 console.log(users.length)
                 for (let i = 0; i < users.length; i++) {
-                    console.log("yoimmmmfn")
-                    if (users[i].username === user.name) {
-                        console.log(users[i].username)
-                        console.log("sssssssssssssssssssssssssssss")
-                        console.log(users[i].username)
-
-                        console.log("User exists already")
+                    if (users[i].email === user.name) {
+                        // console.log("User exists already")
                         userExists = true;
                     }
                 }
-
                 if (!userExists) {
-
-                    let user = await postUsers(postUser);
-                    console.log('posted user name', user.name)
-
+                    await postUsers(postUser);
+                    // console.log('posted user name', user.name)
                 }
-
 
             } catch (err) {
                 console.error('error posting user', err)
             }
-
         }
     }
 
 
     async function postUsers(values) {
-
+        let token = await getAccessTokenSilently();
         let response = await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.users}`,
             {
                 method: 'POST',
                 headers: {
+                    Accept: "application/json",
+                    Authorization: `Bearer ${token}`,
                     'Content-Type': 'application/json',
-                    'Authorization': `${endpoints.bearerToken}`
                 },
                 body: JSON.stringify(values),
             });
 
-
         let data = await response.json();
         return data;
-
-
     }
 
 
