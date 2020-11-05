@@ -110,7 +110,8 @@ function App() {
 
         if(isAuthenticated) {
 
-            const usType = 1;
+            //New user is a User type (not an Admin)
+            const usType = 2;
 
             let postUser = {
                 pseudo: user.nickname,

@@ -78,7 +78,7 @@ class MapContainer extends Component {
             iconUrl: leafPosition,
             iconSize: [30, 34],
             iconAnchor: [12, 35],
-            popupAnchor: [-3, -50]
+            popupAnchor: [3, -35]
 
         });
 
@@ -160,7 +160,7 @@ export function Points() {
             iconUrl: url,
             iconSize: [30, 34],
             iconAnchor: [12, 35],
-            popupAnchor: [-3, -50],
+            popupAnchor: [0, -35],
         });
     }
 
@@ -180,6 +180,8 @@ export function Points() {
                 return createIcon('https://www.flaticon.com/svg/static/icons/svg/633/633600.svg');
             case "Theater":
                 return createIcon('https://www.flaticon.com/svg/static/icons/svg/860/860331.svg');
+            case "Pharmacy":
+                return createIcon('https://www.flaticon.com/svg/static/icons/svg/883/883407.svg');
         }
         return createIcon('https://www.flaticon.com/svg/static/icons/svg/1476/1476223.svg');
     }

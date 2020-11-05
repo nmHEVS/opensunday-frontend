@@ -34,7 +34,7 @@ export default function Establishment(props) {
     const {id, name, latitude, longitude, address, url, establishmentType, establishmentTypeId, location, locationId} = props;
     const [editMode, setEditMode] = useState(false);
     let history = useHistory();
-    const [willBeDeleted, setWillBeDeleted] = useState(false);
+    let [isAdmin, setIsAdmin] = useState(false);
     let {
         user,
         loading,
@@ -74,12 +74,30 @@ export default function Establishment(props) {
             }
         });
 
-        return result ;
+        return result;
     }
 
-    // console.log(user.name);
+    useEffect(() => {
+        //If the connected user is an admin or not
+        //Admin => edit and delete
+        //User => only display
+        async function getCurrentUserTypeId() {
+            let userConnected = await request(
+                `${process.env.REACT_APP_SERVER_URL}${endpoints.users}${8}`,
+                getAccessTokenSilently,
+                loginWithRedirect
+            );
+            console.log(userConnected);
 
-    let isAdmin = true ;
+            if (userConnected.userTypeId === 1) {
+                setIsAdmin(true);
+            } else {
+                setIsAdmin(false);
+            }
+        }
+
+        getCurrentUserTypeId();
+    }, []);
 
     return (
         <div className="establishment">
@@ -90,6 +108,9 @@ export default function Establishment(props) {
                     :
                     <EditOff {...props}/>
                 // <EditOn {...props}/>
+            }
+            {
+                console.log(isAdmin)
             }
             {
                 isAdmin ?
@@ -212,12 +233,12 @@ function EditOff(props) {
 
     let themeContext = useContext(ThemeContext);
 
-    let handleToRate = () =>{
+    let handleToRate = () => {
         setIsRating(!isRating);
         console.log(isRating);
     }
 
-    let handleHasRated = async (e) =>{
+    let handleHasRated = async (e) => {
 
 
         // get id of current user
@@ -246,9 +267,9 @@ function EditOff(props) {
             getAccessTokenSilently,
             loginWithRedirect
         );
-        console.log("idReview : "+idExistingReview)
+        console.log("idReview : " + idExistingReview)
 
-        if(idExistingReview<0) {
+        if (idExistingReview < 0) {
             //review doesn't exist : create it
             console.log("New review");
             postReview = {
@@ -270,7 +291,7 @@ function EditOff(props) {
                 });
                 let data = await response.json();
             }
-        }else {
+        } else {
             //review exist : upload it
             postReview = {
                 id: idExistingReview,
@@ -323,7 +344,7 @@ function EditOff(props) {
     //     console.log("newRate : "+newRate);
     // }
 
-    function RatingStars(){
+    function RatingStars() {
         return (
             <div>
                 {isRating ? (
@@ -337,7 +358,7 @@ function EditOff(props) {
                         {/*<button onClick={handleHasRated}>Rate</button>*/}
                     </div>
 
-                ):(
+                ) : (
                     <div>
                         <Rating
                             name="simple-controlled"
@@ -366,12 +387,18 @@ function EditOff(props) {
         document.execCommand("copy");
     }
 
-    const PositionIcon = L.icon({
+    const PositionIcon = new L.icon({
         iconUrl: leafPosition,
         iconSize: [30, 34],
         iconAnchor: [12, 35],
-        popupAnchor: [-3, -50]
+        popupAnchor: [3, -35]
+    });
 
+    const EstablishmentIcon = new L.icon({
+        iconUrl: 'https://www.flaticon.com/svg/static/icons/svg/1397/1397898.svg',
+        iconSize: [40, 40],
+        iconAnchor: [12, 35],
+        popupAnchor: [8, -35]
     });
 
     try {
@@ -423,14 +450,18 @@ function EditOff(props) {
                         attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'/>
                     <Marker
                         position={[props.latitude, props.longitude]}
+                        icon={EstablishmentIcon}
                     >
+                        <Popup>
+                            <p>Establishment position</p>
+                        </Popup>
                     </Marker>
                     <Marker
                         position={[latitude, longitude]}
                         icon={PositionIcon}
                     >
                         <Popup>
-                            <h4>You are here!</h4>
+                            <h5>You are here!</h5>
                         </Popup>
                     </Marker>
                 </Map>
