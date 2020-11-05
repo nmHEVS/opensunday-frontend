@@ -35,7 +35,6 @@ export default function Establishment(props) {
     const [editMode, setEditMode] = useState(false);
     let history = useHistory();
     let [isAdmin, setIsAdmin] = useState(false);
-    let [currentUser, setCurrentUser] = useState([]);
     let {
         user,
         loading,
@@ -81,7 +80,6 @@ export default function Establishment(props) {
     useEffect(() => {
         //Get if user is an admin or not
         async function getUserIdByEmail(user) {
-            // console.log(user.name);
             let userConnected = await request(
                 `${process.env.REACT_APP_SERVER_URL}${endpoints.userByEmail}${user.name}`,
                 getAccessTokenSilently,
@@ -89,13 +87,11 @@ export default function Establishment(props) {
             );
 
             if (userConnected.userTypeId == 1) {
-                await setIsAdmin(true);
+                setIsAdmin(true);
             } else {
-                await setIsAdmin(false);
+                setIsAdmin(false);
             }
         }
-
-
 
         getUserIdByEmail(user);
     }, []);
@@ -109,9 +105,6 @@ export default function Establishment(props) {
                     :
                     <EditOff {...props}/>
                 // <EditOn {...props}/>
-            }
-            {
-                console.log(isAdmin)
             }
             {
                 isAdmin ?
@@ -155,9 +148,11 @@ function EditOff(props) {
     let [newRate, setNewRate] = useState(0);
     let [latitude, setLatitude] = useState(0);
     let [longitude, setLongitude] = useState(0);
+    let [currentUser, setCurrentUser] = useState([]);
 
 
     let {
+        user,
         loading,
         loginWithRedirect,
         logout,
@@ -222,6 +217,19 @@ function EditOff(props) {
             setTotalReview(totalReview);
         }
 
+        //Get if user is an admin or not
+        async function getUserIdByEmail(user) {
+            let userConnected = await request(
+                `${process.env.REACT_APP_SERVER_URL}${endpoints.userByEmail}${user.name}`,
+                getAccessTokenSilently,
+                loginWithRedirect
+            );
+
+            await setCurrentUser(userConnected);
+        }
+
+        getUserIdByEmail(user);
+
         getTotalReviews();
         getAverageRate();
         getDistanceFromLatLonInKm();
@@ -236,28 +244,13 @@ function EditOff(props) {
 
     let handleToRate = () => {
         setIsRating(!isRating);
-        console.log(isRating);
     }
 
     let handleHasRated = async (e) => {
 
-
-        // get id of current user
-        //
-        // async function getCurrentUserId() {
-        //     let rate = await request(
-        //         `${process.env.REACT_APP_SERVER_URL}${endpoints.averageRate}${props.id}`,
-        //         getAccessTokenSilently,
-        //         loginWithRedirect
-        //     );
-        //     setAverageRate(rate);
-        // }
-
-
         let newRateHere = Number(e.target.value);
-        console.log(newRateHere)
         let idEstReview = props.id;
-        let idUserReview = 109;
+        let idUserReview = currentUser.id;
         let idExistingReview;
         let postReview;
         let token = await getAccessTokenSilently();
@@ -268,17 +261,14 @@ function EditOff(props) {
             getAccessTokenSilently,
             loginWithRedirect
         );
-        console.log("idReview : " + idExistingReview)
 
         if (idExistingReview < 0) {
             //review doesn't exist : create it
-            console.log("New review");
             postReview = {
                 rate: newRateHere,
                 userId: idUserReview,
                 establishmentId: idEstReview
             }
-            console.log("postReview" + postReview.rate)
 
             if (newRateHere >= 0) {
                 let response = await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.reviews}`, {
@@ -301,8 +291,6 @@ function EditOff(props) {
                 establishmentId: idEstReview
             }
 
-            console.log("postReview" + postReview.rate)
-
             if (newRateHere >= 0) {
                 await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.reviews}/${idExistingReview}`, {
                     method: 'PUT',
@@ -314,9 +302,6 @@ function EditOff(props) {
                     body: JSON.stringify(postReview),
                 });
             }
-
-            console.log("Existing review");
-
         }
 
         let rate = await request(
@@ -335,15 +320,7 @@ function EditOff(props) {
 
 
         setIsRating(!isRating);
-        console.log(isRating);
-        console.log(rate);
     }
-
-    // let uploadNewRateValue = (e) => {
-    //     console.log(e.target.value);
-    //     setNewRate(Number(e.target.value));
-    //     console.log("newRate : "+newRate);
-    // }
 
     function RatingStars() {
         return (
@@ -513,13 +490,13 @@ function EditOn(props) {
                 .max(30, 'Must be 30 characters or less'),
             npa: Yup.string()
                 .min(4, 'Must be 4 characters or more')
-                .max(10, 'Must be 20 characters or less'),
+                .max(10, 'Must be 10 characters or less'),
             location: Yup.string()
                 .min(2, 'Must be 2 characters or more')
-                .max(20, 'Must be 20 characters or less'),
+                .max(50, 'Must be 50 characters or less'),
             address: Yup.string()
                 .min(5, 'Must be 5 characters or more')
-                .max(20, 'Must be 20 characters or less'),
+                .max(50, 'Must be 50 characters or less'),
             url: Yup.string()
                 .min(3, 'Must be 3 characters or more')
         }),
