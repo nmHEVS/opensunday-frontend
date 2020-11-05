@@ -307,7 +307,7 @@ function EditOff(props) {
             <div>
                 {isRating ? (
                     <div>
-                        <span>You can rate here</span>
+                        <span>Add your rate</span>
                         <Rating
                             name="simple-controlled"
                             onClick={handleHasRated}
@@ -324,7 +324,15 @@ function EditOff(props) {
                             emptyIcon={<StarBorderIcon fontSize="inherit"/>}
                             readOnly/>
                         <span id="totalReview">({totalReview})</span>
-                        <button onClick={handleToRate}>Rate</button>
+                        <Button
+                            id="rateButton"
+                            onClick={handleToRate}
+                            variant="contained"
+                            color="secondary"
+                            startIcon={<RateReviewIcon/>}
+                        >
+                            Rate
+                        </Button>
                     </div>
                 )}
             </div>
