@@ -25,7 +25,7 @@ function Error404() {
                 color="secondary"
                 onClick={makeDonation}
             >
-                Make a donation
+                Go back to the map
             </Button>
         </div>
 

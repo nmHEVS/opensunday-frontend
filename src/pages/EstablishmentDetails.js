@@ -26,13 +26,10 @@ export default function EstablishmentDetails({match}) {
             );
 
             setEstablishment(establishment);
-
-            // setEstablishment(establishment);
-            // console.log(establishment)
         }
 
         getEstablishment();
-    }, [establishmentID, getAccessTokenSilently, loginWithRedirect, establishment]);
+    }, [establishmentID, getAccessTokenSilently, loginWithRedirect]);
 
     return (
         <div id="fullWidth">

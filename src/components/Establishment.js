@@ -47,36 +47,23 @@ export default function Establishment(props) {
 
     async function deleteEstablishment() {
         let token = await getAccessTokenSilently();
-        let result = await swal({
-            title: "Are you sure?",
-            text: "Once deleted, you will not be able to recover this establishment !",
-            icon: "warning",
-            buttons: true,
-            dangerMode: true,
-        }).then((willDelete) => {
-            if (willDelete) {
-                fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.establishments}/${props.id}`, {
-                    method: 'DELETE',
-                    headers: {
-                        Accept: "application/json",
-                        Authorization: `Bearer ${token}`,
-                        'Content-Type': 'application/json',
-                    },
-                });
-                // let data = await response.json();
-                swal("Delete done.", "The establishment has been deleted.", "success");
-                history.push("/list/establishment");
-            } else {
-                swal("The deletion has been cancelled.");
-            }
+        let response = await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.establishments}/${props.id}`, {
+            method: 'DELETE',
+            headers: {
+                Accept: "application/json",
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json',
+            },
         });
-
-        return result;
+        let data = await response.json();
+        swal("Delete done.", "The establishment has been deleted.", "success");
+        history.push("/list/establishment");
+        return data;
     }
 
     useEffect(() => {
 
-        try{
+        try {
             //Get if user is an admin or not
             async function getUserIdByEmail(user) {
                 let userConnected = await request(
@@ -91,8 +78,9 @@ export default function Establishment(props) {
                     setIsAdmin(false);
                 }
             }
+
             getUserIdByEmail(user);
-        }catch (e){
+        } catch (e) {
             return (
                 window.location.href = "/error404"
             )
@@ -168,12 +156,9 @@ function EditOff(props) {
     }
 
     useEffect(() => {
-
-
         const location = window.navigator && window.navigator.geolocation;
 
         function getDistanceFromLatLonInKm() {
-
             if (location) {
                 location.getCurrentPosition((position) => {
 
@@ -561,6 +546,7 @@ function EditOn(props) {
                 }
             }
             await swal("Edit done.", "Modifications has been saved !", "success");
+            history.push("/list/establishment");
         }
     });
 
