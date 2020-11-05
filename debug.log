@@ -17,3 +17,4 @@
 [1102/230500.392:ERROR:directory_reader_win.cc(43)] FindFirstFile: Le chemin d’accčs spécifié est introuvable. (0x3)
 [1101/144342.276:ERROR:directory_reader_win.cc(43)] FindFirstFile: Le chemin d’accčs spécifié est introuvable. (0x3)
 
+[1105/082650.461:ERROR:directory_reader_win.cc(43)] FindFirstFile: Le chemin d�acc�s sp�cifi� est introuvable. (0x3)
