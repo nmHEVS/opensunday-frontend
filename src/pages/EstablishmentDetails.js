@@ -32,7 +32,7 @@ export default function EstablishmentDetails({match}) {
         }
 
         getEstablishment();
-    }, [establishmentID, getAccessTokenSilently, loginWithRedirect]);
+    }, [establishmentID, getAccessTokenSilently, loginWithRedirect, establishment]);
 
     return (
         <div id="fullWidth">

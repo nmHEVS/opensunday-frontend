@@ -2244,6 +2244,30 @@ adjust-sourcemap-loader@2.0.0:
     object-path "0.11.4"
     regex-parser "2.2.10"
 
+ag-grid-angular@^24.1.0:
+  version "24.1.0"
+  resolved "https://registry.yarnpkg.com/ag-grid-angular/-/ag-grid-angular-24.1.0.tgz#98c238003bf0dd46d43a2fd7d2f1aec1eeeafbac"
+  integrity sha512-rCcRWq6iC8yvRBk99qANSiiZGsUDo9E3PcFVDd7Xs2thRuJ/yrVhCSZEkCG/SlXHX2ZaMxzIxI+2ChPV2MJSEQ==
+  dependencies:
+    tslib "^1.10.0"
+
+ag-grid-community@^24.1.0:
+  version "24.1.0"
+  resolved "https://registry.yarnpkg.com/ag-grid-community/-/ag-grid-community-24.1.0.tgz#1e3cab51211822e08d56f03a491b7c0deaa398e6"
+  integrity sha512-pWnWphuDcejZ8ahf6C734EpCx3XQ6dHEZWMWTlCdHNT0mZBLJ4YKCGACX+ttAEtSX2MGM3G13JncvuratUlYag==
+
+ag-grid-react@^24.1.1:
+  version "24.1.1"
+  resolved "https://registry.yarnpkg.com/ag-grid-react/-/ag-grid-react-24.1.1.tgz#56d0086316d262cf6e5804e2b4bdeeb5fb3279b9"
+  integrity sha512-MuITqlVo1QD48DzLFFOcX/8eG7XvezkgqymSJrIo4JI6znAqNRpnRgDt+oFHRDgK1NSDh6rZRXGFZI/DRYWq0A==
+  dependencies:
+    prop-types "^15.6.2"
+
+ag-grid@^18.1.2:
+  version "18.1.2"
+  resolved "https://registry.yarnpkg.com/ag-grid/-/ag-grid-18.1.2.tgz#d98b3dd824b9cb82d9f638e4bab5a5771513869b"
+  integrity sha512-HtJt8iFcRKCBj5UHBDmwSLLr72F3XDACeBNarH4nJWFHIqcnu7u0Ifrd2nftPmfEBj6YjFHawDqcZL2yo3YfmQ==
+
 aggregate-error@^3.0.0:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/aggregate-error/-/aggregate-error-3.0.1.tgz#db2fe7246e536f40d9b5442a39e117d7dd6a24e0"
@@ -9459,6 +9483,13 @@ react-share@^4.3.1:
   dependencies:
     classnames "^2.2.5"
     jsonp "^0.2.1"
+
+react-table-filter@^2.0.2:
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/react-table-filter/-/react-table-filter-2.0.2.tgz#2021ecf8c466c91bc4356b96f2f01f5ad972461a"
+  integrity sha512-ewjsmYmUyy/0E/yXPjOwSnpmKubqhNPNMiHJcnlyuqxxBRkC5/+exnTFOflJomEnW5EcxmsoSOJigpOERPHxWQ==
+  dependencies:
+    prop-types "^15.6.0"
 
 react-transition-group@^2.3.1:
   version "2.9.0"
