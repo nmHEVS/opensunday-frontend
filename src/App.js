@@ -16,6 +16,7 @@ import NavigationBar from "./NavigationBar";
 import OurMap from "./OurMap";
 import Profile from "./components/Profile";
 import Error404 from "./pages/Error404";
+import {UserManagement} from "./UserManagement";
 
 
 function App() {
@@ -195,10 +196,8 @@ function App() {
                         />
                         <Route path="/establishment/:id" component={EstablishmentDetails}/>
                     </Switch>
-                    <Route
-                        path="/settings"
-                        render={() => <Settings/>}
-                    />
+                    <Route path="/settings" render={() => <Settings/>}/>
+                    <Route path="/user-management" render={() => <UserManagement/>}/>
                     <Route path="/new/establishment" render={() => <EstablishmentForm/>}/>
                     <Route exact path="/" component={OurMap}/>
                     <Route path="/error404" render={() => <Error404/>}/>

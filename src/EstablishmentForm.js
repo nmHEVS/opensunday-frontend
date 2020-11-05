@@ -11,6 +11,7 @@ import Button from "@material-ui/core/Button";
 import RotateLeftIcon from '@material-ui/icons/RotateLeft';
 import swal from 'sweetalert';
 import OurMap from "./OurMap";
+import {useHistory} from "react-router-dom";
 
 export class EstablishmentForm extends React.Component {
 
@@ -39,6 +40,7 @@ function SignupForm() {
     } = useAuth0();
     let locationExists = false;
     let locationIdSaved ;
+    let history = useHistory();
 
     useEffect(() => {
         async function getEstablishmentsTypes() {
@@ -76,13 +78,13 @@ function SignupForm() {
                 .max(30, 'Must be 30 characters or less'),
             npa: Yup.string()
                 .min(4, 'Must be 4 characters or more')
-                .max(10, 'Must be 20 characters or less'),
+                .max(10, 'Must be 10 characters or less'),
             location: Yup.string()
                 .min(2, 'Must be 2 characters or more')
-                .max(20, 'Must be 20 characters or less'),
+                .max(50, 'Must be 50 characters or less'),
             address: Yup.string()
                 .min(5, 'Must be 5 characters or more')
-                .max(20, 'Must be 20 characters or less'),
+                .max(50, 'Must be 50 characters or less'),
             url: Yup.string()
                 .min(3, 'Must be 3 characters or more')
         }),
@@ -138,6 +140,7 @@ function SignupForm() {
             swal("Submit done.", "The establishment has been submitted.", "success");
             //Reset the form
             formik.handleReset();
+            history.push("/list/establishment");
         }
     });
 

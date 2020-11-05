@@ -200,7 +200,6 @@ export function Points() {
                                 <h5>{establishment.name}</h5>
                                 <div>{establishment.address}</div>
                                 <div>{establishment.location.npa} {establishment.location.city}</div>
-                                <div>Dimanche: 08:00-22:00</div>
                                 <div>
                                     <Link
                                         className="App-link"

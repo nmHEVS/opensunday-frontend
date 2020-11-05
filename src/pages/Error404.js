@@ -13,7 +13,7 @@ function Error404() {
     }
 
     return (
-        <div id="error" style={{color: themes[themeContext.theme].foreground}}>
+        <div id="error404" style={{color: themes[themeContext.theme].foreground}}>
             <h1 id="h1Error">Whoops!</h1>
             <p id="pError">
                 Something went wrong
