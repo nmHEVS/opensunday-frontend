@@ -75,21 +75,29 @@ export default function Establishment(props) {
     }
 
     useEffect(() => {
-        //Get if user is an admin or not
-        async function getUserIdByEmail(user) {
-            let userConnected = await request(
-                `${process.env.REACT_APP_SERVER_URL}${endpoints.userByEmail}${user.name}`,
-                getAccessTokenSilently,
-                loginWithRedirect
-            );
 
-            if (userConnected.userTypeId == 1) {
-                setIsAdmin(true);
-            } else {
-                setIsAdmin(false);
+        try{
+            //Get if user is an admin or not
+            async function getUserIdByEmail(user) {
+                let userConnected = await request(
+                    `${process.env.REACT_APP_SERVER_URL}${endpoints.userByEmail}${user.name}`,
+                    getAccessTokenSilently,
+                    loginWithRedirect
+                );
+
+                if (userConnected.userTypeId == 1) {
+                    setIsAdmin(true);
+                } else {
+                    setIsAdmin(false);
+                }
             }
+            getUserIdByEmail(user);
+        }catch (e){
+            return (
+                window.location.href = "/error404"
+            )
         }
-        getUserIdByEmail(user);
+
     }, []);
 
     return (
@@ -219,7 +227,6 @@ function EditOff(props) {
                 getAccessTokenSilently,
                 loginWithRedirect
             );
-
             await setCurrentUser(userConnected);
         }
 
@@ -441,7 +448,6 @@ function EditOff(props) {
         )
     } catch (e) {
         return (
-            // history.push("/error404")
             window.location.href = "/error404"
         )
     }
