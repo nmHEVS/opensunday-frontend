@@ -155,22 +155,6 @@ export function Points() {
         getEstablishments();
     }, []);
 
-
-    restaurantIcon = L.icon({
-        iconUrl: leafRestaurant,
-        iconSize: [30, 34],
-        iconAnchor: [12, 35],
-        popupAnchor: [-3, -50]
-    });
-
-    const PositionIcon = L.icon({
-        iconUrl: leafPosition,
-        iconSize: [30, 34],
-        iconAnchor: [12, 35],
-        popupAnchor: [-3, -50]
-
-    });
-
     function createIcon(url) {
         return new L.Icon({
             iconUrl: url,
