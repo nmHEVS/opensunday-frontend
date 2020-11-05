@@ -131,6 +131,8 @@ function EditOff(props) {
     let currentLong;
     let history = useHistory();
     let [newRate, setNewRate] = useState(0);
+    let [latitude, setLatitude] = useState(0);
+    let [longitude, setLongitude] = useState(0);
 
 
     let {
@@ -148,7 +150,7 @@ function EditOff(props) {
     useEffect(() => {
 
 
-        const location = window.navigator && window.navigator.geolocation
+        const location = window.navigator && window.navigator.geolocation;
 
         function getDistanceFromLatLonInKm() {
 
@@ -168,7 +170,8 @@ function EditOff(props) {
                     let d = R * c; // Distance in km
                     d = (Math.round(d * 1000)) / 1000;
                     setDist(d);
-
+                    setLatitude(position.coords.latitude);
+                    setLongitude(position.coords.longitude);
 
                 }, (error) => {
                     console.error("Error Code = " + error.code + " - " + error.message);
@@ -423,7 +426,7 @@ function EditOff(props) {
                     >
                     </Marker>
                     <Marker
-                        position={[46.292307414834816, 7.529895734323079]}
+                        position={[latitude, longitude]}
                         icon={PositionIcon}
                     >
                         <Popup>
