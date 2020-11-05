@@ -2,7 +2,7 @@ import React, {useContext, useEffect, useState} from "react";
 import request from "../utils/request";
 import endpoints from "../endpoints.json";
 import {useAuth0} from "@auth0/auth0-react";
-import {Map, Marker, TileLayer} from "react-leaflet";
+import {Map, Marker, Popup, TileLayer} from "react-leaflet";
 import {
     EmailShareButton,
     EmailIcon,
@@ -27,6 +27,8 @@ import StarBorderIcon from '@material-ui/icons/StarBorder';
 import swal from 'sweetalert';
 import {ThemeContext, themes} from "../ThemeContext";
 import Error404 from "../pages/Error404";
+import L from "leaflet";
+import leafPosition from "../assets/navigation .png";
 
 export default function Establishment(props) {
     const {id, name, latitude, longitude, address, url, establishmentType, establishmentTypeId, location, locationId} = props;
@@ -292,6 +294,14 @@ function EditOff(props) {
         document.execCommand("copy");
     }
 
+    const PositionIcon = L.icon({
+        iconUrl: leafPosition,
+        iconSize: [30, 34],
+        iconAnchor: [12, 35],
+        popupAnchor: [-3, -50]
+
+    });
+
     try {
         return (
             <div style={{color: themes[themeContext.theme].foreground}}>
@@ -342,6 +352,14 @@ function EditOff(props) {
                     <Marker
                         position={[props.latitude, props.longitude]}
                     >
+                    </Marker>
+                    <Marker
+                        position={[46.292307414834816, 7.529895734323079]}
+                        icon={PositionIcon}
+                    >
+                        <Popup>
+                            <h4>You are here!</h4>
+                        </Popup>
                     </Marker>
                 </Map>
             </div>
