@@ -121,11 +121,13 @@ function SignupForm() {
                 let newEstablishment = await postEstablishment(values);
                 //If the location doesn't exist post the new location
             } else{
+                let token = await getAccessTokenSilently();
                 let response = await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.locations}`, {
                     method: 'POST',
                     headers: {
+                        Accept: "application/json",
+                        Authorization: `Bearer ${token}`,
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${getAccessTokenSilently}`
                     },
                     body: JSON.stringify(postLocation),
                 });
