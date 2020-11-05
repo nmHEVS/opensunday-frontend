@@ -372,14 +372,6 @@ function EditOff(props) {
                 <hr></hr>
                 <h2>{props.name}</h2>
                 <RatingStars/>
-                {/*<div>*/}
-                {/*    <Rating*/}
-                {/*        name="simple-controlled"*/}
-                {/*        value={averageRate} precision={0.5}*/}
-                {/*        emptyIcon={<StarBorderIcon fontSize="inherit"/>}*/}
-                {/*        readOnly/>*/}
-                {/*    <span id="totalReview">({totalReview})</span>*/}
-                {/*</div>*/}
                 <div>{props.address}</div>
                 <div>{props.location.npa} {props.location.city}</div>
                 <div>Distance from me : {dist} Km</div>
@@ -393,7 +385,7 @@ function EditOff(props) {
                     </EmailShareButton>
                     <FacebookShareButton
                         url={pageUrl}
-                        quote={props.name}
+                        quote={"Hi,\nI just discovered this amazing establishment : " + props.name + ", on the app OpenSunday \nIt's open on Sunday !\n\n"}
                         id="shareButton"
                     >
                         <FacebookIcon size={50} round/>
@@ -401,6 +393,7 @@ function EditOff(props) {
                     <TwitterShareButton
                         url={pageUrl}
                         title={props.name}
+                        via={"Hi,\nI just discovered this amazing establishment : " + props.name + ", on the app OpenSunday \nIt's open on Sunday !\n\n"}
                         id="shareButton"
                     >
                         <TwitterIcon size={50} round/>
