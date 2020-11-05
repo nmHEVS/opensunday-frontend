@@ -127,8 +127,11 @@ function EditOff(props) {
     let [averageRate, setAverageRate] = useState(0);
     let [totalReview, setTotalReview] = useState(0);
     let [isRating, setIsRating] = useState(false);
+    let currentLat;
+    let currentLong;
     let history = useHistory();
     let [newRate, setNewRate] = useState(0);
+
 
     let {
         loading,
@@ -143,22 +146,35 @@ function EditOff(props) {
     }
 
     useEffect(() => {
-        const currentLat = 46.282725;
-        const currentLong = 7.538253;
+
+
+        const location = window.navigator && window.navigator.geolocation
 
         function getDistanceFromLatLonInKm() {
-            let R = 6371; // Radius of the earth in km
-            let dLat = deg2rad(props.latitude - currentLat);  // deg2rad below
-            let dLon = deg2rad(props.longitude - currentLong);
-            let a =
-                Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-                Math.cos(deg2rad(currentLat)) * Math.cos(deg2rad(props.latitude)) *
-                Math.sin(dLon / 2) * Math.sin(dLon / 2)
-            ;
-            let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-            let d = R * c; // Distance in km
-            d = (Math.round(d * 1000)) / 1000;
-            setDist(d);
+
+            if (location) {
+                location.getCurrentPosition((position) => {
+
+
+                    let R = 6371; // Radius of the earth in km
+                    let dLat = deg2rad(props.latitude - position.coords.latitude);  // deg2rad below
+                    let dLon = deg2rad(props.longitude - position.coords.longitude);
+                    let a =
+                        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                        Math.cos(deg2rad(position.coords.latitude)) * Math.cos(deg2rad(props.latitude)) *
+                        Math.sin(dLon / 2) * Math.sin(dLon / 2)
+                    ;
+                    let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+                    let d = R * c; // Distance in km
+                    d = (Math.round(d * 1000)) / 1000;
+                    setDist(d);
+
+
+                }, (error) => {
+                    console.error("Error Code = " + error.code + " - " + error.message);
+                })
+            }
+
         }
 
         async function getAverageRate() {
