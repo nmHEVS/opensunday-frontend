@@ -37,11 +37,8 @@ export default function Establishment(props) {
     let [isAdmin, setIsAdmin] = useState(false);
     let {
         user,
-        loading,
         loginWithRedirect,
-        logout,
         getAccessTokenSilently,
-        isAuthenticated,
     } = useAuth0();
 
     function switchToEdit() {
@@ -92,7 +89,6 @@ export default function Establishment(props) {
                 setIsAdmin(false);
             }
         }
-
         getUserIdByEmail(user);
     }, []);
 
@@ -149,7 +145,6 @@ function EditOff(props) {
     let [latitude, setLatitude] = useState(0);
     let [longitude, setLongitude] = useState(0);
     let [currentUser, setCurrentUser] = useState([]);
-
 
     let {
         user,
@@ -229,7 +224,6 @@ function EditOff(props) {
         }
 
         getUserIdByEmail(user);
-
         getTotalReviews();
         getAverageRate();
         getDistanceFromLatLonInKm();
@@ -561,8 +555,6 @@ function EditOn(props) {
                 }
             }
             await swal("Edit done.", "Modifications has been saved !", "success");
-
-            history.push("/list/establishment/");
         }
     });
 

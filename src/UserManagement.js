@@ -18,27 +18,55 @@ export function UserManagement() {
     let themeContext = useContext(ThemeContext);
     const [userList, setUserList] = useState([]);
     let {
-        user,
-        loading,
         loginWithRedirect,
-        logout,
         getAccessTokenSilently,
-        isAuthenticated,
     } = useAuth0();
 
     useEffect(() => {
-        async function getCurrentUserTypeId() {
+        async function getUsers() {
             let users = await request(
                 `${process.env.REACT_APP_SERVER_URL}${endpoints.users}`,
                 getAccessTokenSilently,
                 loginWithRedirect
             );
-            console.log(users);
-            setUserList(users);
+            await setUserList(users);
         }
 
-        getCurrentUserTypeId();
-    }, []);
+        getUsers();
+    }, [userList]);
+
+    let putUser = {
+        id: '',
+        pseudo: '',
+        email: '',
+        userTypeId: ''
+    };
+
+    //Onclick to switch user type
+    async function switchType(user, index) {
+        let token = await getAccessTokenSilently();
+        putUser.id = user.id;
+        putUser.pseudo = user.pseudo;
+        putUser.email = user.email;
+        console.log("before " + userList[index].userTypeId);
+        if(user.userTypeId === 1){
+            putUser.userTypeId = 2;
+            userList[index].userTypeId = 2;
+        }else{
+            putUser.userTypeId = 1;
+            userList[index].userTypeId = 1;
+        }
+        await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.users}${user.id}`, {
+            method: 'PUT',
+            headers: {
+                Accept: "application/json",
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(putUser),
+        });
+        console.log("after " + userList[index].userTypeId);
+    }
 
     return (
         <>
@@ -50,40 +78,46 @@ export function UserManagement() {
                     <Table aria-label="simple table">
                         <TableHead>
                             <TableRow>
-                                <TableCell>Pseudo</TableCell>
-                                <TableCell align="right">Email</TableCell>
-                                <TableCell align="right">Usertype</TableCell>
-                                <TableCell align="right">Change</TableCell>
+                                <TableCell><b>ID</b></TableCell>
+                                <TableCell><b>Pseudo</b></TableCell>
+                                <TableCell align="left"><b>Email</b></TableCell>
+                                <TableCell align="left"><b>User type</b></TableCell>
+                                <TableCell align="center"><b>Switch type</b></TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {userList.map((user) => (
+                            {userList.map((user, index) => (
                                 <TableRow key={user.id}>
+                                    <TableCell>
+                                        {user.id}
+                                    </TableCell>
                                     <TableCell>
                                         {user.pseudo}
                                     </TableCell>
                                     <TableCell>
                                         {user.email}
                                     </TableCell>
-                                    <TableCell>
+                                    <TableCell align="center">
                                         {user.userTypeId}
                                     </TableCell>
-                                    <TableCell>
+                                    <TableCell align="center">
                                         {
                                             user.userTypeId === 2 ?
-                                                <Button>
+                                                <Button
+                                                    id="adminButton"
+                                                    onClick={() => switchType(user, index)}
+                                                >
                                                     Make admin
                                                 </Button>
                                                 :
-                                                <Button>
+                                                <Button
+                                                    id="userButton"
+                                                    onClick={() => switchType(user, index)}
+                                                >
                                                     Make user
                                                 </Button>
                                         }
                                     </TableCell>
-                                    {/*<TableCell align="right">{user.calories}</TableCell>*/}
-                                    {/*<TableCell align="right">{user.fat}</TableCell>*/}
-                                    {/*<TableCell align="right">{user.carbs}</TableCell>*/}
-                                    {/*<TableCell align="right">{user.protein}</TableCell>*/}
                                 </TableRow>
                             ))}
                         </TableBody>

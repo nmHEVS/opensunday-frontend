@@ -198,6 +198,17 @@ input[type=text]:focus {
   /*float: right;*/
 }
 
+/*User management navbar*/
 #UM{
   margin-right: 15px;
+}
+
+/*User management - buttons*/
+#adminButton{
+  width: 100%;
+  background-color: #4CAF50;
+}
+#userButton{
+  width: 100%;
+  background-color: deepskyblue;
 }

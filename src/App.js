@@ -91,7 +91,6 @@ function App() {
           );
 
           if (users && users.length > 0) {
-              console.log(users);
               await setUsers(users);
           }
 
@@ -121,7 +120,6 @@ function App() {
             };
 
             try {
-                console.log(users.length)
                 for (let i = 0; i < users.length; i++) {
                     if (users[i].email === user.name) {
                         // console.log("User exists already")
