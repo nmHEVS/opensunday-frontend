@@ -32,6 +32,7 @@ export default function Establishment(props) {
     const {id, name, latitude, longitude, address, url, establishmentType, establishmentTypeId, location, locationId} = props;
     const [editMode, setEditMode] = useState(false);
     let history = useHistory();
+    const [willBeDeleted, setWillBeDeleted] = useState(false);
     let {
         user,
         loading,
@@ -47,7 +48,7 @@ export default function Establishment(props) {
 
     async function deleteEstablishment() {
         let token = await getAccessTokenSilently();
-        await swal({
+        let result = await swal({
             title: "Are you sure?",
             text: "Once deleted, you will not be able to recover this establishment !",
             icon: "warning",
@@ -63,6 +64,7 @@ export default function Establishment(props) {
                         'Content-Type': 'application/json',
                     },
                 });
+                // let data = await response.json();
                 swal("Delete done.", "The establishment has been deleted.", "success");
                 history.push("/list/establishment");
             } else {
@@ -70,16 +72,17 @@ export default function Establishment(props) {
             }
         });
 
-        // await swal("Delete done.", "The establishment has been deleted.", "success");
-        // history.push("/list/establishment");
+        return result ;
     }
 
     // console.log(user.name);
 
+    let isAdmin = true ;
+
     return (
         <div className="establishment">
             {
-                editMode === true ?
+                editMode ?
                     <EditOn {...props}/>
                     // <EditOff {...props}/>
                     :
@@ -87,9 +90,7 @@ export default function Establishment(props) {
                 // <EditOn {...props}/>
             }
             {
-                editMode === true ?
-                    <text/>
-                    :
+                isAdmin ?
                     <div>
                         <Button
                             id="buttonEdit"
@@ -111,6 +112,8 @@ export default function Establishment(props) {
                             Delete
                         </Button>
                     </div>
+                    :
+                    <span/>
             }
         </div>
     );
@@ -188,39 +191,89 @@ function EditOff(props) {
 
     let themeContext = useContext(ThemeContext);
 
-    let handleToRate = () => {
+    let handleToRate = () =>{
         setIsRating(!isRating);
         console.log(isRating);
     }
 
-    let handleHasRated = async (e) => {
+    let handleHasRated = async (e) =>{
 
-        //1. get id from current est.
-        //2. get id of current user
-        //3. get rate from start, e.target.value
+
+        // get id of current user
+        //
+        // async function getCurrentUserId() {
+        //     let rate = await request(
+        //         `${process.env.REACT_APP_SERVER_URL}${endpoints.averageRate}${props.id}`,
+        //         getAccessTokenSilently,
+        //         loginWithRedirect
+        //     );
+        //     setAverageRate(rate);
+        // }
 
 
         let newRateHere = Number(e.target.value);
-        let idEstReview = props.id;
         console.log(newRateHere)
-        let postReview = {
-            rate: newRateHere,
-            userId: 109,
-            establishmentId: idEstReview
-        }
-        console.log("postReview" + postReview.rate)
-
+        let idEstReview = props.id;
+        let idUserReview = 109;
+        let idExistingReview;
+        let postReview;
         let token = await getAccessTokenSilently();
-        if (newRateHere >= 0) {
-            let response = await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.reviews}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify(postReview),
-            });
-            let data = await response.json();
+
+        // does the review exist ?
+        idExistingReview = await request(
+            `${process.env.REACT_APP_SERVER_URL}${endpoints.reviews}/${idUserReview}/${idEstReview}`,
+            getAccessTokenSilently,
+            loginWithRedirect
+        );
+        console.log("idReview : "+idExistingReview)
+
+        if(idExistingReview<0) {
+            //review doesn't exist : create it
+            console.log("New review");
+            postReview = {
+                rate: newRateHere,
+                userId: idUserReview,
+                establishmentId: idEstReview
+            }
+            console.log("postReview" + postReview.rate)
+
+            if (newRateHere >= 0) {
+                let response = await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.reviews}`, {
+                    method: 'POST',
+                    headers: {
+                        Accept: "application/json",
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(postReview),
+                });
+                let data = await response.json();
+            }
+        }else {
+            //review exist : upload it
+            postReview = {
+                id: idExistingReview,
+                rate: newRateHere,
+                userId: idUserReview,
+                establishmentId: idEstReview
+            }
+
+            console.log("postReview" + postReview.rate)
+
+            if (newRateHere >= 0) {
+                await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.reviews}/${idExistingReview}`, {
+                    method: 'PUT',
+                    headers: {
+                        Accept: "application/json",
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(postReview),
+                });
+            }
+
+            console.log("Existing review");
+
         }
 
         let rate = await request(
@@ -249,7 +302,7 @@ function EditOff(props) {
     //     console.log("newRate : "+newRate);
     // }
 
-    function RatingStars() {
+    function RatingStars(){
         return (
             <div>
                 {isRating ? (
@@ -263,7 +316,7 @@ function EditOff(props) {
                         {/*<button onClick={handleHasRated}>Rate</button>*/}
                     </div>
 
-                ) : (
+                ):(
                     <div>
                         <Rating
                             name="simple-controlled"
@@ -271,15 +324,7 @@ function EditOff(props) {
                             emptyIcon={<StarBorderIcon fontSize="inherit"/>}
                             readOnly/>
                         <span id="totalReview">({totalReview})</span>
-                        <Button
-                            id="rateButton"
-                            onClick={handleToRate}
-                            variant="contained"
-                            color="secondary"
-                            startIcon={<RateReviewIcon/>}
-                        >
-                            Rate
-                        </Button>
+                        <button onClick={handleToRate}>Rate</button>
                     </div>
                 )}
             </div>
@@ -341,8 +386,10 @@ function EditOff(props) {
                         attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'/>
                     <Marker
                         position={[props.latitude, props.longitude]}
-                    >
-                    </Marker>
+                    />
+                    {/*<Marker>*/}
+                    {/*    position={[, ]}*/}
+                    {/*</Marker>*/}
                 </Map>
             </div>
         )
