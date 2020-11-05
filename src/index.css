@@ -32,7 +32,7 @@ textarea {
 
 /*Form - Button*/
 button {
-  width: 49%;
+  width: 48%;
   padding: 16px 32px;
   text-decoration: none;
   margin: 4px 2px;
@@ -174,13 +174,22 @@ input[type=text]:focus {
 
 /*Copy link of the establishment*/
 #copyLinkButton{
-  width: 10%;
+  margin-right: 20px;
+  margin-left: 20px;
+  width: 45px;
+}
+
+/*Establishment - Rate button*/
+#rateButton{
+  background-color: deepskyblue;
+  width: inherit;
+  margin-left: 10px;
 }
 
 /*Map*/
 .leaflet-container{
   width: 100%;
-  height: 100vh;
+  height: 82vh;
 }
 #establishmentListMap{
   /*width: 200%;*/

@@ -1,0 +1,29 @@
+#error {
+    display: inline-block;
+    background: url(https://www.pinclipart.com/picdir/big/52-523772_line-wave-png-abstract-background-png-clipart.png) center/cover no-repeat;
+    height: 100vh;
+    margin: 0;
+    color: white;
+    width: 100%;
+    text-align: center;
+}
+
+#h1Error {
+    font: 4em Roboto;
+    margin-top: 150px;
+}
+#pError {
+    display: inline-block;
+    font: 2em Roboto;
+    margin-top: 50px;
+}
+#buttonDonation{
+    width: 20%;
+    background-color: deepskyblue;
+    color: white;
+    margin-left: 10px;
+    font-size: 20px;
+    padding: 10px 60px;
+    border-radius: 20px;
+    cursor: pointer;
+}

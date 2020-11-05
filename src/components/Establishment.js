@@ -2,7 +2,7 @@ import React, {useContext, useEffect, useState} from "react";
 import request from "../utils/request";
 import endpoints from "../endpoints.json";
 import {useAuth0} from "@auth0/auth0-react";
-import {Map, Marker, TileLayer} from "react-leaflet";
+import {Map, Marker, Popup, TileLayer} from "react-leaflet";
 import {
     EmailShareButton,
     EmailIcon,
@@ -16,43 +16,75 @@ import {useFormik} from "formik";
 import * as Yup from "yup";
 import OurMap from "../OurMap";
 import {BsFiles} from "react-icons/all";
-import {Link} from 'react-router-dom';
+import {Link, useHistory} from 'react-router-dom';
 import DeleteIcon from '@material-ui/icons/Delete';
 import Button from '@material-ui/core/Button';
 import SaveIcon from '@material-ui/icons/Save';
 import EditIcon from '@material-ui/icons/Edit';
+import RateReviewIcon from '@material-ui/icons/RateReview';
 import Rating from "@material-ui/lab/Rating";
 import StarBorderIcon from '@material-ui/icons/StarBorder';
 import swal from 'sweetalert';
-import {DropdownItem} from "reactstrap";
 import {ThemeContext, themes} from "../ThemeContext";
+import Error404 from "../pages/Error404";
+import L from "leaflet";
+import leafPosition from "../assets/navigation .png";
 
 export default function Establishment(props) {
     const {id, name, latitude, longitude, address, url, establishmentType, establishmentTypeId, location, locationId} = props;
-
     const [editMode, setEditMode] = useState(false);
+    let history = useHistory();
+    const [willBeDeleted, setWillBeDeleted] = useState(false);
+    let {
+        user,
+        loading,
+        loginWithRedirect,
+        logout,
+        getAccessTokenSilently,
+        isAuthenticated,
+    } = useAuth0();
 
     function switchToEdit() {
         setEditMode(!editMode);
     }
 
     async function deleteEstablishment() {
-        let response = await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.establishments}/${props.id}`, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `${endpoints.bearerToken}`
-            },
+        let token = await getAccessTokenSilently();
+        let result = await swal({
+            title: "Are you sure?",
+            text: "Once deleted, you will not be able to recover this establishment !",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        }).then((willDelete) => {
+            if (willDelete) {
+                fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.establishments}/${props.id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        Accept: "application/json",
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                    },
+                });
+                // let data = await response.json();
+                swal("Delete done.", "The establishment has been deleted.", "success");
+                history.push("/list/establishment");
+            } else {
+                swal("The deletion has been cancelled.");
+            }
         });
-        // swal("Delete done.", "The establishment has been deleted.", "success");
-        let temp = await response.json();
-        // alert("Establishment has been deleted !");
+
+        return result ;
     }
+
+    // console.log(user.name);
+
+    let isAdmin = true ;
 
     return (
         <div className="establishment">
             {
-                editMode === true ?
+                editMode ?
                     <EditOn {...props}/>
                     // <EditOff {...props}/>
                     :
@@ -60,9 +92,7 @@ export default function Establishment(props) {
                 // <EditOn {...props}/>
             }
             {
-                editMode === true ?
-                    <text/>
-                    :
+                isAdmin ?
                     <div>
                         <Button
                             id="buttonEdit"
@@ -73,21 +103,19 @@ export default function Establishment(props) {
                         >
                             Edit
                         </Button>
-                        <Link className="App-link" to="/list/establishment" style={{textDecoration: 'none'}}>
-                            <Button
-                                id="buttonDelete"
-                                variant="contained"
-                                color="secondary"
-                                startIcon={<DeleteIcon/>}
-                                onClick={deleteEstablishment}
-                                tag={Link} to="/list/establishment"
-                            >
-                                {/*<Link className="App-link" to="/list/establishment" style={{textDecoration: 'none'}}>*/}
-                                Delete
-                                {/*</Link>*/}
-                            </Button>
-                        </Link>
+                        <Button
+                            id="buttonDelete"
+                            variant="contained"
+                            color="secondary"
+                            startIcon={<DeleteIcon/>}
+                            onClick={deleteEstablishment}
+                            tag={Link} to="/list/establishment"
+                        >
+                            Delete
+                        </Button>
                     </div>
+                    :
+                    <span/>
             }
         </div>
     );
@@ -101,6 +129,9 @@ function EditOff(props) {
     let [isRating, setIsRating] = useState(false);
     let currentLat;
     let currentLong;
+    let history = useHistory();
+    let [newRate, setNewRate] = useState(0);
+
 
     let {
         loading,
@@ -171,10 +202,9 @@ function EditOff(props) {
         getDistanceFromLatLonInKm();
     }, []);
 
-    try{
+    try {
         let test = props.establishmentType.establishmentTypeName;
-    }catch (e){
-        window.location.href = "/";
+    } catch (e) {
     }
 
     let themeContext = useContext(ThemeContext);
@@ -184,22 +214,85 @@ function EditOff(props) {
         console.log(isRating);
     }
 
-    let handleHasRated = async () =>{
-        let postReview = {
-            rate: 10,
-            userId: 109,
-            establishmentId: 3
-        }
+    let handleHasRated = async (e) =>{
 
-        let response = await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.reviews}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `${endpoints.bearerToken}`
-            },
-            body: JSON.stringify(postReview),
-        });
-        let data = await response.json();
+
+        // get id of current user
+        //
+        // async function getCurrentUserId() {
+        //     let rate = await request(
+        //         `${process.env.REACT_APP_SERVER_URL}${endpoints.averageRate}${props.id}`,
+        //         getAccessTokenSilently,
+        //         loginWithRedirect
+        //     );
+        //     setAverageRate(rate);
+        // }
+
+
+        let newRateHere = Number(e.target.value);
+        console.log(newRateHere)
+        let idEstReview = props.id;
+        let idUserReview = 109;
+        let idExistingReview;
+        let postReview;
+        let token = await getAccessTokenSilently();
+
+        // does the review exist ?
+        idExistingReview = await request(
+            `${process.env.REACT_APP_SERVER_URL}${endpoints.reviews}/${idUserReview}/${idEstReview}`,
+            getAccessTokenSilently,
+            loginWithRedirect
+        );
+        console.log("idReview : "+idExistingReview)
+
+        if(idExistingReview<0) {
+            //review doesn't exist : create it
+            console.log("New review");
+            postReview = {
+                rate: newRateHere,
+                userId: idUserReview,
+                establishmentId: idEstReview
+            }
+            console.log("postReview" + postReview.rate)
+
+            if (newRateHere >= 0) {
+                let response = await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.reviews}`, {
+                    method: 'POST',
+                    headers: {
+                        Accept: "application/json",
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(postReview),
+                });
+                let data = await response.json();
+            }
+        }else {
+            //review exist : upload it
+            postReview = {
+                id: idExistingReview,
+                rate: newRateHere,
+                userId: idUserReview,
+                establishmentId: idEstReview
+            }
+
+            console.log("postReview" + postReview.rate)
+
+            if (newRateHere >= 0) {
+                await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.reviews}/${idExistingReview}`, {
+                    method: 'PUT',
+                    headers: {
+                        Accept: "application/json",
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(postReview),
+                });
+            }
+
+            console.log("Existing review");
+
+        }
 
         let rate = await request(
             `${process.env.REACT_APP_SERVER_URL}${endpoints.averageRate}${props.id}`,
@@ -221,13 +314,24 @@ function EditOff(props) {
         console.log(rate);
     }
 
+    // let uploadNewRateValue = (e) => {
+    //     console.log(e.target.value);
+    //     setNewRate(Number(e.target.value));
+    //     console.log("newRate : "+newRate);
+    // }
+
     function RatingStars(){
         return (
             <div>
                 {isRating ? (
                     <div>
-                        <span>You can rate here</span>
-                        <button onClick={handleHasRated}>Rate</button>
+                        <span>Add your rate</span>
+                        <Rating
+                            name="simple-controlled"
+                            onClick={handleHasRated}
+                            emptyIcon={<StarBorderIcon fontSize="inherit"/>}
+                        />
+                        {/*<button onClick={handleHasRated}>Rate</button>*/}
                     </div>
 
                 ):(
@@ -238,68 +342,105 @@ function EditOff(props) {
                             emptyIcon={<StarBorderIcon fontSize="inherit"/>}
                             readOnly/>
                         <span id="totalReview">({totalReview})</span>
-                        <button onClick={handleToRate}>Rate</button>
+                        <Button
+                            id="rateButton"
+                            onClick={handleToRate}
+                            variant="contained"
+                            color="secondary"
+                            startIcon={<RateReviewIcon/>}
+                        >
+                            Rate
+                        </Button>
                     </div>
                 )}
             </div>
         );
     }
 
-    return (
-        <div style={{color: themes[themeContext.theme].foreground}}>
-            <h1>{props.establishmentType.establishmentTypeName}</h1>
-            <hr></hr>
-            <h2>{props.name}</h2>
-            <RatingStars/>
-            {/*<div>*/}
-            {/*    <Rating*/}
-            {/*        name="simple-controlled"*/}
-            {/*        value={averageRate} precision={0.5}*/}
-            {/*        emptyIcon={<StarBorderIcon fontSize="inherit"/>}*/}
-            {/*        readOnly/>*/}
-            {/*    <span id="totalReview">({totalReview})</span>*/}
-            {/*</div>*/}
-            <div>{props.address}</div>
-            <div>{props.location.npa} {props.location.city}</div>
-            <div>Distance from me : {dist} Km</div>
-            <div>
-                <EmailShareButton
-                    subject={props.name}
-                    body={"Hi,\nI just discovered this amazing establishment : " + props.name + ", on the app OpenSunday \nIt's open on Sunday !\n\n"}
-                    url={pageUrl}
-                    id="shareButton">
-                    <EmailIcon size={50} round/>
-                </EmailShareButton>
-                <FacebookShareButton
-                    url={pageUrl}
-                    quote={props.name}
-                    id="shareButton"
-                >
-                    <FacebookIcon size={50} round/>
-                </FacebookShareButton>
-                <TwitterShareButton
-                    url={pageUrl}
-                    title={props.name}
-                    id="shareButton"
-                >
-                    <TwitterIcon size={50} round/>
-                </TwitterShareButton>
-                <CopyToClipboard text={pageUrl}>
-                    <BsFiles id="copyLinkButton" size={40}/>
-                </CopyToClipboard>
+    //Function to copy url in clipboard
+    function copyCodeToClipboard() {
+        swal("Link copied !", "Url copied to the clipboard.", "success");
+        document.execCommand("copy");
+    }
+
+    const PositionIcon = L.icon({
+        iconUrl: leafPosition,
+        iconSize: [30, 34],
+        iconAnchor: [12, 35],
+        popupAnchor: [-3, -50]
+
+    });
+
+    try {
+        return (
+            <div style={{color: themes[themeContext.theme].foreground}}>
+                <h1>{props.establishmentType.establishmentTypeName}</h1>
+                <hr></hr>
+                <h2>{props.name}</h2>
+                <RatingStars/>
+                {/*<div>*/}
+                {/*    <Rating*/}
+                {/*        name="simple-controlled"*/}
+                {/*        value={averageRate} precision={0.5}*/}
+                {/*        emptyIcon={<StarBorderIcon fontSize="inherit"/>}*/}
+                {/*        readOnly/>*/}
+                {/*    <span id="totalReview">({totalReview})</span>*/}
+                {/*</div>*/}
+                <div>{props.address}</div>
+                <div>{props.location.npa} {props.location.city}</div>
+                <div>Distance from me : {dist} Km</div>
+                <div>
+                    <EmailShareButton
+                        subject={props.name}
+                        body={"Hi,\nI just discovered this amazing establishment : " + props.name + ", on the app OpenSunday \nIt's open on Sunday !\n\n"}
+                        url={pageUrl}
+                        id="shareButton">
+                        <EmailIcon size={50} round/>
+                    </EmailShareButton>
+                    <FacebookShareButton
+                        url={pageUrl}
+                        quote={props.name}
+                        id="shareButton"
+                    >
+                        <FacebookIcon size={50} round/>
+                    </FacebookShareButton>
+                    <TwitterShareButton
+                        url={pageUrl}
+                        title={props.name}
+                        id="shareButton"
+                    >
+                        <TwitterIcon size={50} round/>
+                    </TwitterShareButton>
+                    <BsFiles id="copyLinkButton" size={40} onClick={copyCodeToClipboard}/>
+                </div>
+                <a href={props.url}>{props.url}</a>
+                <Map id="up" center={[props.latitude, props.longitude]} zoom={16}>
+                    <TileLayer
+                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                        attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'/>
+                    <Marker
+                        position={[props.latitude, props.longitude]}
+                    >
+                    </Marker>
+                    <Marker
+                        position={[46.292307414834816, 7.529895734323079]}
+                        icon={PositionIcon}
+                    >
+                        <Popup>
+                            <h4>You are here!</h4>
+                        </Popup>
+                    </Marker>
+                </Map>
             </div>
-            <a href={props.url}>{props.url}</a>
-            <Map id="up" center={[props.latitude, props.longitude]} zoom={16}>
-                <TileLayer
-                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                    attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'/>
-                <Marker
-                    position={[props.latitude, props.longitude]}
-                >
-                </Marker>
-            </Map>
-        </div>
-    )
+        )
+    } catch (e) {
+        return (
+            // history.push("/error404")
+            window.location.href = "/error404"
+        )
+    }
+
+
 }
 
 function EditOn(props) {
@@ -307,6 +448,7 @@ function EditOn(props) {
     let [establishmentsTypes, setEstablishmentsTypes] = useState([]);
     let locationExists = false;
     let locationIdSaved;
+    let history = useHistory();
     let {
         loading,
         loginWithRedirect,
@@ -378,13 +520,14 @@ function EditOn(props) {
                 }
             }
 
+            let token = await getAccessTokenSilently();
             //According to the test, make the post of the location or not
             if (locationExists) {
                 //Put the locationId for the post
                 values.locationId = locationIdSaved;
                 //Post the establishment
                 try {
-                    let newEstablishment = await putEstablishment(values);
+                    let newEstablishment = await putEstablishment(values, token);
                 } catch (e) {
                 }
                 //If the location doesn't exist post the new location
@@ -392,20 +535,22 @@ function EditOn(props) {
                 let response = await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.locations}`, {
                     method: 'POST',
                     headers: {
+                        Accept: "application/json",
+                        Authorization: `Bearer ${token}`,
                         'Content-Type': 'application/json',
-                        'Authorization': `${endpoints.bearerToken}`
                     },
                     body: JSON.stringify(postLocation),
                 });
                 let location = await response.json();
                 values.locationId = location.id;
                 try {
-                    let newEstablishment = await putEstablishment(values);
+                    let newEstablishment = await putEstablishment(values, token);
                 } catch (e) {
                 }
             }
             await swal("Edit done.", "Modifications has been saved !", "success");
-            // alert("Establishment has been deleted !");
+
+            history.push("/list/establishment/");
         }
     });
 
@@ -564,12 +709,13 @@ function EditOn(props) {
 }
 
 //Function to post an establishment according to the values in parameter
-async function putEstablishment(values) {
+async function putEstablishment(values, token) {
     let response = await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.establishments}/${values.id}`, {
         method: 'PUT',
         headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json',
-            'Authorization': `${endpoints.bearerToken}`
         },
         body: JSON.stringify(values),
     });

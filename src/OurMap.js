@@ -63,6 +63,7 @@ class MapContainer extends Component {
         } catch (error) {
 
         }
+
     }
 
 
@@ -125,7 +126,7 @@ export default geolocated({
 export function Points() {
 
     let [establishments, setEstablishments] = useState([]);
-    let establishmentIcon = leafPosition;
+    let restaurantIcon = leafPosition;
     let {
         loading,
         loginWithRedirect,
@@ -154,23 +155,44 @@ export function Points() {
         getEstablishments();
     }, []);
 
+    function createIcon(url) {
+        return new L.Icon({
+            iconUrl: url,
+            iconSize: [30, 34],
+            iconAnchor: [12, 35],
+            popupAnchor: [-3, -50],
+        });
+    }
 
-    establishmentIcon = L.icon({
-        iconUrl: leafRestaurant,
-        iconSize: [30, 34],
-        iconAnchor: [12, 35],
-        popupAnchor: [-3, -50]
-
-    });
-
+    function getMarkerIcon(type) {
+        switch(type){
+            case "Other":
+                return createIcon('https://www.flaticon.com/svg/static/icons/svg/67/67533.svg');
+            case "Restaurant":
+                return createIcon('https://www.flaticon.com/svg/static/icons/svg/685/685352.svg');
+            case "Museum":
+                return createIcon('https://www.flaticon.com/svg/static/icons/svg/3706/3706629.svg');
+            case "Bar":
+                return createIcon('https://www.flaticon.com/svg/static/icons/svg/3144/3144974.svg');
+            case "Bank":
+                return createIcon('https://www.flaticon.com/svg/static/icons/svg/662/662622.svg');
+            case "Cinema":
+                return createIcon('https://www.flaticon.com/svg/static/icons/svg/633/633600.svg');
+            case "Theater":
+                return createIcon('https://www.flaticon.com/svg/static/icons/svg/860/860331.svg');
+        }
+        return createIcon('https://www.flaticon.com/svg/static/icons/svg/1476/1476223.svg');
+    }
 
     return (
         <>
             {
-                establishments.map(establishment => {
+                establishments.map((establishment) => {
                     const point = [establishment.latitude, establishment.longitude];
                     return (
-                        <Marker position={point} key={establishment.id}>
+                        <Marker position={point} key={establishment.id}
+                                icon={getMarkerIcon(establishment.establishmentType.establishmentTypeName)}
+                        >
                             <Popup>
                                 <h3>{establishment.establishmentType.establishmentTypeName}</h3>
                                 <h5>{establishment.name}</h5>

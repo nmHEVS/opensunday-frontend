@@ -15,10 +15,7 @@ import Navbar, {Nav} from "react-bootstrap";
 import NavigationBar from "./NavigationBar";
 import OurMap from "./OurMap";
 import Profile from "./components/Profile";
-
-
-
-
+import Error404 from "./pages/Error404";
 
 
 function App() {
@@ -179,6 +176,7 @@ function App() {
 
 
 
+
     if (loading) {
         return <Loading/>;
     }
@@ -194,7 +192,7 @@ function App() {
                     <Nav.Link
                         href="#"
                         onClick={handleLogoutClick}
-                    >Log out</Nav.Link>
+                    >{user.nickname} - Log out</Nav.Link>
                 ) : (
                     <Nav.Link
                         href="#"
@@ -220,6 +218,7 @@ function App() {
                     />
                     <Route path="/new/establishment" render={() => <EstablishmentForm/>}/>
                     <Route exact path="/" component={OurMap}/>
+                    <Route path="/error404" render={() => <Error404/>}/>
                 </header>
             </BrowserRouter>
         </div>
