@@ -38,9 +38,11 @@ const NavigationBar = (props) => {
                             </DropdownMenu>
                         </UncontrolledDropdown>
                     </Nav>
+                    <NavbarText id="UM" tag={Link} to="/user-management">Users management</NavbarText>
                     <NavbarText tag={Link} to="/settings">Settings</NavbarText>
                     <NavbarText>{props.authenticator}</NavbarText>
                 </Collapse>
+
             </Navbar>
         </div>
     );

@@ -35,6 +35,7 @@ export default function Establishment(props) {
     const [editMode, setEditMode] = useState(false);
     let history = useHistory();
     let [isAdmin, setIsAdmin] = useState(false);
+    let [currentUser, setCurrentUser] = useState([]);
     let {
         user,
         loading,
@@ -78,25 +79,25 @@ export default function Establishment(props) {
     }
 
     useEffect(() => {
-        //If the connected user is an admin or not
-        //Admin => edit and delete
-        //User => only display
-        async function getCurrentUserTypeId() {
+        //Get if user is an admin or not
+        async function getUserIdByEmail(user) {
+            // console.log(user.name);
             let userConnected = await request(
-                `${process.env.REACT_APP_SERVER_URL}${endpoints.users}${8}`,
+                `${process.env.REACT_APP_SERVER_URL}${endpoints.userByEmail}${user.name}`,
                 getAccessTokenSilently,
                 loginWithRedirect
             );
-            console.log(userConnected);
 
-            if (userConnected.userTypeId === 1) {
-                setIsAdmin(true);
+            if (userConnected.userTypeId == 1) {
+                await setIsAdmin(true);
             } else {
-                setIsAdmin(false);
+                await setIsAdmin(false);
             }
         }
 
-        getCurrentUserTypeId();
+
+
+        getUserIdByEmail(user);
     }, []);
 
     return (

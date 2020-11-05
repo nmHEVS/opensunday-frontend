@@ -7,5 +7,6 @@
   "establishmentsTypes": "/api/establishmentType",
   "establishmentType": "/api/establishmentType/",
   "establishmentsByType": "/api/establishment/Type/",
-  "users": "/api/user/"
+  "users": "/api/user/",
+  "userByEmail": "/api/user/byemail/"
 }
