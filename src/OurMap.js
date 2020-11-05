@@ -6,7 +6,7 @@ import request from "./utils/request";
 import endpoints from "./endpoints.json";
 import L from 'leaflet';
 import leafPosition from './assets/navigation .png'
-import leafRestaurant from './assets/dish.png'
+import leafMarker from './assets/pin.png'
 import {Link} from "react-router-dom";
 
 
@@ -18,6 +18,8 @@ class MapContainer extends Component {
         this.state = {
             latitude: 46.2324104309082,
             longitude: 7.358489990234375,
+            lng:"",
+            lat:"",
 
 
         };
@@ -58,13 +60,20 @@ class MapContainer extends Component {
 
         const {lat, lng} = e.latlng
 
+
         try {
             this.props.updateCoordinates(lat, lng)
         } catch (error) {
 
         }
 
+        this.setState({
+            lng : lng,
+            lat :lat,
+        })
     }
+
+
 
 
     render() {
@@ -73,6 +82,7 @@ class MapContainer extends Component {
 
         const long = this.props.coords ? this.props.coords.longitude : longitude;
         const lat = this.props.coords ? this.props.coords.latitude : latitude;
+        const isMainPage = window.location.href;
 
         const PositionIcon = L.icon({
             iconUrl: leafPosition,
@@ -81,6 +91,18 @@ class MapContainer extends Component {
             popupAnchor: [3, -35]
 
         });
+
+        const PositionMarker = L.icon({
+            iconUrl: leafMarker,
+            iconSize: [30, 34],
+            iconAnchor: [12, 35],
+            popupAnchor: [3, -35]
+
+        });
+
+
+
+
 
         return (
 
@@ -106,6 +128,26 @@ class MapContainer extends Component {
                 }
 
                 <Points/>
+
+                {
+                    window.location.pathname == "/new/establishment"?
+
+                        <Marker icon={PositionMarker}
+                                position={[this.state.lat, this.state.lng]}
+                        >
+                            <Popup>
+                                <h4>You've clicked here!</h4>
+                            </Popup>
+                        </Marker>
+
+                      :
+                        <></>
+                }
+
+
+
+
+
 
 
             </Map>
@@ -216,3 +258,4 @@ export function Points() {
         </>
     )
 }
+
