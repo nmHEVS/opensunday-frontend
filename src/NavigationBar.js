@@ -21,7 +21,7 @@ const NavigationBar = (props) => {
     return (
         <div id="navigationBar">
             <Navbar color="dark" dark expand="md">
-                <NavbarBrand tag={Link} to="/">Opensunday</NavbarBrand>
+                <NavbarBrand id="opensundayTitle" tag={Link} to="/">Opensunday</NavbarBrand>
                 <NavbarText tag={Link} to="/">Map</NavbarText>
                 <NavbarToggler onClick={toggle}/>
                 <Collapse isOpen={isOpen} navbar>
