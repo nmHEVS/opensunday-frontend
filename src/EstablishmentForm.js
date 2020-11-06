@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import "./App.css";
 import {useFormik} from 'formik';
 import * as Yup from 'yup';
@@ -6,12 +6,12 @@ import {useAuth0} from "@auth0/auth0-react";
 import request from "./utils/request";
 import endpoints from "./endpoints.json";
 import BackupIcon from '@material-ui/icons/Backup';
-import SaveIcon from "@material-ui/icons/Save";
 import Button from "@material-ui/core/Button";
 import RotateLeftIcon from '@material-ui/icons/RotateLeft';
 import swal from 'sweetalert';
 import OurMap from "./OurMap";
 import {useHistory} from "react-router-dom";
+import {ThemeContext, themes} from "./ThemeContext";
 
 export class EstablishmentForm extends React.Component {
 
@@ -41,6 +41,7 @@ function SignupForm() {
     let locationExists = false;
     let locationIdSaved ;
     let history = useHistory();
+    let themeContext = useContext(ThemeContext);
 
     useEffect(() => {
         async function getEstablishmentsTypes() {
@@ -184,7 +185,8 @@ function SignupForm() {
     }
 
     return (
-        <div>
+        <div style={{color: themes[themeContext.theme].foreground}}>
+            <h1>New establishment</h1>
             <p>Click on the map to get the coordinate of your establishment</p>
             <div id="up">
                 <OurMap updateCoordinates={updateCoordinates}></OurMap>

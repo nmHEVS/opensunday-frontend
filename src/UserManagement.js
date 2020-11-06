@@ -4,7 +4,6 @@ import {ThemeContext, themes} from './ThemeContext';
 import request from "./utils/request";
 import endpoints from "./endpoints.json";
 import {useAuth0} from "@auth0/auth0-react";
-import {makeStyles} from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -68,12 +67,19 @@ export function UserManagement() {
         console.log("after " + userList[index].userTypeId);
     }
 
+    //Search by Email
+    const [search, setSearch] = useState("");
+    function searchByEmail(e) {
+        setSearch(e.target.value);
+    }
+
     return (
         <>
             <div style={{color: themes[themeContext.theme].foreground}}>
                 <h2>
                     Users management
                 </h2>
+                <input placeholder="Search by Email" name="firstName" onChange={searchByEmail}/>
                 <TableContainer component={Paper}>
                     <Table aria-label="simple table">
                         <TableHead>
@@ -86,7 +92,9 @@ export function UserManagement() {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {userList.map((user, index) => (
+                            {userList
+                                .filter(email => email.email.includes(search))
+                                .map((user, index) => (
                                 <TableRow key={user.id}>
                                     <TableCell>
                                         {user.id}
