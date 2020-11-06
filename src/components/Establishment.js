@@ -62,29 +62,29 @@ export default function Establishment(props) {
     }
 
     useEffect(() => {
-
         try {
-            //Get if user is an admin or not
-            async function getUserIdByEmail(user) {
-                let userConnected = await request(
-                    `${process.env.REACT_APP_SERVER_URL}${endpoints.userByEmail}${user.name}`,
-                    getAccessTokenSilently,
-                    loginWithRedirect
-                );
-
-                if (userConnected.userTypeId == 1) {
-                    setIsAdmin(true);
-                } else {
-                    setIsAdmin(false);
-                }
-            }
-
-            getUserIdByEmail(user);
+            let temp = user.name;
         } catch (e) {
             return (
                 window.location.href = "/error404"
             )
         }
+        //Get if user is an admin or not
+        async function getUserIdByEmail(user) {
+            let userConnected = await request(
+                `${process.env.REACT_APP_SERVER_URL}${endpoints.userByEmail}${user.name}`,
+                getAccessTokenSilently,
+                loginWithRedirect
+            );
+
+            if (userConnected.userTypeId == 1) {
+                setIsAdmin(true);
+            } else {
+                setIsAdmin(false);
+            }
+        }
+
+        getUserIdByEmail(user);
 
     }, []);
 
@@ -207,12 +207,16 @@ function EditOff(props) {
 
         //Get if user is an admin or not
         async function getUserIdByEmail(user) {
-            let userConnected = await request(
-                `${process.env.REACT_APP_SERVER_URL}${endpoints.userByEmail}${user.name}`,
-                getAccessTokenSilently,
-                loginWithRedirect
-            );
-            await setCurrentUser(userConnected);
+            try{
+                let userConnected = await request(
+                    `${process.env.REACT_APP_SERVER_URL}${endpoints.userByEmail}${user.name}`,
+                    getAccessTokenSilently,
+                    loginWithRedirect
+                );
+                await setCurrentUser(userConnected);
+            }catch (e){
+                history.push("/list/establishment");
+            }
         }
 
         getUserIdByEmail(user);
@@ -348,7 +352,7 @@ function EditOff(props) {
     //Function to copy url in clipboard
     function copyCodeToClipboard() {
         swal("Link copied !", "Url copied to the clipboard.", "success");
-        document.execCommand("copy");
+        navigator.clipboard.writeText(window.location.href);
     }
 
     const PositionIcon = new L.icon({
