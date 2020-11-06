@@ -1,8 +1,8 @@
 import React, {useState, useContext, useEffect} from "react";
-import "./App.css";
-import {ThemeContext, themes} from './ThemeContext';
-import request from "./utils/request";
-import endpoints from "./endpoints.json";
+import "../App.css";
+import {ThemeContext, themes} from '../ThemeContext';
+import request from "../utils/request";
+import endpoints from "../endpoints.json";
 import {useAuth0} from "@auth0/auth0-react";
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -13,6 +13,7 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Button from "@material-ui/core/Button";
 
+//User management page to pass user > admin and admin > user
 export function UserManagement() {
     let themeContext = useContext(ThemeContext);
     const [userList, setUserList] = useState([]);
@@ -22,6 +23,7 @@ export function UserManagement() {
     } = useAuth0();
 
     useEffect(() => {
+        //Get user list to update in live
         async function getUsers() {
             let users = await request(
                 `${process.env.REACT_APP_SERVER_URL}${endpoints.users}`,
@@ -30,10 +32,10 @@ export function UserManagement() {
             );
             await setUserList(users);
         }
-
         getUsers();
     }, [userList]);
 
+    //Create user variable for the put
     let putUser = {
         id: '',
         pseudo: '',
@@ -44,10 +46,11 @@ export function UserManagement() {
     //Onclick to switch user type
     async function switchType(user, index) {
         let token = await getAccessTokenSilently();
+        //Set putUser with user given in parameter
         putUser.id = user.id;
         putUser.pseudo = user.pseudo;
         putUser.email = user.email;
-        console.log("before " + userList[index].userTypeId);
+        //Test if the user is an admin or not (admin=1/user=2)
         if(user.userTypeId === 1){
             putUser.userTypeId = 2;
             userList[index].userTypeId = 2;
@@ -55,6 +58,7 @@ export function UserManagement() {
             putUser.userTypeId = 1;
             userList[index].userTypeId = 1;
         }
+        //Request to put the user (to change the type)
         await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.users}${user.id}`, {
             method: 'PUT',
             headers: {
@@ -64,10 +68,9 @@ export function UserManagement() {
             },
             body: JSON.stringify(putUser),
         });
-        console.log("after " + userList[index].userTypeId);
     }
 
-    //Search by Email
+    //Search by Email filter
     const [search, setSearch] = useState("");
     function searchByEmail(e) {
         setSearch(e.target.value);
@@ -110,6 +113,7 @@ export function UserManagement() {
                                     </TableCell>
                                     <TableCell align="center">
                                         {
+                                            //Display a different button if the user of the list is an admin or not
                                             user.userTypeId === 2 ?
                                                 <Button
                                                     id="adminButton"

@@ -19,10 +19,12 @@ code {
   width: 50%;
 }
 
+/*30% width*/
 #widthThirty{
   width: 30%;
 }
 
+/*Full width*/
 #widthFull{
   width: 100%;
 }
@@ -162,6 +164,7 @@ input[type=text]:focus {
   overflow: hidden;
 }
 
+/*Establishment type*/
 #establishmentType{
   width: 50%;
   margin-left: 10px;
@@ -205,6 +208,7 @@ input[type=text]:focus {
   /*float: right;*/
 }
 
+/*Establishment list columns*/
 .column-list {
   columns: 250px;
 }
@@ -214,7 +218,7 @@ input[type=text]:focus {
   margin-right: 15px;
 }
 
-/*User management - buttons*/
+/*User management page - buttons*/
 #adminButton{
   width: 100%;
   background-color: red;

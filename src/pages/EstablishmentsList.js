@@ -1,9 +1,9 @@
 import React, {useState, useContext, useEffect} from "react";
-import "./App.css";
-import { ThemeContext, themes } from './ThemeContext';
+import "../App.css";
+import { ThemeContext, themes } from '../ThemeContext';
 import {Link} from "react-router-dom";
-import request from "./utils/request";
-import endpoints from "./endpoints.json";
+import request from "../utils/request";
+import endpoints from "../endpoints.json";
 import {useAuth0} from "@auth0/auth0-react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import TableContainer from "@material-ui/core/TableContainer";
@@ -19,11 +19,8 @@ export function EstablishmentsList(){
     let [establishments, setEstablishments] = useState([]);
     let [establishmentsTypes, setEstablishmentsTypes] = useState([]);
     let {
-        loading,
         loginWithRedirect,
-        logout,
         getAccessTokenSilently,
-        isAuthenticated,
     } = useAuth0();
 
     //Use effect to display get data we need as we open the page
@@ -35,7 +32,6 @@ export function EstablishmentsList(){
                 getAccessTokenSilently,
                 loginWithRedirect
             );
-
             if (establishments && establishments.length > 0) {
                 await setEstablishments(establishments);
             }

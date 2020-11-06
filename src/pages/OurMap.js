@@ -2,35 +2,26 @@ import React, {Component, useEffect, useState} from 'react';
 import {Map, TileLayer, Marker, Popup} from 'react-leaflet';
 import {geolocated} from "react-geolocated";
 import {useAuth0} from "@auth0/auth0-react";
-import request from "./utils/request";
-import endpoints from "./endpoints.json";
+import request from "../utils/request";
+import endpoints from "../endpoints.json";
 import L from 'leaflet';
-import leafPosition from './assets/navigation .png'
-import leafMarker from './assets/pin.png'
+import leafPosition from '../assets/navigation .png'
+import leafMarker from '../assets/pin.png'
 import {Link} from "react-router-dom";
 
-
 class MapContainer extends Component {
-
     constructor() {
         super()
-
         this.state = {
             latitude: 46.2324104309082,
             longitude: 7.358489990234375,
-            lng:"",
-            lat:"",
-
-
+            lng: "",
+            lat: "",
         };
-
         this.getLocation = this.getLocation.bind(this)
         this.getCoordinates = this.getCoordinates.bind(this)
         this.getCoords = this.getCoords.bind(this)
-
-
     }
-
 
     getLocation() {
         if (navigator.geolocation) {
@@ -38,7 +29,6 @@ class MapContainer extends Component {
         } else {
             alert("Geolaction is not supported by this browser");
         }
-
     }
 
     getCoordinates(position) {
@@ -53,37 +43,24 @@ class MapContainer extends Component {
                 this.setState({latitude: 'err-latitude', longitude: 'err-longitude'})
             })
         }
-
     }
 
     getCoords(e) {
-
         const {lat, lng} = e.latlng
-
-
         try {
             this.props.updateCoordinates(lat, lng)
         } catch (error) {
-
         }
-
         this.setState({
-            lng : lng,
-            lat :lat,
+            lng: lng,
+            lat: lat,
         })
     }
 
-
-
-
     render() {
-
         const {latitude, longitude} = this.state
-
         const long = this.props.coords ? this.props.coords.longitude : longitude;
         const lat = this.props.coords ? this.props.coords.latitude : latitude;
-        const isMainPage = window.location.href;
-
         const PositionIcon = L.icon({
             iconUrl: leafPosition,
             iconSize: [30, 34],
@@ -91,7 +68,6 @@ class MapContainer extends Component {
             popupAnchor: [3, -35]
 
         });
-
         const PositionMarker = L.icon({
             iconUrl: leafMarker,
             iconSize: [30, 34],
@@ -99,15 +75,8 @@ class MapContainer extends Component {
             popupAnchor: [3, -35]
 
         });
-
-
-
-
-
         return (
-
             <Map onClick={this.getCoords} center={[lat, long]} zoom={16}>
-
                 <TileLayer
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'/>
@@ -123,15 +92,10 @@ class MapContainer extends Component {
                                 <h4>You are here!</h4>
                             </Popup>
                         </Marker>
-
-
                 }
-
                 <Points/>
-
                 {
-                    window.location.pathname == "/new/establishment"?
-
+                    window.location.pathname != "/" ?
                         <Marker icon={PositionMarker}
                                 position={[this.state.lat, this.state.lng]}
                         >
@@ -139,21 +103,11 @@ class MapContainer extends Component {
                                 <h4>You've clicked here!</h4>
                             </Popup>
                         </Marker>
-
-                      :
+                        :
                         <></>
                 }
-
-
-
-
-
-
-
             </Map>
-
         )
-
     }
 }
 
@@ -164,22 +118,14 @@ export default geolocated({
     userDecisionTimeout: 1000
 })(MapContainer);
 
-
 export function Points() {
-
     let [establishments, setEstablishments] = useState([]);
-    let restaurantIcon = leafPosition;
     let {
-        loading,
         loginWithRedirect,
-        logout,
         getAccessTokenSilently,
-        isAuthenticated,
     } = useAuth0();
 
-
     useEffect(() => {
-
         //get all establishment to display a complete list
         async function getEstablishments() {
             let establishments = await request(
@@ -187,13 +133,11 @@ export function Points() {
                 getAccessTokenSilently,
                 loginWithRedirect
             );
-
             if (establishments && establishments.length > 0) {
                 // console.log(establishments);
                 setEstablishments(establishments);
             }
         }
-
         getEstablishments();
     }, []);
 
@@ -207,7 +151,7 @@ export function Points() {
     }
 
     function getMarkerIcon(type) {
-        switch(type){
+        switch (type) {
             case "Other":
                 return createIcon('https://www.flaticon.com/svg/static/icons/svg/67/67533.svg');
             case "Restaurant":

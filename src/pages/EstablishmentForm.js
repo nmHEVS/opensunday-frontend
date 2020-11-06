@@ -1,24 +1,22 @@
 import React, {useContext, useEffect, useState} from "react";
-import "./App.css";
+import "../App.css";
 import {useFormik} from 'formik';
 import * as Yup from 'yup';
 import {useAuth0} from "@auth0/auth0-react";
-import request from "./utils/request";
-import endpoints from "./endpoints.json";
+import request from "../utils/request";
+import endpoints from "../endpoints.json";
 import BackupIcon from '@material-ui/icons/Backup';
 import Button from "@material-ui/core/Button";
 import RotateLeftIcon from '@material-ui/icons/RotateLeft';
 import swal from 'sweetalert';
 import OurMap from "./OurMap";
 import {useHistory} from "react-router-dom";
-import {ThemeContext, themes} from "./ThemeContext";
+import {ThemeContext, themes} from "../ThemeContext";
 
 export class EstablishmentForm extends React.Component {
-
     constructor() {
         super();
     }
-
     render() {
         return (
             <>
@@ -32,11 +30,8 @@ export class EstablishmentForm extends React.Component {
 function SignupForm() {
     let [establishmentsTypes, setEstablishmentsTypes] = useState([]);
     let {
-        loading,
         loginWithRedirect,
-        logout,
         getAccessTokenSilently,
-        isAuthenticated,
     } = useAuth0();
     let locationExists = false;
     let locationIdSaved ;
@@ -44,6 +39,7 @@ function SignupForm() {
     let themeContext = useContext(ThemeContext);
 
     useEffect(() => {
+        //Get establishment types
         async function getEstablishmentsTypes() {
             let establishmentsTypes = await request(
                 `${process.env.REACT_APP_SERVER_URL}${endpoints.establishmentsTypes}`,
@@ -90,6 +86,7 @@ function SignupForm() {
                 .min(3, 'Must be 3 characters or more')
         }),
 
+        //Handle the form on submit
         onSubmit: async values => {
             //Parse String to Int for the fk
             values.establishmentTypeId = Number(values.establishmentTypeId);
@@ -138,9 +135,11 @@ function SignupForm() {
                 values.locationId = location.id;
                 await postEstablishment(values);
             }
+            //Message
             swal("Submit done.", "The establishment has been submitted.", "success");
             //Reset the form
             formik.handleReset();
+            //Redirect to the list
             history.push("/list/establishment");
         }
     });
@@ -178,6 +177,7 @@ function SignupForm() {
         await getLocationByLatLong();
     }
 
+    //Update the coordinates when clicking on the map
     const updateCoordinates = async (lat, lng) => {
         formik.setFieldValue('latitude', lat);
         formik.setFieldValue('longitude', lng);

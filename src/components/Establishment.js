@@ -11,10 +11,9 @@ import {
     FacebookShareButton,
     FacebookIcon
 } from "react-share";
-import {CopyToClipboard} from "react-copy-to-clipboard";
 import {useFormik} from "formik";
 import * as Yup from "yup";
-import OurMap from "../OurMap";
+import OurMap from "../pages/OurMap";
 import {BsFiles} from "react-icons/all";
 import {Link, useHistory} from 'react-router-dom';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -26,7 +25,6 @@ import Rating from "@material-ui/lab/Rating";
 import StarBorderIcon from '@material-ui/icons/StarBorder';
 import swal from 'sweetalert';
 import {ThemeContext, themes} from "../ThemeContext";
-import Error404 from "../pages/Error404";
 import L from "leaflet";
 import leafPosition from "../assets/navigation .png";
 
@@ -45,6 +43,7 @@ export default function Establishment(props) {
         setEditMode(!editMode);
     }
 
+    //Method to delete an establishment
     async function deleteEstablishment() {
         let token = await getAccessTokenSilently();
         let response = await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.establishments}/${props.id}`, {
@@ -62,6 +61,7 @@ export default function Establishment(props) {
     }
 
     useEffect(() => {
+        //Try catch if the user reload the page, if there is something in user.name
         try {
             let temp = user.name;
         } catch (e) {
@@ -69,6 +69,7 @@ export default function Establishment(props) {
                 window.location.href = "/error404"
             )
         }
+
         //Get if user is an admin or not
         async function getUserIdByEmail(user) {
             let userConnected = await request(
@@ -77,6 +78,7 @@ export default function Establishment(props) {
                 loginWithRedirect
             );
 
+            //Set if the user is an admin or not
             if (userConnected.userTypeId == 1) {
                 setIsAdmin(true);
             } else {
@@ -91,14 +93,14 @@ export default function Establishment(props) {
     return (
         <div className="establishment">
             {
+                //If the user click on edit (change the display)
                 editMode ?
                     <EditOn {...props}/>
-                    // <EditOff {...props}/>
                     :
                     <EditOff {...props}/>
-                // <EditOn {...props}/>
             }
             {
+                //If the user is an admin he has access to the delete and edit button (not a simple user)
                 isAdmin ?
                     <div>
                         <Button
@@ -128,41 +130,37 @@ export default function Establishment(props) {
     );
 }
 
+//Function to display the establishment content
 function EditOff(props) {
     const pageUrl = window.location.href;
     let [dist, setDist] = useState();
     let [averageRate, setAverageRate] = useState(0);
     let [totalReview, setTotalReview] = useState(0);
     let [isRating, setIsRating] = useState(false);
-    let currentLat;
-    let currentLong;
     let history = useHistory();
-    let [newRate, setNewRate] = useState(0);
     let [latitude, setLatitude] = useState(0);
     let [longitude, setLongitude] = useState(0);
     let [currentUser, setCurrentUser] = useState([]);
 
     let {
         user,
-        loading,
         loginWithRedirect,
-        logout,
         getAccessTokenSilently,
-        isAuthenticated,
     } = useAuth0();
 
+    //Transform degre in radian
     function deg2rad(deg) {
         return deg * (Math.PI / 180)
     }
 
     useEffect(() => {
+        //Get user location
         const location = window.navigator && window.navigator.geolocation;
 
+        //Get the distance between the user and the establishment selected
         function getDistanceFromLatLonInKm() {
             if (location) {
                 location.getCurrentPosition((position) => {
-
-
                     let R = 6371; // Radius of the earth in km
                     let dLat = deg2rad(props.latitude - position.coords.latitude);  // deg2rad below
                     let dLon = deg2rad(props.longitude - position.coords.longitude);
@@ -185,6 +183,7 @@ function EditOff(props) {
 
         }
 
+        //Function to get the average rate of an establishment
         async function getAverageRate() {
             //The request return -1 if there is no rate for the establishment
             let rate = await request(
@@ -195,6 +194,7 @@ function EditOff(props) {
             setAverageRate(rate);
         }
 
+        //Get the number of review for an establishment
         async function getTotalReviews() {
             //The request return -1 if there is no rate for the establishment
             let totalReview = await request(
@@ -207,14 +207,14 @@ function EditOff(props) {
 
         //Get if user is an admin or not
         async function getUserIdByEmail(user) {
-            try{
+            try {
                 let userConnected = await request(
                     `${process.env.REACT_APP_SERVER_URL}${endpoints.userByEmail}${user.name}`,
                     getAccessTokenSilently,
                     loginWithRedirect
                 );
                 await setCurrentUser(userConnected);
-            }catch (e){
+            } catch (e) {
                 history.push("/list/establishment");
             }
         }
@@ -225,19 +225,23 @@ function EditOff(props) {
         getDistanceFromLatLonInKm();
     }, []);
 
+    //Catch if the establishment type name is not get fast enough > error404 page
     try {
         let test = props.establishmentType.establishmentTypeName;
     } catch (e) {
+        history.push("/error404");
     }
 
+    //Context
     let themeContext = useContext(ThemeContext);
 
+    //Handle rate button switch on rate or not
     let handleToRate = () => {
         setIsRating(!isRating);
     }
 
+    //Handle stars choosen for the new rate
     let handleHasRated = async (e) => {
-
         let newRateHere = Number(e.target.value);
         let idEstReview = props.id;
         let idUserReview = currentUser.id;
@@ -252,6 +256,7 @@ function EditOff(props) {
             loginWithRedirect
         );
 
+        //If review already exists or not for this establishment, made by the connected user
         if (idExistingReview < 0) {
             //review doesn't exist : create it
             postReview = {
@@ -260,6 +265,7 @@ function EditOff(props) {
                 establishmentId: idEstReview
             }
 
+            //Wait for the rate to post
             if (newRateHere >= 0) {
                 let response = await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.reviews}`, {
                     method: 'POST',
@@ -281,6 +287,7 @@ function EditOff(props) {
                 establishmentId: idEstReview
             }
 
+            //Wait for the rate to put
             if (newRateHere >= 0) {
                 await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.reviews}/${idExistingReview}`, {
                     method: 'PUT',
@@ -294,6 +301,7 @@ function EditOff(props) {
             }
         }
 
+        //Get rate
         let rate = await request(
             `${process.env.REACT_APP_SERVER_URL}${endpoints.averageRate}${props.id}`,
             getAccessTokenSilently,
@@ -301,6 +309,7 @@ function EditOff(props) {
         );
         setAverageRate(rate);
 
+        //Get total review
         let totalReview = await request(
             `${process.env.REACT_APP_SERVER_URL}${endpoints.totalReview}${props.id}`,
             getAccessTokenSilently,
@@ -312,6 +321,7 @@ function EditOff(props) {
         setIsRating(!isRating);
     }
 
+    //Stars display (average or new rate)
     function RatingStars() {
         return (
             <div>
@@ -323,9 +333,7 @@ function EditOff(props) {
                             onClick={handleHasRated}
                             emptyIcon={<StarBorderIcon fontSize="inherit"/>}
                         />
-                        {/*<button onClick={handleHasRated}>Rate</button>*/}
                     </div>
-
                 ) : (
                     <div>
                         <Rating
@@ -355,6 +363,7 @@ function EditOff(props) {
         navigator.clipboard.writeText(window.location.href);
     }
 
+    //Icon for the position of the user
     const PositionIcon = new L.icon({
         iconUrl: leafPosition,
         iconSize: [30, 34],
@@ -362,6 +371,7 @@ function EditOff(props) {
         popupAnchor: [3, -35]
     });
 
+    //Icon for the position of the establishment
     const EstablishmentIcon = new L.icon({
         iconUrl: 'https://www.flaticon.com/svg/static/icons/svg/1397/1397898.svg',
         iconSize: [40, 40],
@@ -369,6 +379,7 @@ function EditOff(props) {
         popupAnchor: [8, -35]
     });
 
+    //Catch if the establishment doesn't exist
     try {
         return (
             <div style={{color: themes[themeContext.theme].foreground}}>
@@ -437,18 +448,15 @@ function EditOff(props) {
 
 }
 
+//Function when the user click on edit
 function EditOn(props) {
-    const pageUrl = window.location.href;
     let [establishmentsTypes, setEstablishmentsTypes] = useState([]);
     let locationExists = false;
     let locationIdSaved;
     let history = useHistory();
     let {
-        loading,
         loginWithRedirect,
-        logout,
         getAccessTokenSilently,
-        isAuthenticated,
     } = useAuth0();
 
     // Pass the useFormik() hook initial form values and a submit function that will
@@ -483,6 +491,7 @@ function EditOn(props) {
                 .min(3, 'Must be 3 characters or more')
         }),
 
+        //When the form is submitted
         onSubmit: async values => {
             //Parse String to Int for the fk
             values.establishmentTypeId = Number(values.establishmentTypeId);
@@ -542,7 +551,9 @@ function EditOn(props) {
                 } catch (e) {
                 }
             }
+            //Message
             await swal("Edit done.", "Modifications has been saved !", "success");
+            //Redirect to the list
             history.push("/list/establishment");
         }
     });
@@ -580,6 +591,7 @@ function EditOn(props) {
         await getLocationByLatLong();
     }
 
+    //To update the coordinates when clicking on the map
     const updateCoordinates = async (lat, lng) => {
         formik.setFieldValue('latitude', lat);
         formik.setFieldValue('longitude', lng);
@@ -693,9 +705,6 @@ function EditOn(props) {
                 >
                     Save
                 </Button>
-                {/*<button type="submit" to="/list/establishment">Save</button>*/}
-                {/*<button type="submit" onClick={history.goBack()}>Save</button>*/}
-                {/*<button type="submit" onClick=onClick={() =>  {window.location.href='/list/establishment'}}>Save</button>*/}
             </form>
         </div>
     )

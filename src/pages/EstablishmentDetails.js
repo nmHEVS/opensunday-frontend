@@ -8,13 +8,9 @@ import {Link, useHistory} from "react-router-dom";
 
 export default function EstablishmentDetails({match}) {
     let establishmentID = +match.params.id;
-
     let [establishment, setEstablishment] = useState(null);
-
     let {loginWithRedirect, getAccessTokenSilently} = useAuth0();
-
     let history = useHistory();
-
 
     // Get POI details
     useEffect(() => {

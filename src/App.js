@@ -5,27 +5,22 @@ import request from "./utils/request";
 import endpoints from "./endpoints";
 import Loading from "./components/Loading";
 import {BrowserRouter, Link, Switch, Route} from "react-router-dom";
-import LocationDetails from "./pages/LocationDetails";
-import {EstablishmentForm} from './EstablishmentForm';
-import {EstablishmentsList} from './EstablishmentsList';
-import {Settings} from "./Settings";
+import {EstablishmentForm} from './pages/EstablishmentForm';
+import {EstablishmentsList} from './pages/EstablishmentsList';
+import {Settings} from "./pages/Settings";
 import {ThemeContext, themes} from './ThemeContext';
 import EstablishmentDetails from "./pages/EstablishmentDetails";
 import Navbar, {Nav} from "react-bootstrap";
 import NavigationBar from "./NavigationBar";
-import OurMap from "./OurMap";
-import Profile from "./components/Profile";
+import OurMap from "./pages/OurMap";
 import Error404 from "./pages/Error404";
-import {UserManagement} from "./UserManagement";
-
+import {UserManagement} from "./pages/UserManagement";
 
 function App() {
     let [locations, setLocations] = useState([]);
     let [establishments, setEstablishments] = useState([]);
     let [users, setUsers] = useState([]);
     let themeContext = useContext(ThemeContext);
-
-
     let {
         user,
         loading,
@@ -34,29 +29,9 @@ function App() {
         getAccessTokenSilently,
         isAuthenticated,
     } = useAuth0();
-
     let userExists = false;
 
-    //Handle Locations
-    let handleLocationsClick = async (e) => {
-        e.preventDefault();
-        let locations = await request(
-            `${process.env.REACT_APP_SERVER_URL}${endpoints.locations}`,
-            getAccessTokenSilently,
-            loginWithRedirect
-
-        );
-
-
-
-        if (locations && locations.length > 0) {
-            console.log(locations);
-            setLocations(locations);
-
-        }
-    };
-
-
+    //Handle login click
     let handleLoginClick = async (e) => {
         e.preventDefault();
         await request(`${process.env.REACT_APP_SERVER_URL}${endpoints.locations}`,
@@ -64,7 +39,7 @@ function App() {
             loginWithRedirect
         );
     }
-
+    //Handle logout click
     let handleLogoutClick = async (e) => {
         e.preventDefault();
         /*
@@ -74,51 +49,39 @@ function App() {
         logout({returnTo: window.location.origin});
     };
 
+    useEffect(() => {
+        //Test if the user is authenticated
+        if (isAuthenticated) {
+            //Get the users list
+            async function getUser() {
+                let users = await request(
+                    `${process.env.REACT_APP_SERVER_URL}${endpoints.users}`,
+                    getAccessTokenSilently,
+                    loginWithRedirect
+                );
+                if (users && users.length > 0) {
+                    await setUsers(users);
+                }
+                await postUser(users);
+            }
+            getUser();
+        }
+    }, [isAuthenticated]);
 
-
-// post user method
-
-
-
-    useEffect(()=>{
-
-  if(isAuthenticated) {
-      async function getUser() {
-          let users = await request(
-              `${process.env.REACT_APP_SERVER_URL}${endpoints.users}`,
-              getAccessTokenSilently,
-              loginWithRedirect
-          );
-
-          if (users && users.length > 0) {
-              await setUsers(users);
-          }
-
-          await postUser(users);
-
-          //console.log(users.length)
-      }
-
-      getUser();
-
-
-  }
-
-    },[isAuthenticated]);
-
-    async function postUser(users){
-
-        if(isAuthenticated) {
-
+    //Function to create the user object
+    async function postUser(users) {
+        if (isAuthenticated) {
             //New user is a User type (not an Admin)
             const usType = 2;
 
+            //Declare the user variable
             let postUser = {
                 pseudo: user.nickname,
                 email: user.name,
                 userTypeId: usType,
             };
 
+            //Catch if an error occurs
             try {
                 for (let i = 0; i < users.length; i++) {
                     if (users[i].email === user.name) {
@@ -137,7 +100,7 @@ function App() {
         }
     }
 
-
+    //Function to post the user (call in postUser without s)
     async function postUsers(values) {
         let token = await getAccessTokenSilently();
         let response = await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.users}`,
@@ -155,17 +118,10 @@ function App() {
         return data;
     }
 
-
-
-
-
+    //Loading display to wait for the data
     if (loading) {
         return <Loading/>;
     }
-
-    let addEstablishment = (establishment) => {
-        setEstablishments((prevEstablishments) => [establishment, ...prevEstablishments]);
-    };
 
     return (
         <div className="App">
@@ -182,9 +138,6 @@ function App() {
                     >Log in</Nav.Link>
                 )}/>
                 <header className="App-header" style={{background: themes[themeContext.theme].background}}>
-                    <Switch>
-                        <Route path="/location/:id" component={LocationDetails}/>
-                    </Switch>
                     <Switch>
                         <Route
                             path="/list/establishment"

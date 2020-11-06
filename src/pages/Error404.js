@@ -8,10 +8,12 @@ function Error404() {
     let themeContext = useContext(ThemeContext);
     let history = useHistory();
 
-    function makeDonation() {
+    //Handle the button
+    function backToMap() {
         history.push("/");
     }
 
+    //Error 404 display
     return (
         <div id="error404" style={{color: themes[themeContext.theme].foreground}}>
             <h1 id="h1Error">Whoops!</h1>
@@ -23,7 +25,7 @@ function Error404() {
                 id="buttonDonation"
                 variant="contained"
                 color="secondary"
-                onClick={makeDonation}
+                onClick={backToMap}
             >
                 Go back to the map
             </Button>

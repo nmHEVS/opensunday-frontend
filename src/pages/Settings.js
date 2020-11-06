@@ -1,12 +1,13 @@
 import React, {useState, useContext, useEffect} from "react";
-import "./App.css";
-import { ThemeContext, themes } from './ThemeContext';
-import Profile from "./components/Profile";
+import "../App.css";
+import { ThemeContext, themes } from '../ThemeContext';
+import Profile from "../components/Profile";
 import {Link} from "react-router-dom";
-import request from "./utils/request";
-import endpoints from "./endpoints.json";
+import request from "../utils/request";
+import endpoints from "../endpoints.json";
 import {useAuth0} from "@auth0/auth0-react";
 
+//Settings page
 export function Settings() {
     let themeContext = useContext(ThemeContext);
     let [isAdmin, setIsAdmin] = useState(false);
