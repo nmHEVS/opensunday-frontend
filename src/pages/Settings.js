@@ -2,7 +2,7 @@ import React, {useState, useContext, useEffect} from "react";
 import "../App.css";
 import { ThemeContext, themes } from '../ThemeContext';
 import Profile from "../components/Profile";
-import {Link} from "react-router-dom";
+import {Link, useHistory} from "react-router-dom";
 import request from "../utils/request";
 import endpoints from "../endpoints.json";
 import {useAuth0} from "@auth0/auth0-react";
@@ -16,20 +16,25 @@ export function Settings() {
         loginWithRedirect,
         getAccessTokenSilently,
     } = useAuth0();
+    let history = useHistory();
 
     useEffect(() => {
         //Get if user is an admin or not
         async function getUserIdByEmail(user) {
-            let userConnected = await request(
-                `${process.env.REACT_APP_SERVER_URL}${endpoints.userByEmail}${user.name}`,
-                getAccessTokenSilently,
-                loginWithRedirect
-            );
-
-            if (userConnected.userTypeId == 1) {
-                setIsAdmin(true);
-            } else {
-                setIsAdmin(false);
+            //Catch if the user reload the page and the user.name is not get fast enough
+            try{
+                let userConnected = await request(
+                    `${process.env.REACT_APP_SERVER_URL}${endpoints.userByEmail}${user.name}`,
+                    getAccessTokenSilently,
+                    loginWithRedirect
+                );
+                if (userConnected.userTypeId == 1) {
+                    setIsAdmin(true);
+                } else {
+                    setIsAdmin(false);
+                }
+            }catch (e){
+                history.push("/error404")
             }
         }
         getUserIdByEmail(user);
@@ -44,7 +49,7 @@ export function Settings() {
                     title="Switch Theme"
                     onClick={themeContext.toggleTheme}
                 >
-                    <span>💡</span>
+                    <span>Change theme 💡</span>
                 </switch>
                 <br/>
                 {
