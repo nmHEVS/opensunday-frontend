@@ -153,7 +153,7 @@ export function Points() {
     function getMarkerIcon(type) {
         switch (type) {
             case "Other":
-                return createIcon('https://www.flaticon.com/svg/static/icons/svg/67/67533.svg');
+                return createIcon('https://www.flaticon.com/svg/static/icons/svg/1476/1476223.svg');
             case "Restaurant":
                 return createIcon('https://www.flaticon.com/svg/static/icons/svg/685/685352.svg');
             case "Museum":

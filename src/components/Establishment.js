@@ -379,6 +379,9 @@ function EditOff(props) {
         popupAnchor: [8, -35]
     });
 
+    //Add http to the url to redirect to an other page
+    let urlWithHttp = "http://" + props.url;
+
     //Catch if the establishment doesn't exist
     try {
         return (
@@ -415,7 +418,7 @@ function EditOff(props) {
                     </TwitterShareButton>
                     <BsFiles id="copyLinkButton" size={40} onClick={copyCodeToClipboard}/>
                 </div>
-                <a href={props.url}>{props.url}</a>
+                <a href={urlWithHttp}>{props.url}</a>
                 <Map id="up" center={[props.latitude, props.longitude]} zoom={16}>
                     <TileLayer
                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
