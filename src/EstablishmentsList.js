@@ -6,12 +6,18 @@ import request from "./utils/request";
 import endpoints from "./endpoints.json";
 import {useAuth0} from "@auth0/auth0-react";
 import 'bootstrap/dist/css/bootstrap.min.css';
+import TableContainer from "@material-ui/core/TableContainer";
+import Paper from "@material-ui/core/Paper";
+import Table from "@material-ui/core/Table";
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
+import TableCell from "@material-ui/core/TableCell";
+import TableBody from "@material-ui/core/TableBody";
 
 export function EstablishmentsList(){
     let themeContext = useContext(ThemeContext);
     let [establishments, setEstablishments] = useState([]);
     let [establishmentsTypes, setEstablishmentsTypes] = useState([]);
-    let [establishmentTypeSelected, setEstablishmentTypeSelected] = useState([]);
     let {
         loading,
         loginWithRedirect,
@@ -31,7 +37,6 @@ export function EstablishmentsList(){
             );
 
             if (establishments && establishments.length > 0) {
-                console.log(establishments);
                 await setEstablishments(establishments);
             }
         }
@@ -52,56 +57,32 @@ export function EstablishmentsList(){
         getEstablishmentsTypes();
     }, []);
 
-    //get the list of establishments of the type selected
+    // get the list of establishments of the type selected
     let handleSelect = async (e) => {
-        console.log('selected type id : ', e.target.value)
         let establishmentTypeId = e.target.value;
-        setEstablishmentTypeSelected(establishmentTypeId);
-
         if (establishmentTypeId == 0 || null) {
             let establishments = await request(
                 `${process.env.REACT_APP_SERVER_URL}${endpoints.establishments}`,
                 getAccessTokenSilently,
                 loginWithRedirect
             );
-
-            console.log("all");
-
             if (establishments && establishments.length > 0) {
                 console.log(establishments);
-                setEstablishments(establishments);
+                await setEstablishments(establishments);
             }
         } else {
-
             let establishments = await request(
                 `${process.env.REACT_APP_SERVER_URL}${endpoints.establishmentsByType}${establishmentTypeId}`,
                 getAccessTokenSilently,
                 loginWithRedirect
             );
-
-            console.log("type specified");
-            console.log(establishments);
-            setEstablishments(establishments);
-
+            await setEstablishments(establishments);
         }
     }
-
-    //Display a message if there is no est. in a type
-    function EmptyTypeTag(){return <h3>There is no establishment of this type yet</h3>}
-    function EmptyType(){
-        if(establishments.length == 0){
-            return <EmptyTypeTag/>
-        }else{
-            return null;
-        }
-    }
-
-
 
     return(
-        <>
-            <h2 style={{color: themes[themeContext.theme].foreground}}>List of Establishments</h2>
-            {/*Select the type of establishment you want to display*/}
+        <div id="widthThirty" style={{color: themes[themeContext.theme].foreground}}>
+            <h1>Establishment list</h1>
             <select
                 id="establishmentType"
                 name="establishmentType"
@@ -116,24 +97,37 @@ export function EstablishmentsList(){
                     </option>
                 ))}
             </select>
-
-            <ul className="EstablishmentsList">
-                {establishments
-                    .sort((a, b) => a.name > b.name ? 1:-1)
-                    .map((establishment) => (
-                    <li key={establishment.id}>
-                        <Link
-                            className="App-link"
-                            to={`/establishment/${establishment.id}`}
-                        >
-                            {establishment.name}
-                        </Link>
-                        {/*{console.log(establishment)}*/}
-                    </li>
-                ))}
-            </ul>
-            <EmptyType/>
-        </>
+            <br/>
+            <br/>
+            <TableContainer component={Paper}>
+                <Table aria-label="simple table">
+                    <TableHead>
+                        <TableRow>
+                            <TableCell><b>Establishment name</b></TableCell>
+                            <TableCell align="center"><b>Show more</b></TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {establishments
+                            .map((establishment, index) => (
+                                <TableRow key={establishment.id}>
+                                    <TableCell>
+                                        {establishment.name}
+                                    </TableCell>
+                                    <TableCell align="center">
+                                        <Link
+                                            className="App-link"
+                                            to={`/establishment/${establishment.id}`}
+                                        >
+                                            More
+                                        </Link>
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                    </TableBody>
+                </Table>
+            </TableContainer>
+        </div>
     );
 
 

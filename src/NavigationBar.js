@@ -20,7 +20,8 @@ const NavigationBar = (props) => {
     return (
         <div id="navigationBar">
             <Navbar color="dark" dark expand="md">
-                <NavbarBrand  tag={Link} to="/">Map</NavbarBrand>
+                <NavbarBrand tag={Link} to="/">Opensunday</NavbarBrand>
+                <NavbarText tag={Link} to="/">Map</NavbarText>
                 <NavbarToggler onClick={toggle}/>
                 <Collapse isOpen={isOpen} navbar>
                     <Nav className="mr-auto" navbar>
@@ -38,13 +39,6 @@ const NavigationBar = (props) => {
                             </DropdownMenu>
                         </UncontrolledDropdown>
                     </Nav>
-                    {/*{*/}
-                    {/*    isAdmin ?*/}
-                    {/*        <NavbarText id="UM" tag={Link} to="/user-management">Users management</NavbarText>*/}
-                    {/*        :*/}
-                    {/*        <span/>*/}
-                    {/*}*/}
-                    {/*<NavbarText id="UM" tag={Link} to="/user-management">Users management</NavbarText>*/}
                     <NavbarText tag={Link} to="/settings">Settings</NavbarText>
                     <NavbarText>{props.authenticator}</NavbarText>
                 </Collapse>

@@ -182,8 +182,6 @@ function App() {
                     >Log in</Nav.Link>
                 )}/>
                 <header className="App-header" style={{background: themes[themeContext.theme].background}}>
-                    <h1 style={{color: themes[themeContext.theme].foreground}}>OpenSunday</h1>
-                    <br/>
                     <Switch>
                         <Route path="/location/:id" component={LocationDetails}/>
                     </Switch>
